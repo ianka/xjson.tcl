@@ -1,0 +1,47 @@
+overview: |-
+  Compose data with "expr" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'expr -foobar {} {} {}'
+    data: 'true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'expr'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'expr {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: two arguments
+    desc: Just two argument must throw an error.
+    schema: 'expr {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'expr {} {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: tcl body error
+    desc: Errors in the Tcl body must be escalated.
+    schema: 'expr foo bar boolean'
+    data: 'false'
+    expected: 'TCL PARSE EXPR BAREWORD'
+
+  - name: sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    schema: 'expr foo {[puts bar]} boolean'
+    data: 'false'
+    expected: 'TCL LOOKUP CHANNEL stdout'

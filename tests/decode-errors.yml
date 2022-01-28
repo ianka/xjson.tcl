@@ -1,0 +1,55 @@
+overview: |-
+  Decode JSON to Tcl. Error handling.
+operation: decode
+testerror: true
+testcode:  true
+tests:
+  - name: invalid string quotes
+    desc: Strings not ending in a double quote must throw an error.
+    data: '["foo", "bar]'
+    expected: 'XJSON DECODE INVALID_STRING'
+
+  - name: invalid array brackets
+    desc: Arrays not ending in a close bracket must throw an error.
+    data: '["foo, "bar"]'
+    expected: 'XJSON DECODE INVALID_ARRAY'
+
+  - name: invalid object braces
+    desc: Objects not ending in a close brace must throw an error.
+    data: '{"foo": "bar"]'
+    expected: 'XJSON DECODE INVALID_OBJECT'
+
+  - name: invalid object keys
+    desc: Objects without keys must throw an error.
+    data: '{'
+    expected: 'XJSON DECODE INVALID_OBJECT'
+
+  - name: invalid object key type
+    desc: Object keys that aren't strings must throw an error.
+    data: '{0: "bar"}'
+    expected: 'XJSON DECODE INVALID_OBJECT'
+
+  - name: invalid object key colon
+    desc: Object keys that aren't followed by a colon must throw an error.
+    data: '{"foo", "bar"}'
+    expected: 'XJSON DECODE INVALID_OBJECT'
+
+  - name: invalid literal tfn
+    desc: Literals starting with t,f,n that aren't true, false, null must throw an error.
+    data: '["foo", tbar]'
+    expected: 'XJSON DECODE INVALID_LITERAL'
+
+  - name: invalid literal other
+    desc: Literals that arent true, false, null must throw an error.
+    data: '["foo", bar]'
+    expected: 'XJSON DECODE INVALID_LITERAL'
+
+  - name: invalid number
+    desc: Invalid numbers must throw an error.
+    data: '["foo", 1EE0]'
+    expected: 'XJSON DECODE INVALID_NUMBER'
+
+  - name: invalid junk
+    desc: Junk at the end must throw an error.
+    data: '["foo", "bar"] quux'
+    expected: 'XJSON DECODE JUNK_AT_END'

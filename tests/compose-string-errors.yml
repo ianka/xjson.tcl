@@ -1,0 +1,971 @@
+overview: |-
+  Compose data with string schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'string -foobar'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing null option value
+    desc: Missing option value to the "-null" option must throw an error.
+    schema: 'string -null'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing start option value
+    desc: Missing option value to the "-start" option must throw an error.
+    schema: 'string -start'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing clength option value
+    desc: Missing option value to the "-clength" option must throw an error.
+    schema: 'string -clength'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing map option value
+    desc: Missing option value to the "-map" option must throw an error.
+    schema: 'string -map'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing range option value
+    desc: Missing option value to the "-range" option must throw an error.
+    schema: 'string -range'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing tolower option value
+    desc: Missing option value to the "-tolower" option must throw an error.
+    schema: 'string -tolower'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing toupper option value
+    desc: Missing option value to the "-toupper" option must throw an error.
+    schema: 'string -toupper'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing totitle option value
+    desc: Missing option value to the "-totitle" option must throw an error.
+    schema: 'string -totitle'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing transform option value
+    desc: Missing option value to the "-transform" option must throw an error.
+    schema: 'string -transform'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing trim option value
+    desc: Missing option value to the "-trim" option must throw an error.
+    schema: 'string -trim'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing trimleft option value
+    desc: Missing option value to the "-trimleft" option must throw an error.
+    schema: 'string -trimleft'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing trimright option value
+    desc: Missing option value to the "-trimright" option must throw an error.
+    schema: 'string -trimright'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing max option value
+    desc: Missing option value to the "-max" option must throw an error.
+    schema: 'string -max'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmax option value
+    desc: Missing option value to the "-xmax" option must throw an error.
+    schema: 'string -xmax'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing min option value
+    desc: Missing option value to the "-min" option must throw an error.
+    schema: 'string -min'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmin option value
+    desc: Missing option value to the "-xmin" option must throw an error.
+    schema: 'string -xmin'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing multipleof option value
+    desc: Missing option value to the "-multipleof" option must throw an error.
+    schema: 'string -multipleof'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing first option value
+    desc: Missing option value to the "-first" option must throw an error.
+    schema: 'string -first'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing last option value
+    desc: Missing option value to the "-last" option must throw an error.
+    schema: 'string -last'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing maxpos option value
+    desc: Missing option value to the "-maxpos" option must throw an error.
+    schema: 'string -maxpos'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmaxpos option value
+    desc: Missing option value to the "-xmaxpos" option must throw an error.
+    schema: 'string -xmaxpos'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing minpos option value
+    desc: Missing option value to the "-minpos" option must throw an error.
+    schema: 'string -minpos'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xminpos option value
+    desc: Missing option value to the "-xminpos" option must throw an error.
+    schema: 'string -xminpos'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing multipleofpos option value
+    desc: Missing option value to the "-multipleofpos" option must throw an error.
+    schema: 'string -multipleofpos'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing before option value
+    desc: Missing option value to the "-before" option must throw an error.
+    schema: 'string -before'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xbefore option value
+    desc: Missing option value to the "-xbefore" option must throw an error.
+    schema: 'string -xbefore'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing behind option value
+    desc: Missing option value to the "-behind" option must throw an error.
+    schema: 'string -behind'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xbehind option value
+    desc: Missing option value to the "-xbehind" option must throw an error.
+    schema: 'string -xbehind'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing equal option value
+    desc: Missing option value to the "-equal" option must throw an error.
+    schema: 'string -equal'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing is option value
+    desc: Missing option value to the "-is" option must throw an error.
+    schema: 'string -is'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing match option value
+    desc: Missing option value to the "-match" option must throw an error.
+    schema: 'string -match'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing regexp option value
+    desc: Missing option value to the "-regexp" option must throw an error.
+    schema: 'string -regexp'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing test option value
+    desc: Missing option value to the "-test" option must throw an error.
+    schema: 'string -test'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: non-integer start option value
+    desc: Non-integer option value to the "-start" option must throw an error.
+    schema: 'string -start 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION INDEX_MISMATCH'
+
+  - name: non-integer clength option value
+    desc: Non-integer option value to the "-clength" option must throw an error.
+    schema: 'string -clength 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-pairs map option value
+    desc: Non-pairs option value to the "-map" option must throw an error.
+    schema: 'string -map x'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION PAIRS_MISMATCH'
+
+  - name: non-integer range option value
+    desc: Non-integer option value to the "-range" option must throw an error.
+    schema: 'string -range 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION RANGE_MISMATCH'
+
+  - name: non-pair range option value
+    desc: Non-pair option value to the "-range" option must throw an error.
+    schema: 'string -range {1 2 3}'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION RANGE_MISMATCH'
+
+  - name: non-integer tolower option value
+    desc: Non-integer option value to the "-tolower" option must throw an error.
+    schema: 'string -tolower 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION RANGE_MISMATCH'
+
+  - name: non-pair tolower option value
+    desc: Non-pair option value to the "-tolower" option must throw an error.
+    schema: 'string -tolower {1 2 3}'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION RANGE_MISMATCH'
+
+  - name: non-integer toupper option value
+    desc: Non-integer option value to the "-toupper" option must throw an error.
+    schema: 'string -toupper 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION RANGE_MISMATCH'
+
+  - name: non-pair toupper option value
+    desc: Non-pair option value to the "-tolupper" option must throw an error.
+    schema: 'string -toupper {1 2 3}'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION RANGE_MISMATCH'
+
+  - name: non-integer totitle option value
+    desc: Non-integer option value to the "-totitle" option must throw an error.
+    schema: 'string -totitle 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION RANGE_MISMATCH'
+
+  - name: non-pair totitle option value
+    desc: Non-pair option value to the "-totitle" option must throw an error.
+    schema: 'string -totitle {1 2 3}'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION RANGE_MISMATCH'
+
+  - name: non-integer max option value
+    desc: Non-integer option value to the "-max" option must throw an error.
+    schema: 'string -max 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmax option value
+    desc: Non-integer option value to the "-xmax" option must throw an error.
+    schema: 'string -xmax 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer min option value
+    desc: Non-integer option value to the "-min" option must throw an error.
+    schema: 'string -min 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmin option value
+    desc: Non-integer option value to the "-xmin" option must throw an error.
+    schema: 'string -xmin 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-positive integer multipleof option value
+    desc: Non-positive integer option value to the "-multipleof" option must throw an error.
+    schema: 'string -multipleof 0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION BOUNDARY_MISMATCH'
+
+  - name: non-integer maxpos option value
+    desc: Non-integer option value to the "-maxpos" option must throw an error.
+    schema: 'string -maxpos 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmaxpos option value
+    desc: Non-integer option value to the "-xmaxpos" option must throw an error.
+    schema: 'string -xmaxpos 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer minpos option value
+    desc: Non-integer option value to the "-minpos" option must throw an error.
+    schema: 'string -minpos 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xminpos option value
+    desc: Non-integer option value to the "-xminpos" option must throw an error.
+    schema: 'string -xminpos 1.0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-positive integer multipleofpos option value
+    desc: Non-positive integer option value to the "-multipleofpos" option must throw an error.
+    schema: 'string -multipleofpos 0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION BOUNDARY_MISMATCH'
+
+  - name: invalid is option value
+    desc: Invalid option value to the "-is" option must throw an error.
+    schema: 'string -is foobar'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA OPTION REGEXP_MISMATCH'
+
+  - name: invalid test option value
+    desc: Invalid option value to the "-test" option must throw an error.
+    schema: 'string -test foobar'
+    data: 'abcde'
+    expected: 'TCL PARSE EXPR BAREWORD'
+
+  - name: test sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    schema: 'string -test {[puts bar]}'
+    data: '123'
+    expected: 'TCL LOOKUP CHANNEL stdout'
+
+  - name: invalid transform option value
+    desc: Invalid option value to the "-transform" option must throw an error.
+    schema: 'string -transform foobar'
+    data: 'abcde'
+    expected: 'TCL LOOKUP COMMAND foobar'
+
+  - name: transform sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    schema: 'string -transform {puts bar}'
+    data: '123'
+    expected: 'TCL LOOKUP CHANNEL stdout'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'string -- -max 0'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'string {}'
+    data: 'abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: is alnum option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is alnum'
+    data: 'abcde%01234'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is alpha option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is alpha'
+    data: 'abcdeäöüß0ABCDEÄÖÜ'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is ascii option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is ascii'
+    data: 'äöüßÄÖÜ'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is boolean option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is boolean'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is control option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is control'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is digit option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is digit'
+    data: '01a34'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is double option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is double'
+    data: '+-0'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is entier option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is entier'
+    data: '1.0'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is false option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is false'
+    data: '1'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is graph option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is graph'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is integer option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is integer'
+    data: '1.0'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is list option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is list'
+    data: '{'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is lower option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is lower'
+    data: 'abcdEäöüß'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is print option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is print'
+    data: '	'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is punct option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is punct'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is space option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is space'
+    data: '{}'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is true option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is true'
+    data: '0'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is upper option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is upper'
+    data: 'ABCDeÄÖÜ'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is wideinteger option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is wideinteger'
+    data: '123456789012345678901'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: is xdigit option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is xdigit'
+    data: '0123456789abcdefABCDEFG'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: match option
+    desc: Value that fails "-match" option must throw an error.
+    schema: 'string -match *cDe'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: nocase match option
+    desc: Value that fails "-nocase -match" option must throw an error.
+    schema: 'string -nocase -match *Cd'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: case option may only affect following matches
+    desc: Value that fails "-nocase -match -case -match" option must throw an error.
+    schema: 'string -nocase -match *CdE -case -match *CdE'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: regexp option
+    desc: Value that fails "-regexp" option must throw an error.
+    schema: 'string -regexp .*CdE'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: nocase regexp option
+    desc: Value that fails "-nocase -regexp" option must throw an error.
+    schema: 'string -nocase -regexp .*Cd$'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: case option may only affect following regexpes
+    desc: Value that fails "-nocase -regexp -case -regexp" option must throw an error.
+    schema: 'string -nocase -regexp .*CdE -case -regexp CdE'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: regexp start option
+    desc: Value that fails "-start -regexp" option must throw an error.
+    schema: 'string -start 3 -regexp abcdeabcde'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: test option
+    desc: Value that fails "-test" option must throw an error.
+    schema: 'string -test {$x ne "abcde"}'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT TEST_FAILED'
+
+  - name: max option
+    desc: Value that fails "-max" option must throw an error.
+    schema: 'string -max 4'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xmax option
+    desc: Value that fails "-xmax" option must throw an error.
+    schema: 'string -xmax 5'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: min option
+    desc: Value that fails "-min" option must throw an error.
+    schema: 'string -min 6'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xmin option
+    desc: Value that fails "-xmin" option must throw an error.
+    schema: 'string -xmin 5'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: multipleof option
+    desc: Value that fails "-multipleof" option must throw an error.
+    schema: 'string -multipleof 4'
+    data: 'abcdef'
+    expected: 'XJSON COMPOSER OBJECT NOT_A_MULTIPLE'
+
+  - name: needle not found
+    desc: Value that fails "-first -minpos 0" option must throw an error.
+    schema: 'string -first xy -minpos 0'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first maxpos option
+    desc: Value that fails "-first -maxpos" option must throw an error.
+    schema: 'string -first cd -maxpos 1'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first xmaxpos option
+    desc: Value that fails "-first -xmaxpos" option must throw an error.
+    schema: 'string -first cd -xmaxpos 2'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first minpos option
+    desc: Value that fails "-first -minpos" option must throw an error.
+    schema: 'string -first cd -minpos 3'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first xminpos option
+    desc: Value that fails "-first -xminpos" option must throw an error.
+    schema: 'string -first cd -xminpos 2'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first multipleofpos option
+    desc: Value that fails "-first -multipleofpos" option must throw an error.
+    schema: 'string -first cd -multipleofpos 3'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT NOT_A_MULTIPLE'
+
+  - name: last maxpos option
+    desc: Value that fails "-last -maxpos" option must throw an error.
+    schema: 'string -last cd -maxpos 6'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: last xmaxpos option
+    desc: Value that fails "-last -xmaxpos" option must throw an error.
+    schema: 'string -last cd -xmaxpos 7'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: last minpos option
+    desc: Value that fails "-last -minpos" option must throw an error.
+    schema: 'string -last cd -minpos 8'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: last xminpos option
+    desc: Value that fails "-last -xminpos" option must throw an error.
+    schema: 'string -last cd -xminpos 7'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: last multipleofpos option
+    desc: Value that fails "-last -multipleofpos" option must throw an error.
+    schema: 'string -last ab -multipleofpos 2'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT NOT_A_MULTIPLE'
+
+  - name: first maxpos start option
+    desc: Value that fails "-start -first -maxpos" option must throw an error.
+    schema: 'string -start 5 -first cd -maxpos 6'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first xmaxpos start option
+    desc: Value that fails "-start -first -xmaxpos" option must throw an error.
+    schema: 'string -start 5 -first cd -xmaxpos 7'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first minpos start option
+    desc: Value that fails "-start -first -minpos" option must throw an error.
+    schema: 'string -start 5 -first cd -minpos 8'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first xminpos start option
+    desc: Value that fails "-start -first -xminpos" option must throw an error.
+    schema: 'string -start 5 -first cd -xminpos 7'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: first multipleofpos start option
+    desc: Value that fails "-start -first -multipleofpos" option must throw an error.
+    schema: 'string -start 5 -first ab -multipleofpos 2'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT NOT_A_MULTIPLE'
+
+  - name: last maxpos start option
+    desc: Value that fails "-start -last -maxpos" option must throw an error.
+    schema: 'string -start 5 -last cd -maxpos 1'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: last xmaxpos start option
+    desc: Value that fails "-start -last -xmaxpos" option must throw an error.
+    schema: 'string -start 5 -last cd -xmaxpos 2'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: last minpos start option
+    desc: Value that fails "-start -last -minpos" option must throw an error.
+    schema: 'string -start 5 -last cd -minpos 3'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: last xminpos start option
+    desc: Value that fails "-start -last -xminpos" option must throw an error.
+    schema: 'string -start 5 -last cd -xminpos 2'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: last multipleofpos start option
+    desc: Value that fails "-start -last -multipleofpos" option must throw an error.
+    schema: 'string -start 5 -last bc -multipleofpos 2'
+    data: 'abcdeabcde'
+    expected: 'XJSON COMPOSER OBJECT NOT_A_MULTIPLE'
+
+  - name: before option
+    desc: Value that fails "-before" option must throw an error.
+    schema: 'string -before abcdd'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xbefore option
+    desc: Value that fails "-xbefore" option must throw an error.
+    schema: 'string -xbefore abcde'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: behind option
+    desc: Value that fails "-behind" option must throw an error.
+    schema: 'string -behind abcdf'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xbehind option
+    desc: Value that fails "-xbehind" option must throw an error.
+    schema: 'string -xbehind abcde'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: equal option
+    desc: Value that fails "-equal" option must throw an error.
+    schema: 'string -equal abcdf'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: before clength option
+    desc: Value that fails "-clength -before" option must throw an error.
+    schema: 'string -clength 3 -before abbfff'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xbefore clength option
+    desc: Value that fails "-clength -xbefore" option must throw an error.
+    schema: 'string -clength 3 -xbefore abccc'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: behind clength option
+    desc: Value that fails "-clength -behind" option must throw an error.
+    schema: 'string -clength 3 -behind abddd'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xbehind clength option
+    desc: Value that fails "-clength -xbehind" option must throw an error.
+    schema: 'string -clength 3 -xbehind abcdd'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: equal clength option
+    desc: Value that fails "-clength -equal" option must throw an error.
+    schema: 'string -clength 3 -equal abddd'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: before nocase option
+    desc: Value that fails "-nocase -before" option must throw an error.
+    schema: 'string -nocase -before AbcDd'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xbefore nocase option
+    desc: Value that fails "-nocase -xbefore" option must throw an error.
+    schema: 'string -nocase -xbefore Abcde'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: behind nocase option
+    desc: Value that fails "-nocase -behind" option must throw an error.
+    schema: 'string -nocase -behind aBCdf'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xbehind nocase option
+    desc: Value that fails "-nocase -xbehind" option must throw an error.
+    schema: 'string -nocase -xbehind aBcDe'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: equal nocase option
+    desc: Value that fails "-nocase -equal" option must throw an error.
+    schema: 'string -nocase -equal AbcdF'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: case option may only affect following string comparisons
+    desc: Value that fails "-nocase -equal -case -xbefore" option must throw an error.
+    schema: 'string -nocase -equal abcdE -case -xbefore abcdE'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: range option
+    desc: Value that fails "-range -equal" option must throw an error.
+    schema: 'string -range {1 3} -equal abcde'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: range options must stack
+    desc: Value that fails "-range -equal -range -equal" option must throw an error.
+    schema: 'string -range {1 3} -equal bcd -range {1 2} -equal bcd'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: range index option
+    desc: Value that fails "-range -equal" option must throw an error.
+    schema: 'string -range 2 -equal abcde'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: reverse option
+    desc: Value that fails "-reverse -regexp" option must throw an error.
+    schema: 'string -reverse -regexp a.+'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: reverse options must stack
+    desc: Value that fails "-reverse -regexp -range -reverse -regexp" option must throw an error.
+    schema: 'string -reverse -regexp e.* -range {1 4} -reverse -regexp bcde'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT NO_MATCH'
+
+  - name: tolower option
+    desc: Value that fails "-tolower -equal" option must throw an error.
+    schema: 'string -tolower {1 3} -equal ABcDE'
+    data: 'ABcDE'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: tolower options must stack
+    desc: Value that fails "-tolower -equal -tolower -equal" option must throw an error.
+    schema: 'string -tolower {1 3} -equal AbcdE -tolower {0 1} -equal abcDE'
+    data: 'ABcDE'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: tolower index option
+    desc: Value that fails "-tolower -equal" option must throw an error.
+    schema: 'string -tolower 0 -equal abcde'
+    data: 'ABcDE'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: toupper option
+    desc: Value that fails "-toupper -equal" option must throw an error.
+    schema: 'string -toupper {1 3} -equal abCde'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: toupper options must stack
+    desc: Value that fails "-toupper -equal -toupper -equal" option must throw an error.
+    schema: 'string -toupper {1 3} -equal aBCDe -toupper {0 1} -equal ABCde'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: toupper index option
+    desc: Value that fails "-toupper -equal" option must throw an error.
+    schema: 'string -toupper 0 -equal abcde'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: totitle option
+    desc: Value that fails "-totitle -equal" option must throw an error.
+    schema: 'string -totitle {1 3} -equal Abcde'
+    data: 'abCdE'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: totitle options must stack
+    desc: Value that fails "-totitle -equal -totitle -equal" option must throw an error.
+    schema: 'string -totitle {1 3} -equal aBcdE -totitle {0 1} -equal AbCdE'
+    data: 'abCdE'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: totitle index option
+    desc: Value that fails "-totitle -equal" option must throw an error.
+    schema: 'string -totitle 0 -equal abCde'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trim option
+    desc: Value that fails "-trim -equal" option must throw an error.
+    schema: 'string -trim ae -equal bCde'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trim options must stack
+    desc: Value that fails "-trim -trim -equal" option must throw an error.
+    schema: 'string -trim ae -trim db -equal bCd'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trim option with empty trimchars
+    desc: Value that fails "-trim -equal" option must throw an error.
+    schema: 'string -trim {} -equal { abCde }'
+    data: '{ abCde }'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trimleft option
+    desc: Value that fails "-trimleft -equal" option must throw an error.
+    schema: 'string -trimleft ae -equal bCd'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trimleft options must stack
+    desc: Value that fails "-trimleft -trimleft -equal" option must throw an error.
+    schema: 'string -trimleft ae -trimleft db -equal C'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trimleft option with empty trimchars
+    desc: Value that fails "-trimleft -equal" option must throw an error.
+    schema: 'string -trimleft {} -equal abCde'
+    data: '{ abCde }'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trimright option
+    desc: Value that fails "-trimright -equal" option must throw an error.
+    schema: 'string -trimright ae -equal abCde'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trimright options must stack
+    desc: Value that fails "-trimright -trimright -equal" option must throw an error.
+    schema: 'string -trimright ae -trimright db -equal C'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: trimright option with empty trimchars
+    desc: Value that fails "-trimright -equal" option must throw an error.
+    schema: 'string -trimright {} -equal abCde'
+    data: '{ abCde }'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: transform option
+    desc: Value that fails "-transform -equal" option must throw an error.
+    schema: 'string -transform {regsub -all C $x X} -equal abCde'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: transform options must stack
+    desc: Value that fails "-transform -transform -equal" option must throw an error.
+    schema: 'string -transform {regsub -all C $x X} -transform {regsub -all de $x Y} -equal abCY'
+    data: 'abCde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: map option
+    desc: Value that fails "-map -equal" option must throw an error.
+    schema: 'string -map {cd X b Y} -equal abcde'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: nocase map option
+    desc: Value that fails "-nocase -map -case -equal" option must throw an error.
+    schema: 'string -nocase -map {cd X b Y} -case -equal abcde'
+    data: 'aBcDe'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: map options must stack
+    desc: Value that fails "-map -map -case -equal" option must throw an error.
+    schema: 'string -map {cd X b Y} -map {YX a a b} -equal bbcde'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'number -null 123'
+    data: '123'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

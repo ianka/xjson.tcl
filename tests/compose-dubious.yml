@@ -1,0 +1,15 @@
+overview: |-
+  Compose data with "dubious" schema.
+operation: compose
+tests:
+  - name: pass through
+    desc: Data that validates against the schema must pass through.
+    schema: 'dubious boolean'
+    data: 'true'
+    expected: 'literal true'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'dubious -- boolean'
+    data: 'true'
+    expected: 'literal true'

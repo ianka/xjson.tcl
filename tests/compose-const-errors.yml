@@ -1,0 +1,29 @@
+overview: |-
+  Compose data with const schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'const -foobar {} {}'
+    data: 'true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'const'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'const {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'const {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'

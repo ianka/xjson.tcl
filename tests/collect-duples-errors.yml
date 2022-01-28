@@ -1,0 +1,209 @@
+overview: |-
+  Collect data with duples schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'duples -foobar {}'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing test option value
+    desc: Missing option value to the "-test" option must throw an error.
+    schema: 'duples -test'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing max option value
+    desc: Missing option value to the "-max" option must throw an error.
+    schema: 'duples -max'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmax option value
+    desc: Missing option value to the "-xmax" option must throw an error.
+    schema: 'duples -xmax'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing min option value
+    desc: Missing option value to the "-min" option must throw an error.
+    schema: 'duples -min'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmin option value
+    desc: Missing option value to the "-xmin" option must throw an error.
+    schema: 'duples -xmin'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing multipleof option value
+    desc: Missing option value to the "-multipleof" option must throw an error.
+    schema: 'duples -multipleof'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: non-integer max option value
+    desc: Non-integer option value to the "-max" option must throw an error.
+    schema: 'duples -max 123.0 {}'
+    data: 'array 122'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmax option value
+    desc: Non-integer option value to the "-xmax" option must throw an error.
+    schema: 'duples -xmax 123.0 {}'
+    data: 'array 122'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer min option value
+    desc: Non-integer option value to the "-min" option must throw an error.
+    schema: 'duples -min 123.0 {}'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmin option value
+    desc: Non-integer option value to the "-xmin" option must throw an error.
+    schema: 'duples -xmin 123.0 {}'
+    data: 'array 124'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-positive integer multipleof option value
+    desc: Non-positive integer option value to the "-multipleof" option must throw an error.
+    schema: 'duples -multipleof 0 {}'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA OPTION BOUNDARY_MISMATCH'
+
+  - name: invalid test option value
+    desc: Invalid option value to the "-test" option must throw an error.
+    schema: 'duples -test foobar {}'
+    data: 'array {}'
+    expected: 'TCL PARSE EXPR BAREWORD'
+
+  - name: sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    schema: 'duples -test {[puts bar]} {}'
+    data: 'array {}'
+    expected: 'TCL LOOKUP CHANNEL stdout'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'duples -- -max 0 {}'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'duples'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid schema argument
+    desc: invalid schema argument must throw an error.
+    schema: 'duples {f foobar}'
+    data: 'array {}'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: unmatching data
+    desc: unmatching data must throw an error.
+    schema: 'duples {n number}'
+    data: 'array {{literal true}}'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'duples {}'
+    data: 'foobar'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: invalid literal
+    desc: Invalid number data must throw an error.
+    schema: 'duples {}'
+    data: 'literal foobar'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: empty data
+    desc: Empty data must throw an error.
+    schema: 'duples {}'
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: null data
+    desc: Literal null data must throw an error.
+    schema: 'duples {}'
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: boolean data
+    desc: Boolean data must throw an error.
+    schema: 'duples {}'
+    data: 'literal true'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: string data
+    desc: String data must throw an error.
+    schema: 'duples {}'
+    data: 'string a'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: test option
+    desc: Value that fails "-test" option must throw an error.
+    schema: 'duples -test {$x < 0} {}'
+    data: 'array {}'
+    expected: 'XJSON COLLECTOR OBJECT TEST_FAILED'
+
+  - name: max option
+    desc: Value that fails "-max" option must throw an error.
+    schema: 'duples -max 5 {n number}'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: xmax option
+    desc: Value that fails "-xmax" option must throw an error.
+    schema: 'duples -xmax 6 {n number}'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: min option
+    desc: Value that fails "-min" option must throw an error.
+    schema: 'duples -min 7 {n number}'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: min option null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples -min 7 {n number}'
+    data: 'array {{number 0} {} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: xmin option
+    desc: Value that fails "-xmin" option must throw an error.
+    schema: 'duples -xmin 6 {n number}'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: xmin option null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples -xmin 6 {n number}'
+    data: 'array {{number 0} {} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: multipleof option
+    desc: Value has to pass matching "-multipleof" option.
+    schema: 'duples -multipleof 4 {n number}'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: 'XJSON COLLECTOR OBJECT NOT_A_MULTIPLE'
+
+  - name: object data
+    desc: Object data must throw an error.
+    schema: 'duples {}'
+    data: 'object {n {number {}}}'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: incomplete tuple
+    desc: Incomplete duples must throw an error.
+    schema: 'duples {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true} {number 456} {string bar}}'
+    expected: 'XJSON COLLECTOR OBJECT INCOMPLETE_TUPLE'

@@ -1,0 +1,77 @@
+overview: |-
+  Compose data with duple schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'duple -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'duple'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid schema argument
+    desc: invalid schema argument must throw an error.
+    schema: 'duple {f foobar}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: unmatching data
+    desc: unmatching data must throw an error.
+    schema: 'duple {n number}'
+    data: 'n true'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'duple {n null}'
+    data: 'n foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: invalid literal
+    desc: Invalid literal data must throw an error.
+    schema: 'duple {n null}'
+    data: 'n true'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: duple empty schema null data
+    desc: Null elements have to be emitted.
+    schema: 'duple -null {} {}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: min option
+    desc: Value that fails "-min" option must throw an error.
+    schema: 'duple {n number}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: min option null data
+    desc: Null elements have to be ignored.
+    schema: 'duple {n {number -null {}}}'
+    data: 'n {}'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'duple -null {n 1} {n number}'
+    data: 'n 1'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: incomplete duple
+    desc: Incomplete duple must throw an error.
+    schema: 'duple {n number s string b boolean}'
+    data: 'n 456 b bar'
+    expected: 'XJSON COMPOSER OBJECT INCOMPLETE_TUPLE'
+
+  - name: ambiguous field
+    desc: Ambiguous duples must throw an error.
+    schema: 'duple {n number s string b boolean}'
+    data: 'n 456 b false s bar b true'
+    expected: 'XJSON COMPOSER OBJECT AMBIGUOUS_FIELD'

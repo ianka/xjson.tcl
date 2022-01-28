@@ -1,0 +1,65 @@
+overview: |-
+  Compose data with "if" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'if -foobar {} {} {} {}'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'if'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'if {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: two arguments
+    desc: Just two argument must throw an error.
+    schema: 'if {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: three arguments
+    desc: Just three argument must throw an error.
+    schema: 'if {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'if {} {} {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: failed validation of then schema
+    desc: Validation errors must be passed through.
+    schema: 'if {number -max 4} {number -max 2} {const string foo} {const string bar}'
+    data: '3'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: failed validation of else schema
+    desc: Validation errors must be passed through.
+    schema: 'if {number -max 3} {const string foo} {number -max 1} {const string bar}'
+    data: '4'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: failed validation of null schema
+    desc: Validation errors must be passed through.
+    schema: 'if {number -max 3 -null {}} {const string foo} {const string bar} {number -max 5 -null {}}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: failed validation of test schema
+    desc: Validation errors must be escalated.
+    schema: 'if {number -max 2} {number -max 3} escalate {number -max 0}'
+    data: '3'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'

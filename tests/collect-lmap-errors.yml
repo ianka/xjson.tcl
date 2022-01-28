@@ -1,0 +1,47 @@
+overview: |-
+  Collect data with "lmap" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'lmap -foobar {} {} {}'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'lmap'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'lmap {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: two arguments
+    desc: Just two argument must throw an error.
+    schema: 'lmap {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'lmap {} {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: tcl body error
+    desc: Errors in the Tcl body must be escalated.
+    schema: 'lmap foo bar boolean'
+    data: 'literal false'
+    expected: 'TCL LOOKUP COMMAND bar'
+
+  - name: sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    schema: 'lmap foo {puts bar} boolean'
+    data: 'literal false'
+    expected: 'TCL LOOKUP CHANNEL stdout'

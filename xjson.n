@@ -1,0 +1,2471 @@
+'\"
+'\" Generated from file '' by tcllib/doctools with format 'nroff'
+'\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
+'\"
+.TH "xjson" n 1\&.0  "xjson\&.tcl"
+.\" The -*- nroff -*- definitions below are for supplemental macros used
+.\" in Tcl/Tk manual entries.
+.\"
+.\" .AP type name in/out ?indent?
+.\"	Start paragraph describing an argument to a library procedure.
+.\"	type is type of argument (int, etc.), in/out is either "in", "out",
+.\"	or "in/out" to describe whether procedure reads or modifies arg,
+.\"	and indent is equivalent to second arg of .IP (shouldn't ever be
+.\"	needed;  use .AS below instead)
+.\"
+.\" .AS ?type? ?name?
+.\"	Give maximum sizes of arguments for setting tab stops.  Type and
+.\"	name are examples of largest possible arguments that will be passed
+.\"	to .AP later.  If args are omitted, default tab stops are used.
+.\"
+.\" .BS
+.\"	Start box enclosure.  From here until next .BE, everything will be
+.\"	enclosed in one large box.
+.\"
+.\" .BE
+.\"	End of box enclosure.
+.\"
+.\" .CS
+.\"	Begin code excerpt.
+.\"
+.\" .CE
+.\"	End code excerpt.
+.\"
+.\" .VS ?version? ?br?
+.\"	Begin vertical sidebar, for use in marking newly-changed parts
+.\"	of man pages.  The first argument is ignored and used for recording
+.\"	the version when the .VS was added, so that the sidebars can be
+.\"	found and removed when they reach a certain age.  If another argument
+.\"	is present, then a line break is forced before starting the sidebar.
+.\"
+.\" .VE
+.\"	End of vertical sidebar.
+.\"
+.\" .DS
+.\"	Begin an indented unfilled display.
+.\"
+.\" .DE
+.\"	End of indented unfilled display.
+.\"
+.\" .SO ?manpage?
+.\"	Start of list of standard options for a Tk widget. The manpage
+.\"	argument defines where to look up the standard options; if
+.\"	omitted, defaults to "options". The options follow on successive
+.\"	lines, in three columns separated by tabs.
+.\"
+.\" .SE
+.\"	End of list of standard options for a Tk widget.
+.\"
+.\" .OP cmdName dbName dbClass
+.\"	Start of description of a specific option.  cmdName gives the
+.\"	option's name as specified in the class command, dbName gives
+.\"	the option's name in the option database, and dbClass gives
+.\"	the option's class in the option database.
+.\"
+.\" .UL arg1 arg2
+.\"	Print arg1 underlined, then print arg2 normally.
+.\"
+.\" .QW arg1 ?arg2?
+.\"	Print arg1 in quotes, then arg2 normally (for trailing punctuation).
+.\"
+.\" .PQ arg1 ?arg2?
+.\"	Print an open parenthesis, arg1 in quotes, then arg2 normally
+.\"	(for trailing punctuation) and then a closing parenthesis.
+.\"
+.\"	# Set up traps and other miscellaneous stuff for Tcl/Tk man pages.
+.if t .wh -1.3i ^B
+.nr ^l \n(.l
+.ad b
+.\"	# Start an argument description
+.de AP
+.ie !"\\$4"" .TP \\$4
+.el \{\
+.   ie !"\\$2"" .TP \\n()Cu
+.   el          .TP 15
+.\}
+.ta \\n()Au \\n()Bu
+.ie !"\\$3"" \{\
+\&\\$1 \\fI\\$2\\fP (\\$3)
+.\".b
+.\}
+.el \{\
+.br
+.ie !"\\$2"" \{\
+\&\\$1	\\fI\\$2\\fP
+.\}
+.el \{\
+\&\\fI\\$1\\fP
+.\}
+.\}
+..
+.\"	# define tabbing values for .AP
+.de AS
+.nr )A 10n
+.if !"\\$1"" .nr )A \\w'\\$1'u+3n
+.nr )B \\n()Au+15n
+.\"
+.if !"\\$2"" .nr )B \\w'\\$2'u+\\n()Au+3n
+.nr )C \\n()Bu+\\w'(in/out)'u+2n
+..
+.AS Tcl_Interp Tcl_CreateInterp in/out
+.\"	# BS - start boxed text
+.\"	# ^y = starting y location
+.\"	# ^b = 1
+.de BS
+.br
+.mk ^y
+.nr ^b 1u
+.if n .nf
+.if n .ti 0
+.if n \l'\\n(.lu\(ul'
+.if n .fi
+..
+.\"	# BE - end boxed text (draw box now)
+.de BE
+.nf
+.ti 0
+.mk ^t
+.ie n \l'\\n(^lu\(ul'
+.el \{\
+.\"	Draw four-sided box normally, but don't draw top of
+.\"	box if the box started on an earlier page.
+.ie !\\n(^b-1 \{\
+\h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.el \}\
+\h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.\}
+.fi
+.br
+.nr ^b 0
+..
+.\"	# VS - start vertical sidebar
+.\"	# ^Y = starting y location
+.\"	# ^v = 1 (for troff;  for nroff this doesn't matter)
+.de VS
+.if !"\\$2"" .br
+.mk ^Y
+.ie n 'mc \s12\(br\s0
+.el .nr ^v 1u
+..
+.\"	# VE - end of vertical sidebar
+.de VE
+.ie n 'mc
+.el \{\
+.ev 2
+.nf
+.ti 0
+.mk ^t
+\h'|\\n(^lu+3n'\L'|\\n(^Yu-1v\(bv'\v'\\n(^tu+1v-\\n(^Yu'\h'-|\\n(^lu+3n'
+.sp -1
+.fi
+.ev
+.\}
+.nr ^v 0
+..
+.\"	# Special macro to handle page bottom:  finish off current
+.\"	# box/sidebar if in box/sidebar mode, then invoked standard
+.\"	# page bottom macro.
+.de ^B
+.ev 2
+'ti 0
+'nf
+.mk ^t
+.if \\n(^b \{\
+.\"	Draw three-sided box if this is the box's first page,
+.\"	draw two sides but no top otherwise.
+.ie !\\n(^b-1 \h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.el \h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.\}
+.if \\n(^v \{\
+.nr ^x \\n(^tu+1v-\\n(^Yu
+\kx\h'-\\nxu'\h'|\\n(^lu+3n'\ky\L'-\\n(^xu'\v'\\n(^xu'\h'|0u'\c
+.\}
+.bp
+'fi
+.ev
+.if \\n(^b \{\
+.mk ^y
+.nr ^b 2
+.\}
+.if \\n(^v \{\
+.mk ^Y
+.\}
+..
+.\"	# DS - begin display
+.de DS
+.RS
+.nf
+.sp
+..
+.\"	# DE - end display
+.de DE
+.fi
+.RE
+.sp
+..
+.\"	# SO - start of list of standard options
+.de SO
+'ie '\\$1'' .ds So \\fBoptions\\fR
+'el .ds So \\fB\\$1\\fR
+.SH "STANDARD OPTIONS"
+.LP
+.nf
+.ta 5.5c 11c
+.ft B
+..
+.\"	# SE - end of list of standard options
+.de SE
+.fi
+.ft R
+.LP
+See the \\*(So manual entry for details on the standard options.
+..
+.\"	# OP - start of full description for a single option
+.de OP
+.LP
+.nf
+.ta 4c
+Command-Line Name:	\\fB\\$1\\fR
+Database Name:	\\fB\\$2\\fR
+Database Class:	\\fB\\$3\\fR
+.fi
+.IP
+..
+.\"	# CS - begin code excerpt
+.de CS
+.RS
+.nf
+.ta .25i .5i .75i 1i
+..
+.\"	# CE - end code excerpt
+.de CE
+.fi
+.RE
+..
+.\"	# UL - underline word
+.de UL
+\\$1\l'|0\(ul'\\$2
+..
+.\"	# QW - apply quotation marks to word
+.de QW
+.ie '\\*(lq'"' ``\\$1''\\$2
+.\"" fix emacs highlighting
+.el \\*(lq\\$1\\*(rq\\$2
+..
+.\"	# PQ - apply parens and quotation marks to word
+.de PQ
+.ie '\\*(lq'"' (``\\$1''\\$2)\\$3
+.\"" fix emacs highlighting
+.el (\\*(lq\\$1\\*(rq\\$2)\\$3
+..
+.\"	# QR - quoted range
+.de QR
+.ie '\\*(lq'"' ``\\$1''\\-``\\$2''\\$3
+.\"" fix emacs highlighting
+.el \\*(lq\\$1\\*(rq\\-\\*(lq\\$2\\*(rq\\$3
+..
+.\"	# MT - "empty" string
+.de MT
+.QW ""
+..
+.BS
+.SH NAME
+xjson \- extended JSON decoder, validator, data collector, composer, encoder, pretty printer
+.SH SYNOPSIS
+package require \fBTcl  8\&.6-\fR
+.sp
+package require \fBitcl  4\&.0-\fR
+.sp
+package require \fBxjson  ?1\&.0?\fR
+.sp
+\fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
+.sp
+\fB::xjson::encode\fR \fIdecodedJson\fR ?\fIindent\fR? ?\fItabulator\fR? ?\fInest\fR?
+.sp
+\fB::xjson::makeCollectorClass\fR ?\fIoptions\fR? \fIcollectorClassName\fR ?\fImethodName methodDefinition \&.\&.\&.\fR?
+.sp
+\fIcollectorClassName\fR \fIcollectorObjName\fR ?\fIoptions\fR? ?\fInestedCollectorName nestedCollectorObjName \&.\&.\&.\fR? \fIschema\fR
+.sp
+\fIcollectorObjName\fR \fBcollect\fR \fIdecodedJson\fR ?\fIpath\fR?
+.sp
+\fIcollectorObjName\fR \fBprintSchema\fR ?\fIindent\fR?
+.sp
+\fB::xjson::makeComposerClass\fR ?\fIoptions\fR? \fIcomposerClassName\fR ?\fImethodName methodDefinition \&.\&.\&.\fR?
+.sp
+\fIcomposerClassName\fR \fIcomposerObjName\fR ?\fIoptions\fR? ?\fInestedComposerName nestedComposerObjName \&.\&.\&.\fR? \fIschema\fR
+.sp
+\fIcomposerObjName\fR \fBcompose\fR \fItclData\fR ?\fIpath\fR?
+.sp
+\fIcomposerObjName\fR \fBprintSchema\fR ?\fIindent\fR?
+.sp
+.BE
+.SH DESCRIPTION
+This package is a set of extended JSON functions for Tcl\&. It allows decoding,
+encoding, and pretty-printing of JSON structures from Tcl structures and vice
+versa\&.
+.PP
+The main feature of this package however are two class factories that produce
+itcl classes that construct validator and data collector/composer objects\&.
+Those objects take a schema in a simple nested list syntax on construction, so
+they are then prepared for validating against that schema again and again\&. The
+schema may also feature various operators that manipulate the validated data
+so that further configuration specific processing (e\&.g\&. data formatting) can
+be specified in the realm of the administrator rather than the programmer\&.
+.PP
+Schemas may be nested and libraries of commonly used collector/composer objects
+and their schemas can be constructed easily\&.
+.PP
+The objects also feature automatic sandboxing, so they can specify Tcl code for
+doing more complicated tests or data manipulations\&. In addition, the programmer may
+define their own barebone, non-sandboxed methods when creating a new class with
+the class factory\&. For sandboxes and those methods, an additional security
+mechanism exists\&. Schemas may be marked as trusted (programmer/administrator
+supplied) and only such trusted schemas may use Tcl code or user-defined methods
+that are marked unsafe\&.
+.PP
+The procedures and objects return error messages that indicate the offending
+data and the non-matching schema in a human-readable, pretty-printed way\&. They
+are fit for supplying them to the interface user, which is usually a programmer
+or administrator of an another software interfacing the software using xjson\&.
+.SH BUGS
+This manpage is intimidating\&. Please go right to the various \fBEXAMPLES\fR
+sections at the bottom for maintaining a slow pulse\&.
+.SH PROCEDURES
+The package defines the following public procedures:
+.TP
+\fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
+Decode the given JSON encoded data to nested Tcl data telling both types and
+values\&. The optional \fIindexVar\fR argument is the name of a variable that
+holds the index at which decoding begins and will hold the index immediately
+following the end of the decoded element\&. If \fIindexVar\fR is not specified,
+the entire JSON input is decoded, and it is an error for it to be followed by
+any non-whitespace characters\&.
+.sp
+See the section \fBDECODED JSON FORMAT\fR for a description of the data
+format returned by this procedure\&.
+.sp
+See the section \fBDECODING EXAMPLES\fR for examples\&.
+.TP
+\fB::xjson::encode\fR \fIdecodedJson\fR ?\fIindent\fR? ?\fItabulator\fR? ?\fInest\fR?
+Encode the given Tcl \fIdecodedJson\fR data as JSON and pretty-print it with a base
+indentation as given with the optional \fIindent\fR argument\&. The likewise
+optional \fInest\fR argument can be used to indicate the nesting level\&. If it's
+not zero, the first line of the JSON output will not be indented\&. This is
+useful when the first line is a brace or bracket following an already indented
+field name\&.
+.sp
+The pretty-printer indents with \\t characters by default but this can be changed
+by setting the optional \fItabulator\fR argument\&. If it is set to {}, the
+pretty printer is disabled completely and \fB::xjson::encode\fR returns
+condensed JSON\&.
+.sp
+See the section \fBDECODED JSON FORMAT\fR for a description of the data
+format accepted by this procedure\&.
+.sp
+See the section \fBENCODING EXAMPLES\fR for examples\&.
+.TP
+\fB::xjson::makeCollectorClass\fR ?\fIoptions\fR? \fIcollectorClassName\fR ?\fImethodName methodDefinition \&.\&.\&.\fR?
+.TP
+\fB::xjson::makeComposerClass\fR ?\fIoptions\fR? \fIcomposerClassName\fR ?\fImethodName methodDefinition \&.\&.\&.\fR?
+Make a JSON collector/composer class named \fIcollectorClassName\fR/\fIcomposerClassName\fR
+according to the given options and additional method definitions\&.
+.sp
+Those procedures return the name of the produced class\&.
+.sp
+For definining your own methods, see the section \fBCUSTOM METHODS\fR\&.
+.RS
+.TP
+The following options are understood:
+.RS
+.TP
+\fB-nobuiltins\fR
+Make a class without any builtin collecting/composing methods\&. For receiving a
+useful class despite specifying this option, you have to supply your own
+collecting/composing methods by the \fImethodName methodDefinition \&.\&.\&.\fR
+arguments then\&.
+.sp
+\fINote:\fR For not including selected builtin methods, you can define those
+as \fImethodName\fR {}\&. That excludes \fImethodName\fR\&.
+.TP
+\fB-tabulator\fR \fIstring\fR
+Sets the tabulator for pretty-printing the subschema and offending JSON data in
+error messages returned by the objects of the class\&.
+.TP
+\fB-maxldepth\fR \fIinteger\fR
+Sets the maximum depth of methods in one line before there is a line break
+inserted when printing the subschema in error messages returned by the objects
+of the class\&.
+.TP
+\fB-maxweight\fR \fIinteger\fR
+Sets the maximum weight of methods before there is a line break inserted when
+printing the subschema in error messages returned by the objects of the class\&.
+.TP
+\fB-maxlines\fR \fIinteger\fR
+Sets the maximum number of lines in a printed value before they are folded in
+error messages returned by the objects of the class\&. Setting this option to the
+empty string disables the folding\&.
+.TP
+\fB--\fR
+Marks the end of options\&. The argument following this one will be treated as
+an argument even if it starts with a \fB-\fR\&.
+.RE
+.RE
+.PP
+Read the following section \fBCOLLECTOR AND COMPOSER CLASS USAGE\fR
+on how to use the classes made by those procedures\&.
+.SH "COLLECTOR AND COMPOSER CLASS USAGE"
+The \fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR class factory procedures each make a class
+that is meant to be used to construct one or more collector respective composer objects using the following constructors:
+.TP
+\fIcollectorClassName\fR \fIcollectorObjName\fR ?\fIoptions\fR? ?\fInestedCollectorName nestedCollectorObjName \&.\&.\&.\fR? \fIschema\fR
+.TP
+\fIcomposerClassName\fR \fIcomposerObjName\fR ?\fIoptions\fR? ?\fInestedComposerName nestedComposerObjName \&.\&.\&.\fR? \fIschema\fR
+Instantiate a collector/composer object named \fIcollectorObjName\fR/\fIcomposerObjName\fR
+according to the given \fIoptions\fR and \fIschema\fR\&. Nested collector/composer
+objects used by the schema must be announced with their
+\fInestedCollectorName\fR/\fInestedComposerName\fR used as an alias inside the
+schema and their actual \fInestedCollectorObjName\fR/\fInestedComposerObjName\fR
+outside of the schema\&.
+.sp
+When \fIobjName\fR contains the string "#auto", that string is replaced with an
+automatically generated name\&. Names have the form \fIclassName<number>\fR,
+where the \fIclassName\fR part is modified to start with a lowercase letter\&. So
+if the \fIclassName\fR was "myCollectorClass" and the \fIobjName\fR was
+"#auto\&.myCollector", the resulting name was "myCollectorClass0\&.myCollector"\&.
+The constructor returns the actual \fIobjName\fR generated that way\&.
+.sp
+Usually, specifying \fIcollectorObjName\fR/\fIcomposerObjName\fR as "#auto" and
+storing the result of the constructor call in a variable is most convenient\&.
+.sp
+The schema is parsed on object construction and all possible pathes are walked\&.
+That way, the schema itself is validated before it is even used\&. Nested schemas
+are not walked as they are validated on their own object construction\&. Their
+collector/composer objects also only have to be available when the data is
+collected/composed\&.
+.sp
+See the section \fBCOLLECTOR AND COMPOSER SCHEMAS\fR for an explanation of the schema
+data structure\&.
+.RS
+.TP
+The following options are understood:
+.RS
+.TP
+\fB-trusted\fR
+Mark the schema loaded into the constructed object as coming
+from a trustworthy source, such as a programmer of an application or the
+administrator of that software on the local machine\&.
+.sp
+Such schemas are allowed to execute Tcl code inside an automatically provided
+sandbox\&. Non-trusted schemas throw an error during schema validation if any
+collecting/composing method used in the schema has an argument or option that
+specifies code\&.
+.sp
+Such schemas are also allowed to specify collecting/composing methods that
+are marked unsafe, for example because they allow to specify arbitrary
+filenames in the schema, or allow the execution of arbitrary code from the
+schema outside of a sandbox\&. Again, non-trusted schemas throw an error during
+schema validation if such a collecting/composing method is used\&.
+.sp
+\fINote:\fR None of the builtin methods do such unsafe stunts, so this option
+is only about allowing sandboxed code by default\&.
+.sp
+The builtin methods also feature a \fBdubious\fR method which marks the subtree
+of the schema it overwatches as not trusted\&. That way you can construct partly
+dubious schemas on the fly without residing to nesting\&.
+.sp
+See the section \fBNESTING\fR for details\&.
+.TP
+\fB-init\fR \fIbody\fR
+Execute the Tcl \fIbody\fR inside the sandbox right after it is created at the
+start of the \fBcollect\fR/\fBcompose\fR method\&. This is meant for initializing
+global variables (e\&.g\&. counters) that may be used by downlevel methods\&.
+.sp
+\fINote:\fR This is done inside an anonymous function, so simple variables
+don't clutter the global namespace inside the sandbox\&. You have to mark variables
+as global to make them accessible to the schema\&.
+.TP
+\fB-recursionlimit\fR \fIinteger\fR
+Sets the recursion limit for the sandbox to \fIinteger\fR\&. A low
+value such as \fB0\fR may be specified but it's automatically
+raised to a reasonable minimal value as needed by the builtin
+methods that use sandboxes\&. If this option is not specified, the
+sandbox also defaults to that reasonable minimum\&.
+.TP
+\fB--\fR
+Marks the end of options\&. The argument following this one will be treated as
+an argument even if it starts with a \fB-\fR\&.
+.RE
+.RE
+.PP
+Read the following section \fBCOLLECTOR OBJECT USAGE\fR respective
+\fBCOMPOSER OBJECT USAGE\fR on how to use the objects constructed by the class\&.
+.SH "COLLECTOR OBJECT USAGE"
+The objects constructed by the collector class define the following methods:
+.TP
+\fIcollectorObjName\fR \fBcollect\fR \fIdecodedJson\fR ?\fIpath\fR?
+Validate \fIdecodedJson\fR data as described in section
+\fBDECODED JSON FORMAT\fR and supplied by \fB::xjson::decode\fR against
+the schema loaded into the object on construction\&. Also collect and transform
+the JSON data to a Tcl data structure according to that schema\&. The collected
+data is returned\&. An error is thrown instead if the validation fails\&.
+.sp
+The optional \fIpath\fR argument is used for printing the path of the offending
+data in error messages\&. It is set to "/" by default but if the supplied data is
+part of a larger JSON structure, it may be convenient to specify a more
+detailed starting path\&. This is for example automatically done when nesting
+collectors using the builtin \fBnest\fR collecting method\&.
+.TP
+\fIcollectorObjName\fR \fBprintSchema\fR ?\fIindent\fR?
+Pretty-print the schema stored in the object with the given base \fIindent\fR\&.
+.PP
+.SH "COMPOSER OBJECT USAGE"
+The objects constructed by the composer class define the following methods:
+.TP
+\fIcomposerObjName\fR \fBcompose\fR \fItclData\fR ?\fIpath\fR?
+Validate \fItclData\fR data as supplied by the program against
+the schema loaded into the object on construction\&. Also compose and transform
+the Tcl data structure to decoded JSON data according to that schema\&. The
+composed data is returned\&. An error is thrown instead if the validation fails\&.
+.sp
+The optional \fIpath\fR argument is used for printing the path of the offending
+data in error messages\&. It is set to "/" by default but if the supplied data is
+part of a larger Tcl data structure, it may be convenient to specify a more
+detailed starting path\&. This is for example automatically done when nesting
+composers using the builtin \fBnest\fR composing method\&.
+.sp
+The result is decoded JSON data as described in section \fBDECODED JSON FORMAT\fR\&.
+Feed it into \fB::xjson::encode\fR to render JSON data from it\&.
+.TP
+\fIcomposerObjName\fR \fBprintSchema\fR ?\fIindent\fR?
+Pretty-print the schema stored in the object with the given base \fIindent\fR\&.
+.PP
+.SH "COLLECTOR AND COMPOSER SCHEMAS"
+Collector and composer schemas are nested lists of collecting/composing
+functions and their arguments\&.
+.PP
+As an important detail, both collector and composer schemas describe the
+JSON side of things\&. Validation always happens on the JSON side of things\&.
+This gets crucial as soon your schemas feature data manipulations\&.
+.PP
+Schemas can be very simple\&. For example, a schema \fBinteger\fR that is made
+from the collecting method of the same name validates JSON input data as
+\fI-5\fR but not JSON input data as \fI3\&.2\fR (not an integer) or
+\fI"5"\fR\&. Mind the quotes that mark that character as a string value\&.
+For the composing direction, the Tcl input data is validated instead\&.
+.PP
+You can make that schema an argument of another schema\&. For example, the
+\fBarray\fR collecting method takes a schema as an argument\&. The resulting
+schema \fB{array integer}\fR validates JSON input data as
+\fI[-4, 7, 8, 3]\fR, or for the composing direction Tcl input data
+\fI{-4 7 8 3}\fR\&.
+.PP
+Many collecting methods take options that allow to specify further constraints\&.
+For example, you can tell the \fBarray\fR method to allow only up to three
+array members in the JSON input data\&. The schema \fB{array -max 3 integer}\fR
+validates \fI[]\fR, \fI[156]\fR, \fI[1, 0]\fR, and
+\fI[3, 99, 3]\fR, but not \fI[-4, 7, 8, 3]\fR\&.
+And of course the \fBinteger\fR collecting method also allows further
+constraints\&. A schema \fB{array -max 3 {integer -min 0 -max 99}}\fR validates
+\fI[]\fR, \fI[1, 0]\fR, and \fI[3, 99, 3]\fR, but not
+\fI[-4, 7, 8, 3]\fR and neither \fI[156]\fR\&. Likewise for the
+composing direction with Tcl lists of integers\&.
+.PP
+The collector objects do not just validate the decoded JSON input data but also
+return it as plain Tcl data\&. For manipulating what is returned, there are
+special collecting methods meant for output formatting\&. For example, a schema
+\fB{array -max 3 {format "%02d" {integer -min 0 -max 99}}}\fR
+returns the JSON input \fI[3, 99, 3]\fR as \fI{03 99 03}\fR\&.
+.PP
+It works the reverse for composing\&. The Tcl data is validated to be an
+\fBarray -max 3\fR, the single elements formatted according to the
+\fBformat "%02d"\fR method, then validated according to the
+\fBinteger -min 0 -max 99\fR method and finally returned as decoded JSON\&.
+.PP
+Symetrical schemas may be the same for collector and composer objects\&. As soon
+there is asymetrical data manipulation (as that \fBformat\fR method) involved,
+you usually need separate schemas for both directions\&.
+.PP
+There are also methods that work as control structures\&. For example,
+the schema \fB{anyof {{integer -max -10} {integer -min 10}}}\fR
+validates any integer value that is either <=-10 or >=10\&. And of course, you
+can also mix the allowed JSON input types that way if it makes sense in your
+application: e\&.g\&. \fB{array {anyof {number string boolean null}}}\fR
+validates an array of all kinds of valid simple JSON types\&. Note that you will
+lose the JSON type information that way so you usually don't want to do such
+stunts without further type-specific output formatting\&.
+.PP
+See the section \fBBUILTIN METHODS\fR and the various
+\fBEXAMPLES\fR sections for more details\&.
+.SH "BUILTIN METHODS"
+The following methods are built into each collector/composer class
+(and object) unless the class was created specifying the \fB-nobuiltins\fR
+option when calling the
+\fB::xjson::makeCollectorClass\fR or \fB::xjson::makeComposerClass\fR
+class factory procedure\&.
+The \fImethodName\fR as used by the class factory procedure is the same as the
+method name below as it is used inside the schema, unless otherwise noted\&.
+.TP
+Common options
+.RS
+.TP
+\fB--\fR
+Marks the end of options\&. The argument following this one will be treated as
+an argument even if it starts with a \fB-\fR\&.
+.RE
+.TP
+Arguments used
+.RS
+.TP
+\fIbody\fR
+A Tcl script body as accepted by Tcl's \fBapply\fR command\&.
+.TP
+\fIby\fR
+A Tcl list of dict keys\&.
+.TP
+\fIchars\fR
+A Tcl string value listing chars to be trimmed from another string\&.
+.TP
+\fIclass\fR
+A Tcl character class as accepted by Tcl's \fBstring is\fR command\&.
+.TP
+\fIdouble\fR
+A Tcl double value\&.
+.TP
+\fIelseSchema\fR
+A schema as described in the section \fBCOLLECTOR AND COMPOSER SCHEMAS\fR\&.
+.TP
+\fIexp\fR
+A Tcl regular expression as accepted by Tcl's \fBregexp\fR command\&.
+.TP
+\fIexpr\fR
+A Tcl expression as accepted by Tcl's \fBexpr\fR command\&.
+.TP
+\fIindex\fR
+A Tcl string index as accepted by Tcl's \fBstring index\fR command\&.
+.TP
+\fIinteger\fR
+A Tcl integer value\&. (The test applied is actually Tcl's \fBstring is entier\fR command\&.)
+.TP
+\fIlength\fR
+A Tcl integer value >= 0\&. (The test applied is actually Tcl's \fBstring is entier\fR command\&.)
+.TP
+\fImapping\fR
+A Tcl list of string mappings as accepted by Tcl's \fBstring map\fR command\&.
+.TP
+\fIneedle\fR
+A Tcl string value giving a needle string to search for in a haystack string\&.
+.TP
+\fInullvalue\fR
+A Tcl string value to be treated as null\&.
+.TP
+\fIpattern\fR
+A Tcl string pattern as accepted by Tcl's \fBstring match\fR command\&.
+.TP
+\fInestedCollectorName\fR
+The name of a nested collector as specified when constructing the collector object\&.
+.TP
+\fIrange\fR
+A Tcl list giving a string range as accepted by Tcl's \fBstring range\fR command\&.
+In addition, also a Tcl string index as accepted by Tcl's \fBstring index\fR command\&.
+.TP
+\fIreplacement\fR
+An Tcl string value used as a replacement for another string\&.
+.TP
+\fIschema\fR
+A schema as described in the section \fBCOLLECTOR AND COMPOSER SCHEMAS\fR\&.
+.TP
+\fIschemaList\fR
+A Tcl list of schemas as described in the section \fBCOLLECTOR AND COMPOSER SCHEMAS\fR\&.
+.TP
+\fIschemaDict\fR
+A Tcl dict of key-schema pairs as described in the section \fBCOLLECTOR AND COMPOSER SCHEMAS\fR\&.
+The keys may be arbitrary Tcl string values\&.
+.TP
+\fIschemaPairs\fR
+A Tcl dict of schema-schema pairs as described in the section \fBCOLLECTOR AND COMPOSER SCHEMAS\fR\&.
+.TP
+\fIstart\fR
+A Tcl string index as accepted by Tcl's \fBstring index\fR command\&.
+.TP
+\fIstring\fR
+A Tcl string value\&.
+.TP
+\fItestSchema\fR
+A schema as described in the section \fBCOLLECTOR AND COMPOSER SCHEMAS\fR\&.
+.TP
+\fIthenSchema\fR
+A schema as described in the section \fBCOLLECTOR AND COMPOSER SCHEMAS\fR\&.
+.TP
+\fIvalue\fR
+An arbitrary Tcl value as read from the decoded JSON input\&.
+.RE
+.TP
+Simple Types
+.RS
+.TP
+\fBboolean\fR
+.RS
+.TP
+for collecting
+Validates \fBliteral \fIvalue\fR\fR in the decoded JSON input\&.
+As an additional constraint, the \fIvalue\fR must be a boolean\&.
+(The test applied is actually Tcl's \fBstring is boolean\fR command\&.)
+.sp
+Returns the boolean \fIvalue\fR\&.
+.TP
+for composing
+Validates a Tcl input value that is a boolean to Tcl's \fBstring is boolean\fR command\&.
+.sp
+Returns either \fBliteral true\fR or \fBliteral false\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.TP
+\fBinteger \fI?options?\fR\fR
+.RS
+.TP
+for collecting
+Validates a \fBnumber \fIvalue\fR\fR in the decoded JSON input\&.
+As an additional constraint, the \fIvalue\fR must be an integer\&.
+(The test applied is actually Tcl's \fBstring is entier\fR command\&.)
+.sp
+Returns the numeric \fIvalue\fR\&.
+.TP
+for composing
+Validates a Tcl input value that is an integer to Tcl's \fBstring is entier\fR command\&.
+.sp
+Returns \fBnumber \fIvalue\fR\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.TP
+The following general option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.TP
+The following further constraints may be specified:
+.RS
+.TP
+\fB-max\fR \fIinteger\fR
+Validates a number \fIvalue\fR <= \fIinteger\fR\&.
+.TP
+\fB-xmax\fR \fIinteger\fR
+Validates a number \fIvalue\fR < \fIinteger\fR\&.
+.TP
+\fB-min\fR \fIinteger\fR
+Validates a number \fIvalue\fR >= \fIinteger\fR\&.
+.TP
+\fB-xmin\fR \fIinteger\fR
+Validates a number \fIvalue\fR > \fIinteger\fR\&.
+.TP
+\fB-multipleof\fR \fIinteger\fR
+Validates a number \fIvalue\fR that is a multiple of \fIinteger\fR\&.
+.TP
+\fB-test\fR \fIexpr\fR
+Validates a number \fIvalue\fR by passing it to the Tcl \fIexpr\fR as
+the local variable \fIx\fR\&. If the expression results in a boolean false,
+the validation fails\&.
+.RE
+.RE
+.IP
+\fINote:\fR The \fImethodName\fR for this method as used by the \fB::xjson::makeCollectorClass\fR
+respective \fB::xjson::makeComposerClass\fR class factory procedures is \fBnumber\fR\&.
+.TP
+\fBnull\fR
+.RS
+.TP
+for collecting
+Validates a \fBliteral null\fR in the decoded JSON input\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.TP
+for composing
+Validates the null value as specified, if any\&.
+.RS
+.TP
+The following option should be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.TP
+\fBnumber \fI?options?\fR\fR
+.RS
+.TP
+for collecting
+Validates a \fBnumber \fIvalue\fR\fR in the decoded JSON input\&.
+(The test applied is actually Tcl's \fBstring is double\fR command\&.)
+.sp
+Returns the numeric \fIvalue\fR\&.
+.TP
+for composing
+Validates a Tcl input value that is an integer to Tcl's \fBstring is double\fR command\&.
+.sp
+Returns \fBnumber \fIvalue\fR\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.TP
+The following general option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.TP
+The following further constraints may be specified:
+.RS
+.TP
+\fB-max\fR \fIdouble\fR
+Validates a number \fIvalue\fR <= \fIdouble\fR\&.
+.TP
+\fB-xmax\fR \fIdouble\fR
+Validates a number \fIvalue\fR < \fIdouble\fR\&.
+.TP
+\fB-min\fR \fIdouble\fR
+Validates a number \fIvalue\fR >= \fIdouble\fR\&.
+.TP
+\fB-xmin\fR \fIdouble\fR
+Validates a number \fIvalue\fR > \fIdouble\fR\&.
+.TP
+\fB-test\fR \fIexpr\fR
+Validates a number \fIvalue\fR by passing it to the Tcl \fIexpr\fR as
+the local variable \fIx\fR\&. If the expression results in a boolean false,
+the validation fails\&.
+.RE
+.RE
+.TP
+\fBstring \fI?options?\fR\fR
+.RS
+.TP
+for collecting
+Validates a \fBstring \fIvalue\fR\fR in the decoded JSON input\&.
+.sp
+Returns the original string \fIvalue\fR\&.
+.TP
+for composing
+Validates any Tcl input value\&.
+.sp
+Returns \fBstring \fIvalue\fR\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.IP
+Further constraints may be specified\&. They all work on a test string that is
+initially filled with the string \fIvalue\fR\&. Some options aren't constraints
+but instead they manipulate the test string\&. All options are applied and tested
+in their order of appearance in the \fIoptions\fR\&. They may appear multiple
+times\&.
+.sp
+\fINote:\fR To manipulate the string output, see the methods in the
+\fBOutput Formatting Operators\fR subsection\&.
+.RS
+.TP
+The following general options may be specified:
+.RS
+.TP
+\fB-nocase\fR
+.TP
+\fB-case\fR
+Makes the options \fB-before\fR, \fB-xbefore\fR, \fB-behind\fR,
+\fB-xbehind\fR, \fB-equal\fR, \fB-map\fR, \fB-match\fR,
+\fB-regexp\fR work case-insensitively/case-sensitively until the other
+option is specified\&. By default all those options work case-sensitively\&.
+.TP
+\fB-start\fR \fIindex\fR
+Makes the options \fB-first\fR, \fB-last\fR and \fB-regexp\fR start
+their search with the character \fIindex\fR\&. It accepts string indices as
+accepted by Tcl's \fBstring index\fR command\&. Specifying \fIindex\fR as an
+empty string disables this option\&. It's disabled by default\&.
+.TP
+\fB-clength\fR \fIlength\fR
+Makes the options \fB-before\fR, \fB-xbefore\fR, \fB-behind\fR,
+\fB-xbehind\fR, and \fB-equal\fR only consider a \fIlength\fR of
+characters for their comparison\&. Specifying \fIlength\fR as \fB0\fR
+disables this option\&. It's disabled by default\&.
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.TP
+The following test string manipulations may be specified:
+.RS
+.TP
+\fB-and\fR
+Resets the test string to the \fIvalue\fR supplied from the decoded JSON input\&.
+This option may be used to do multiple validation tests without more convoluted
+control structures\&.
+.TP
+\fB-map\fR \fImapping\fR
+Manipulates the test string by mapping it as by Tcl's \fBstring map\fR
+command\&. The options \fB-nocase\fR and \fB-case\fR are honored\&.
+.TP
+\fB-range\fR \fIrange\fR
+Manipulates the test string by removing anything but the \fIrange\fR of
+characters from it, as by Tcl's \fBstring range\fR command\&.
+.TP
+\fB-reverse\fR
+Manipulates the test string by reversing the order of chars as by Tcl's
+\fBstring reverse\fR command\&. This is sometimes useful before testing for
+regular expressions\&.
+.TP
+\fB-tolower\fR \fIrange\fR
+.TP
+\fB-toupper\fR \fIrange\fR
+Manipulates the test string by forcing lowercase/uppercase on all characters in
+the \fIrange\fR as by Tcl's \fBstring tolower\fR resp\&. \fBstring toupper\fR
+command\&.
+.TP
+\fB-totitle\fR \fIrange\fR
+Manipulates the test string by forcing uppercase on the first and lowercase on
+all other characters in the \fIrange\fR as by Tcl's \fBstring totitle\fR
+command\&.
+.TP
+\fB-transform\fR \fIbody\fR
+Manipulates the test string by passing it to the Tcl \fIbody\fR as the local
+variable \fIx\fR\&. The teststring is then set to the return value of that
+evaluation\&.
+.TP
+\fB-trim\fR \fIchars\fR
+.TP
+\fB-trimleft\fR \fIchars\fR
+.TP
+\fB-trimright\fR \fIchars\fR
+Manipulates the test string by trimming all specified \fIchars\fR from it from
+left, right, or both\&. Specifying \fIchars\fR as an empty list makes it trim all
+whitespace (any character that tests positive for \fBstring is space\fR)\&.
+That's a slight difference to Tcl's \fBstring trim\fR, \fBstring trimleft\fR,
+\fBstring trimright\fR commands\&.
+.RE
+.TP
+The following further constraints on the test string length may be specified:
+.RS
+.TP
+\fB-max\fR \fIinteger\fR
+Validates a test string length <= \fIinteger\fR\&.
+.TP
+\fB-xmax\fR \fIinteger\fR
+Validates a test string length < \fIinteger\fR\&.
+.TP
+\fB-min\fR \fIinteger\fR
+Validates a test string length >= \fIinteger\fR\&.
+.TP
+\fB-xmin\fR \fIinteger\fR
+Validates a test string length > \fIinteger\fR\&.
+.TP
+\fB-multipleof\fR \fIinteger\fR
+Validates a test string length that is a multiple of \fIinteger\fR\&.
+.RE
+.TP
+The following further options and constraints on the position of a search string in the test string may be specified:
+.RS
+.TP
+\fB-first\fR \fIneedle\fR
+.TP
+\fB-last\fR \fIneedle\fR
+Find the \fIneedle\fR in the teststring as by Tcl's \fBstring first\fR resp\&.
+\fBstring last\fR command\&. It starts at the position in the test string
+specified by the \fB-start\fR option, or at its beginning/end if that option
+is disabled\&. It sets the needle position for further validation by the options
+\fB-maxpos\fR, \fB-xmaxpos\fR, \fB-minpos\fR, \fB-xmaxpos\fR, and
+\fB-multipleofpos\fR\&.  If the needle cannot be found, its position is set as
+\fB-1\fR\&. The needle position is also \fB-1\fR by default\&.
+.TP
+\fB-maxpos\fR \fIinteger\fR
+Validates a needle position <= \fIinteger\fR\&.
+.TP
+\fB-xmaxpos\fR \fIinteger\fR
+Validates a needle position < \fIinteger\fR\&.
+.TP
+\fB-minpos\fR \fIinteger\fR
+Validates a needle position >= \fIinteger\fR\&.
+.TP
+\fB-xminpos\fR \fIinteger\fR
+Validates a needle position > \fIinteger\fR\&.
+.TP
+\fB-multipleofpos\fR \fIinteger\fR
+Validates a needle position that is a multiple of \fIinteger\fR\&.
+.RE
+.TP
+The following further constraints on the sorting order of the test string as by Tcl's commands \fBstring compare\fR and \fBstring equal\fR may be specified, but only the first characters as specified by the \fB-clength\fR option are considered\&. The options \fB-nocase\fR and \fB-case\fR are honored\&.
+.RS
+.TP
+\fB-before\fR \fIstring\fR
+Validates a test string sorting before or equal \fIstring\fR\&.
+.TP
+\fB-xbefore\fR \fIstring\fR
+Validates a test string sorting before \fIstring\fR\&.
+.TP
+\fB-behind\fR \fIstring\fR
+Validates a test string sorting behind or equal \fIstring\fR\&.
+.TP
+\fB-xbehind\fR \fIstring\fR
+Validates a test string sorting behind \fIstring\fR\&.
+.TP
+\fB-equal\fR \fIstring\fR
+Validates a test string sorting equal \fIstring\fR\&.
+.RE
+.TP
+The following further constraints on the test string may be specified:
+.RS
+.TP
+\fB-is\fR \fIclass\fR
+Validates a test string \fIclass\fR as by Tcl's \fBstring is\fR command\&.
+.TP
+\fB-match\fR \fIpattern\fR
+Validates a test string that matches the \fIpattern\fR as by Tcl's
+\fBstring match\fR command\&.
+The options \fB-nocase\fR and \fB-case\fR are honored\&.
+.TP
+\fB-regexp\fR \fIexp\fR
+Validates a test string that matches the regular expression \fIexp\fR as by
+Tcl's \fBregexp\fR command\&.  It starts at the position in the test string
+specified by the \fB-start\fR option, or at its beginning if that option
+is disabled\&.
+The options \fB-nocase\fR and \fB-case\fR are honored\&.
+.TP
+\fB-test\fR \fIexpr\fR
+Validates a test string by passing it to the Tcl \fIexpr\fR as the local
+variable \fIx\fR\&. If the expression results in a boolean false, the
+validation fails\&.
+.RE
+.RE
+.RE
+.TP
+Aggregate Types
+.RS
+.TP
+\fBarray \fI?options?\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates an \fBarray {\&.\&.\&.}\fR in the decoded JSON input with
+elements according to the given \fIschema\fR\&.
+.sp
+Returns a Tcl list with each array member as one list element\&.
+Returns an empty Tcl list if the array has no members\&.
+.TP
+for composing
+Validates a Tcl list with elements according to the given \fIschema\fR\&.
+.sp
+Returns an \fBarray {\&.\&.\&.}\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+This isn't about individual elements but about whether the whole array
+should be considered \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.IP
+\fINote:\fR Array elements that evaluate as \fBnull\fR are completely
+ignored -as if they were not posted-\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RS
+.TP
+The following general option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.TP
+The following further constraints on the array length may be specified:
+.RS
+.TP
+\fB-max\fR \fIinteger\fR
+Validates an array length <= \fIinteger\fR elements\&.
+.TP
+\fB-xmax\fR \fIinteger\fR
+Validates an array length < \fIinteger\fR elements\&.
+.TP
+\fB-min\fR \fIinteger\fR
+Validates an array length >= \fIinteger\fR elements\&.
+.TP
+\fB-xmin\fR \fIinteger\fR
+Validates an array length > \fIinteger\fR elements\&.
+.TP
+\fB-multipleof\fR \fIinteger\fR
+Validates an array length that is a multiple of \fIinteger\fR elements\&.
+.TP
+\fB-test\fR \fIexpr\fR
+Validates an array length by passing it to the Tcl \fIexpr\fR as
+the local variable \fIx\fR\&. If the expression results in a boolean false,
+the validation fails\&.
+.RE
+.RE
+.TP
+\fBduple \fIschemaDict\fR\fR
+A shortcut for \fBduples -min 1 -max 1 \fIschemaDict\fR\fR\&.
+See below\&.
+.sp
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerrClass\fR
+class factory procedures is \fBarray\fR\&.
+.TP
+\fBduples \fI?options?\fR \fIschemaDict\fR\fR
+.RS
+.TP
+for collecting
+Validates an \fBarray {\&.\&.\&.}\fR in the decoded JSON input with
+elements according to the given \fIschemaDict\fR\&.
+.sp
+Different to the
+\fBarray\fR collecting method, this method alternates through the given
+\fIschemaDict\fR and requires the array elements to validate against the
+different schemas in order\&. An incomplete last tuple results in failed
+validation\&.
+.sp
+Different to the \fBtuples\fR collecting method, this method labels the
+collected input data according to the schema so the result isn't a Tcl list of
+lists but a list of dicts\&.
+Returns an empty Tcl list if the array has no members\&.
+.TP
+for composing
+Validates a Tcl list of dicts with elements according to the given
+\fIschemaDict\fR\&.
+.sp
+Different to the
+\fBarray\fR composing method, this method alternates through the given
+\fIschemaDict\fR and requires the dict elements to validate against the
+different schemas in order\&. An incomplete last tuple results in failed
+validation\&.
+.sp
+Different to the \fBtuples\fR composing method, this method requires the
+collected input data to be labeled according to the schema so the input must
+be a Tcl list of dicts, not a Tcl list of lists\&.
+.sp
+Returns an \fBarray {\&.\&.\&.}\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+This isn't about individual elements but about whether the whole array
+should be considered \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.IP
+\fINote:\fR Array elements that evaluate as \fBnull\fR are completely
+ignored -as if they were not posted-\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.sp
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBarray\fR\&.
+.RS
+.TP
+The following general option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.TP
+The following further constraints on the tuples count may be specified:
+.RS
+.TP
+\fB-max\fR \fIinteger\fR
+Validates an array length <= \fIinteger\fR tuples\&.
+.TP
+\fB-xmax\fR \fIinteger\fR
+Validates an array length < \fIinteger\fR tuples\&.
+.TP
+\fB-min\fR \fIinteger\fR
+Validates an array length >= \fIinteger\fR tuples\&.
+.TP
+\fB-xmin\fR \fIinteger\fR
+Validates an array length > \fIinteger\fR tuples\&.
+.TP
+\fB-multipleof\fR \fIinteger\fR
+Validates an array length that is a multiple of \fIinteger\fR tuples\&.
+.TP
+\fB-test\fR \fIexpr\fR
+Validates an array length (in tuples) by passing it to the Tcl \fIexpr\fR as
+the local variable \fIx\fR\&. If the expression results in a boolean false,
+the validation fails\&.
+.RE
+.RE
+.TP
+\fBobject \fI?options?\fR \fIschemaDict\fR\fR
+.RS
+.TP
+for collecting
+Validates an \fBobject {\&.\&.\&.}\fR in the decoded JSON input with
+elements according to the given \fIschemaDict\fR\&.
+.sp
+Returns a Tcl dict of key-value pairs\&. This behaviour may be changed with the
+\fB-values\fR option\&. The order of elements is always the same as specified
+in the \fIschemaDict\fR argument\&.
+.TP
+for composing
+Validates a Tcl dict with elements according to the given \fIschemaDict\fR\&.
+This behaviour may be changed with the \fB-values\fR option\&.
+The order of elements is always the same as specified in the \fIschemaDict\fR
+argument\&.
+.sp
+Returns an \fBobject {\&.\&.\&.}\fR\&.
+.RS
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-missing\fR \fInullvalue\fR
+Specifies a Tcl value that should be passed to the downlevel schemas
+whenever a field is missing in the input\&. The specific downlevel schema
+may then specify the same Tcl string as its own \fBnull\fR value
+and report a \fBnull\fR to uplevel, where a \fBdefault\fR or
+\fBoptional\fR method can override the validation failure\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+This isn't about individual elements but about whether the whole object
+should be considered \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.IP
+\fINote:\fR Missing keys are treated as a validation failure, and as are
+elements that evaluate as \fBnull\fR\&. This may be circumvented by enclosing
+the schema for an element with a \fBdefault\fR or \fBoptional\fR method\&.
+See the subsection \fBAggregate Field Operators\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-values\fR
+Instead of returning/requiring a Tcl dict of key-value pairs, return/require
+a Tcl list of the values\&.
+.RE
+.RE
+.TP
+\fBtuple \fIschemaList\fR\fR
+A shortcut for \fBtuples -flat -min 1 -max 1 \fIschemaList\fR\fR\&.
+See below\&.
+.sp
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBarray\fR\&.
+.TP
+\fBtuples \fI?options?\fR \fIschemaList\fR\fR
+.RS
+.TP
+for collecting
+Validates an \fBarray {\&.\&.\&.}\fR in the decoded JSON input with
+elements according to the given \fIschemaList\fR\&.
+.sp
+Different to the
+\fBarray\fR collecting method, this method alternates through the given
+\fIschemaList\fR and requires the array elements to validate against the
+different schemas in order\&. An incomplete last tuple results in failed
+validation\&.
+.sp
+This method returns a Tcl list with each tuple list as one list element\&. This
+can be changed with the \fB-flat\fR option\&. The resulting list is flat then\&.
+Returns an empty Tcl list if the array has no members\&.
+.TP
+for composing
+Validates a Tcl list of lists with elements according to the given
+\fIschemaList\fR\&. This can be changed with the \fB-flat\fR option\&.
+It validates a flat Tcl list then\&.
+.sp
+Different to the
+\fBarray\fR composing method, this method alternates through the given
+\fIschemaList\fR and requires the list elements to validate against the
+different schemas in order\&. An incomplete last tuple results in failed
+validation\&.
+.sp
+Returns an \fBarray {\&.\&.\&.}\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+This isn't about individual elements but about whether the whole array
+should be considered \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.IP
+\fINote:\fR Array elements that evaluate as \fBnull\fR are completely
+ignored -as if they were not posted-\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.sp
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBarray\fR\&.
+.RS
+.TP
+The following general options may be specified:
+.RS
+.TP
+\fB-flat\fR
+Instead of returning a Tcl list of lists, return a flat Tcl list\&.
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.TP
+The following further constraints on the tuples count may be specified:
+.RS
+.TP
+\fB-max\fR \fIinteger\fR
+Validates an array length <= \fIinteger\fR tuples\&.
+.TP
+\fB-xmax\fR \fIinteger\fR
+Validates an array length < \fIinteger\fR tuples\&.
+.TP
+\fB-min\fR \fIinteger\fR
+Validates an array length >= \fIinteger\fR tuples\&.
+.TP
+\fB-xmin\fR \fIinteger\fR
+Validates an array length > \fIinteger\fR tuples\&.
+.TP
+\fB-multipleof\fR \fIinteger\fR
+Validates an array length that is a multiple of \fIinteger\fR tuples\&.
+.TP
+\fB-test\fR \fIexpr\fR
+Validates an array length (in tuples) by passing it to the Tcl \fIexpr\fR as
+the local variable \fIx\fR\&. If the expression results in a boolean false,
+the validation fails\&.
+.RE
+.RE
+.RE
+.TP
+Aggregate Field Operators
+.RS
+.TP
+\fBdefault \fIstring\fR \fIschema\fR (for collecting)\fR
+.TP
+\fBdefault \fItype\fR \fIstring\fR \fIschema\fR (for composing)\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. If it succeeds, the
+value returned by the schema is returned\&. If it fails, the reported validation
+error is escalated\&.
+If it is reported as \fBnull\fR however because the input data is simply
+missing or a \fBliteral null\fR, it is reported as successfully validated
+and the given \fIstring\fR is returned\&.
+.sp
+\fINote:\fR The \fIstring\fR does not have to validate\&. It may be an arbitrary
+string\&.
+.TP
+for composing
+Validates the Tcl input with the \fIschema\fR\&. If it succeeds, the
+value returned by the schema is returned\&. If it fails, the reported validation
+error is escalated\&.
+If it is reported as \fBnull\fR however, it is reported as successfully validated
+instead and the given \fItype\fR and \fIstring\fR are returned\&.
+.sp
+\fINote:\fR Neither \fItype\fR nor \fIstring\fR have to validate\&. They may be
+both arbitrary values\&. It's the reponsibilty of the schema author to choose
+meaningful values\&.
+.RE
+.IP
+\fINote:\fR Though most useful with object fields, this operator may be
+specified at any place where a missing or \fBnull\fR value in the
+input data should be replaced by a reasonable default\&.
+.TP
+\fBoptional \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. If it succeeds, the
+value returned by the schema is returned\&. If it fails, the reported validation
+error is escalated\&.
+If it validates as \fBnull\fR however because the input data is simply missing
+or a \fBliteral null\fR, it is reported as a special validation error
+instead, and an uplevel \fBobject\fR method will ignore the field for
+this object\&. It's not going to be reported as a key-value pair in the object
+result at all\&.
+.TP
+for composing
+Validates the Tcl input with the \fIschema\fR\&. If it succeeds, the
+value returned by the schema is returned\&. If it fails, the reported validation
+error is escalated\&.
+If it is reported as \fBnull\fR however, it is reported as a special validation
+error instead, and an uplevel \fBobject\fR method will ignore the field
+for this object\&. It's not going to be reported as a key-value pair in the object
+result at all\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-emitnull\fR
+Changes the type of validation error reported so the uplevel method will
+report a \fBliteral null\fR instead of a missing field\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.IP
+\fINote:\fR Be careful in conjunction with the \fB-values\fR option of the
+\fBobject\fR method though\&. Optional fields must then be the last ones
+in the schema to avoid confusion on the result data\&.
+.sp
+\fINote:\fR For any other uplevel methods than \fBarray\fR, \fBduple\fR,
+\fBduples\fR, \fBobject\fR, \fBtuple\fR, \fBtuples\fR, this
+operator simply changes the kind of validation error reported\&.
+.RE
+.TP
+Control Structures
+.RS
+.TP
+\fBallof \fIschemaList\fR\fR
+Validates the input with all the schemas in the \fIschemaList\fR\&.
+If any listed schema does not validate, the validation fails as a whole\&.
+.sp
+If a schema evaluates as \fBnull\fR it is counted as validated but no result
+is stored\&.
+.sp
+Returns the result of the first schema that had a result\&. If no schema had a
+result -they have all evaluated as \fBnull\fR-, this method
+returns \fBnull\fR as well\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.TP
+\fBanyof \fIschemaList\fR\fR
+Validates the input with all the schemas in the \fIschemaList\fR\&.
+If no listed schema validates, the validation fails as a whole\&.
+.sp
+If a schema evaluates as \fBnull\fR it is counted as validated but no result
+is stored\&.
+.sp
+Returns the result of the first schema that had a result\&. If no schema had a
+result -they have all evaluated as \fBnull\fR-, this method
+returns \fBnull\fR as well\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.sp
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBallof\fR\&.
+.TP
+\fBconst \fIstring\fR (for collecting)\fR
+.TP
+\fBconst \fItype\fR \fIstring\fR (for composing)\fR
+.RS
+.TP
+for collecting
+Returns the \fIstring\fR constant\&.
+.TP
+for composing
+Returns the \fItype\fR \fIstring\fR constants\&.
+.RE
+.IP
+This method is meant for the
+result schemas of the \fBif\fR and \fBswitch\fR methods, but may also
+be put as a default value for those or the \fBallof\fR, \fBanyof\fR, and
+\fBoneof\fR methods\&.
+.TP
+\fBdiscard\fR
+Discards the input and and returns a \fBnull\fR instead\&. That \fBnull\fR
+may be reinterpreted by uplevel methods\&.
+.TP
+\fBdubious \fIschema\fR\fR
+Marks the \fIschema\fR and its whole branch as not trusted\&. Such schemas may
+not specify Tcl code or methods that are marked as unsafe\&.
+.sp
+The dubious flag is not inherited to nested collector objects so they may be
+marked as having a trusted schema, and may specify Tcl code or unsafe methods\&.
+.sp
+See the section \fBNESTING\fR for details\&.
+.TP
+\fBescalate\fR
+Escalates the validation error encountered in a \fItestSchema\fR of
+the \fBif\fR method, or the validation error of the \fBswitch\fR method\&.
+.sp
+\fINote:\fR When used outside of the \fIelseSchema\fR or \fInullSchema\fR
+of the \fBif\fR or \fBswitch\fR methods, this method reports an error\&.
+.TP
+\fBif \fItestSchema\fR \fIthenSchema\fR \fIelseSchema\fR \fInullSchema\fR\fR
+Validates the input with the \fItestSchema\fR\&.
+.sp
+If the test validation returns \fBnull\fR,
+this method re-validates the input with the \fInullSchema\fR and returns
+that result (or fail validation)\&. The \fInullSchema\fR may be specified as
+\fBescalate\fR to escalate the validation error of the \fItestSchema\fR instead\&.
+.sp
+If the test validation succeeded,
+this method re-validates the input with the \fIthenSchema\fR and returns
+that result (or fail validation)\&. The \fIthenSchema\fR may be specified as
+\fBpass\fR to return the result of the \fItestSchema\fR instead\&.
+.sp
+If the test validation failed, this method re-validates the input with the
+\fIelseSchema\fR and returns that result (or fail validation)\&. The
+\fIelseSchema\fR may be specified as \fBescalate\fR to escalate the validation
+error of the \fItestSchema\fR instead\&.
+.sp
+\fINote:\fR The \fBdiscard\fR method is also useful as either the
+\fIthenSchema\fR or the \fIelseSchema\fR\&. It returns a \fBnull\fR\&.
+.TP
+\fBnest \fInestedCollectorName\fR\fR
+.TP
+\fBnest \fInestedComposerName\fR\fR
+Passes the branch of data at this point to the collector/composer object
+\fInestedCollectorName\fR/\fInestedComposerName\fR which was registered with
+the schema at the construction of this collector/composer object\&.
+.sp
+The dubious flag is not inherited to the nested collector/composer
+object so it may be marked as having a trusted schema, and may
+specify Tcl code or unsafe methods though the calling schema may not\&.
+.sp
+See the sections \fBNESTING\fR and \fBSANDBOXING\fR for details\&.
+.TP
+\fBoneof \fIschemaList\fR\fR
+Validates the input with all the schemas in the \fIschemaList\fR\&.
+If none or more than one listed schema validates, the validation fails as a whole\&.
+.sp
+If a schema evaluates as \fBnull\fR it is counted as validated but no result
+is stored\&.
+.sp
+Returns the result of the first schema that had a result\&. If no schema had a result
+-they have all evaluated as \fBnull\fR-, this method returns
+\fBnull\fR as well\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.sp
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBallof\fR\&.
+.TP
+\fBpass\fR
+Passes the result of the validated input from a \fItestSchema\fR of
+the \fBif\fR method or from the first matching \fItestSchema\fR of the \fBswitch\fR method\&.
+.sp
+\fINote:\fR When used outside of a \fIthenSchema\fR of the \fBif\fR or
+\fBswitch\fR methods, this method reports an error\&.
+.TP
+\fBswitch \fIschemaPairs\fR \fIelseSchema\fR \fInullSchema\fR\fR
+Validates the input with the \fIschemaPairs\fR list\&. The first, third, fifth,
+\&.\&.\&. element of that list is interpreted as a \fItestSchema\fR, the second,
+fourth, sixth, \&.\&.\&. element of that list is interpreted as a \fIthenSchema\fR\&.
+.sp
+If a test validation returns \fBnull\fR, the next \fItestSchema\fR is checked\&.
+.sp
+If a test validation fails, the next \fItestSchema\fR is checked\&.
+.sp
+As soon a test validation succeeded, no more \fItestSchema\fRs are checked
+but instead, this method re-validates the input with the following
+\fIthenSchema\fR and returns that result (or fail validation)\&.
+The \fIthenSchema\fR may be specified as \fBpass\fR to return the result
+of the \fItestSchema\fR instead\&.
+.sp
+If no test schema validated, this method checks whether all test results have been
+\fBnull\fR\&. In that case it re-validates the input with the \fInullSchema\fR,
+otherwise with  the \fIelseSchema\fR and returns that result (or fail
+validation)\&. Either may be specified as \fBescalate\fR to
+escalate the validation error of the switch method instead\&.
+.sp
+\fINote:\fR The \fBdiscard\fR method is also useful as either a
+\fIthenSchema\fR, the \fIelseSchema\fR, or the \fInullSchema\fR\&.
+It returns a \fBnull\fR\&.
+.RE
+.TP
+Result Formatting Operators
+.RS
+.TP
+\fBapply \fI?options?\fR \fIvarList\fR \fIbody\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is then
+expanded as needed by the amount of variable names in \fIvarList\fR and
+then passed into Tcl's \fBapply\fR command along the \fIvarList\fR and
+the supplied Tcl \fIbody\fR\&.
+The last variable in the \fIvarList\fR gets assigned a list of the
+remaining input elements if there are more of those than variable names
+specified\&.
+.sp
+The operator returns the result of Tcl's \fBapply\fR command\&.
+.TP
+for composing
+Expands the Tcl input data as needed by the amount of variable names in
+\fIvarList\fR and passes it into Tcl's \fBapply\fR command along the
+\fIvarList\fR and the supplied Tcl \fIbody\fR\&.
+The last variable in the \fIvarList\fR gets assigned a list of the
+remaining input elements if there are more of those than variable names
+specified\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RE
+.RS
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.RE
+.TP
+\fBexpr \fI?options?\fR \fIvarList\fR \fIexpr\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is then
+expanded as needed by the amount of variable names in \fIvarList\fR and
+then passed into Tcl's \fBexpr\fR command along the \fIvarList\fR and
+the supplied Tcl expression \fIexpr\fR\&.
+The last variable in the \fIvarList\fR gets assigned a list of the
+remaining input elements if there are more of those than variable names
+specified\&.
+.sp
+The operator returns the result of Tcl's \fBexpr\fR command\&.
+.TP
+for composing
+Expands the Tcl input data as needed by the amount of variable names in
+\fIvarList\fR and passes it into Tcl's \fBexpr\fR command along the
+\fIvarList\fR and the supplied Tcl \fIbody\fR\&.
+The last variable in the \fIvarList\fR gets assigned a list of the
+remaining input elements if there are more of those than variable names
+specified\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RE
+.IP
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedure is \fBapply\fR\&.
+.RS
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.RE
+.TP
+\fBformat \fIformat\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is then
+expanded and passed into Tcl's \fBformat\fR command along the supplied
+\fIformat\fR argument as individual list items\&.
+So it works both on individual values and on the result of aggregate types
+and operators\&.
+.sp
+The operator returns the result of Tcl's \fBformat\fR command\&.
+.TP
+for composing
+Expands the Tcl input data and passes it into Tcl's \fBformat\fR command
+along the \fIformat\fR argument as individual list items\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RE
+.TP
+\fBregsub \fI?options?\fR \fIexp\fR \fIreplacement\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. The result is then
+passed into Tcl's \fBregsub\fR command along the supplied
+\fIexp\fR and \fIreplacement\fR arguments\&.
+.sp
+The operator returns the result of Tcl's \fBregsub\fR command\&.
+.TP
+for composing
+Passes the Tcl input data into Tcl's \fBregsub\fR command
+along the \fIexp\fR and \fIreplacement\fR arguments
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-all\fR
+All ranges in the input value that match exp are found and
+substitution is performed for each of these ranges\&.
+.TP
+\fB-nocase\fR
+Upper-case characters in the input value will be converted to
+lower-case before matching against \fIexp\fR
+.TP
+\fB-start\fR \fIstart\fR
+Start matching at the position inside the input value
+specified by the \fB-start\fR option instead of its
+beginning\&.
+.RE
+.RE
+.TP
+\fBstringop \fI?options?\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is then
+passed into Tcl's \fBstring\fR command along the supplied
+\fIoptions\fR arguments\&. All options are applied in their order of
+appearance in the \fIoptions\fR\&. They may appear multiple times\&.
+.sp
+The operator returns the result of Tcl's \fBstring\fR command\&.
+.TP
+for composing
+Passes the Tcl input data into Tcl's \fBstring\fR command
+along the supplied \fIoptions\fR arguments\&. All options are applied in
+their order of appearance in the \fIoptions\fR\&. They may appear
+multiple times\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.TP
+The following general options may be specified:
+.RS
+.TP
+\fB-nocase\fR
+.TP
+\fB-case\fR
+Makes the option \fB-map\fR work case-insensitively/case-sensitively
+until the other option is specified\&. By default that option works
+case-sensitively\&.
+.RE
+.TP
+The following string manipulations may be specified:
+.RS
+.TP
+\fB-map\fR \fImapping\fR
+Manipulates the input data by mapping it as by Tcl's \fBstring map\fR
+command\&. The options \fB-nocase\fR and \fB-case\fR are honored\&.
+.TP
+\fB-range\fR \fIrange\fR
+Manipulates the input data by removing anything but the \fIrange\fR of
+characters from it, as by Tcl's \fBstring range\fR command\&.
+.TP
+\fB-tolower\fR \fIrange\fR
+.TP
+\fB-toupper\fR \fIrange\fR
+Manipulates the input data by forcing lowercase/uppercase on all characters in
+the \fIrange\fR as by Tcl's \fBstring tolower\fR resp\&. \fBstring toupper\fR
+command\&.
+.TP
+\fB-totitle\fR \fIrange\fR
+Manipulates the input data by forcing uppercase on the first and lowercase on
+all other characters in the \fIrange\fR as by Tcl's \fBstring totitle\fR
+command\&.
+.TP
+\fB-trim\fR \fIchars\fR
+.TP
+\fB-trimleft\fR \fIchars\fR
+.TP
+\fB-trimright\fR \fIchars\fR
+Manipulates the input data by trimming all specified \fIchars\fR from it from
+left, right, or both\&. Specifying \fIchars\fR as an empty list makes it trim all
+whitespace (any character that tests positive for \fBstring is space\fR)\&.
+That's a slight difference to Tcl's \fBstring trim\fR, \fBstring trimleft\fR,
+\fBstring trimright\fR commands\&.
+.RE
+.RE
+.RE
+.TP
+Aggregate Result Formatting Operators
+.RS
+.TP
+\fBdictby \fIby\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&.
+That result is evaluated as a list of dicts of the form
+.CS
+
+{{key1 value1a key2 value2a} {key1 value1b key2 value2b}}
+.CE
+.IP
+as coming from the collecting methods \fBduples\fR or \fBarray\fR
+of \fBobject\fRs\&. The argument \fIby\fR tells which key(s) from the
+inner dicts should be moved to form a dict of dicts as for example for
+\fIby\fR specified as \fIkey1\fR
+.CS
+
+{value1a {key2 value2a} value1b {key2 value2b}}
+.CE
+.IP
+The argument \fIby\fR may be a Tcl list of keys, the resulting keys
+are Tcl lists of those values then\&.
+.TP
+for composing
+Rearranges the Tcl input data from a dict of dicts of the form
+.CS
+
+{value1a {key2 value2a} value1b {key2 value2b}}
+.CE
+.IP
+into a list of dicts of the form
+.CS
+
+{{key1 value1a key2 value2a} {key1 value1b key2 value2b}}
+.CE
+.IP
+The argument \fIby\fR tells which name the dict key should have when
+forming the inner dicts\&. The argument \fIby\fR may be a Tcl list of keys,
+the resulting inner dicts then have multiple additional keys\&.
+.sp
+The result is then validated with the \fIschema\fR\&.
+.RE
+.TP
+\fBdictbyindex \fIby\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&.
+.sp
+That result is evaluated as a list of lists of the form
+.CS
+
+{{value1a value2a value3a} {value1b value2b value3b}}
+.CE
+.IP
+as matching to the methods \fBtuples\fR or \fBarray\fR
+of \fBarray\fRs or \fBarray\fR of \fBobject -values\fR\&.
+The argument \fIby\fR tells which indices from the
+inner lists should be moved to form a dict of lists as for example
+for \fIby\fR specified as \fI0\fR
+.CS
+
+{value1a {value2a value3a} value1b {value2b value3b}}
+.CE
+.IP
+The argument \fIby\fR may be a Tcl list of indices, the resulting
+keys are Tcl lists of those values then\&.
+.TP
+for composing
+Rearranges the Tcl input data from a dict of lists of the form
+.CS
+
+{value1a {value2a value3a} value1b {value2b value3b}}
+.CE
+.IP
+into a list of lists of the form
+.CS
+
+{{value1a value2a value3a} {value1b value2b value3b}}
+.CE
+.IP
+as matching to the methods \fBtuples\fR or \fBarray\fR
+of \fBarray\fRs or \fBarray\fR of \fBobject -values\fR\&.
+The argument \fIby\fR tells at which places inside
+the inner lists the dict keys should be inserted\&.
+The argument \fIby\fR may be a Tcl list of indices\&.
+.sp
+The result is then validated with the \fIschema\fR\&.
+.sp
+\fINote:\fR The result elements are constructed in an additive
+fashion\&. If several indices are given and they aren't in ascending
+order, the results may be unexpected\&. This is not a bug\&.
+.RE
+.TP
+\fBlmap \fI?options?\fR \fIvarList\fR \fIbody\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is
+passed into Tcl's \fBlmap\fR command as a list along the \fIvarList\fR
+and the supplied \fIbody\fR\&.
+.sp
+The operator returns the result of Tcl's \fBlmap\fR command\&.
+.TP
+for composing
+Passes the Tcl input data as a list into Tcl's \fBlmap\fR command
+along the \fIvarList\fR and the supplied Tcl \fIbody\fR\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RE
+.IP
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBapply\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.RE
+.RE
+.PP
+.SH "CUSTOM METHODS"
+If neither the above collecting/composing methods nor sandboxed Tcl code from
+within the schema are sufficient to solve the particular validation and
+collecting/composing problem, you may want to create custom collecting methods\&.
+This can be done with relative ease\&. They have to be specified on the call to the
+\fB::xjson::makeCollectorClass\fR or \fB::xjson::makeComposerClass\fR class
+factory procedure with a unique \fImethodName\fR and a \fImethodDefinition\fR\&.
+.TP
+\fImethodName\fR
+Each \fImethodName\fR may define multiple methods for use within the schema
+that share the same definition but differ in details, such as the accepted
+parameters and options\&. They are sorted out from within their Tcl body by the
+actual method name used in the schema then\&.
+The following \fImethodName\fRs are reserved for the builtin methods:
+.sp
+\fBallof anyof apply array boolean const default expr dictby dictbyindex discard dubious escalate format if nest not null number object oneof optional otherwise pass regsub string stringop switch\fR
+.sp
+You may of course overwrite those as well but it will break compatibility with
+existing schemas\&. For forward compatibility with new versions of
+\fBxjson\fR, it's best to mark private methods with an \fB@\fR in
+front\&. Such methods names will never be used as the names of builtins by
+the \fBxjson\fR package\&.
+.TP
+\fImethodDefinition\fR
+The \fImethodDefinition\fR must be a list that resembles a parameter list\&.
+.RS
+.TP
+Its syntax is either
+?\fImethodOptions\fR? ?\fIaliasName aliasParameters \&.\&.\&.\fR? \fIbody\fR
+.TP
+or (simplified)
+?\fImethodOptions\fR? \fImethodParameters\fR \fIbody\fR
+.RE
+.IP
+In the simplified variant, the method has only one name and one set of parameters\&.
+The following \fIaliasName\fRs are reserved for the builtin methods:
+.sp
+\fBallof anyof apply array boolean const default duple duples expr dictby dictbyindex discard dubious escalate format if integer lmap nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples\fR
+.RS
+.TP
+The following \fImethodOptions\fR may be specified:
+.RS
+.TP
+\fB-unsafe\fR
+This method does potentially unsafe things (such as reading arbitrary files
+whose names are specfied in the schema, or evaluating code outside of a
+sandbox) and that may only be used in trusted schemas\&.
+.TP
+\fB-dubious\fR
+The schema arguments of this method may come from a dubious (non-trusted) source\&.
+.TP
+\fB--\fR
+Marks the end of options\&. The argument following this one will be treated as
+an argument even if it starts with a \fB-\fR\&.
+.RE
+.TP
+The \fIaliasParameters\fR/\fImethodParameters\fR are a list of parameter names\&.
+Option names must start with a \fB-\fR, otherwise the parameter name is
+that of a mandatory argument\&. Each argument or option name may be followed by
+an indicator that shows its type and additional constraints the schema parser
+should check during the construction of the collector/composer object\&.
+.sp
+The default argument type is a string\&. The default option type is a switch
+that is true when it is listed\&.
+.sp
+The indicators are:
+.RS
+.TP
+\fB=\fR
+A string\&.
+.TP
+\fB=\fIexp\fR\fR
+A string that matches the regular expression \fIexp\fR\&.
+.TP
+\fB#\fR
+An integer\&.
+.TP
+\fB##\fR
+A list of integers\&.
+.TP
+\fB/\fR
+A number -integer or float-\&.
+.TP
+\fB!=123\fR
+An integer that is not 123\&.
+.TP
+\fB!=123\&.0\fR
+A number -integer or float- that is neither 123 nor 123\&.0\&.
+.TP
+\fB>123\fR
+An integer that is larger than 123\&.
+.TP
+\fB>123\&.0\fR
+A number -integer or float- that is larger than 123 or 123\&.0\&.
+.TP
+\fB<123\fR
+An integer that is smaller than 123\&.
+.TP
+\fB<123\&.0\fR
+A number -integer or float- that is smaller than 123 or 123\&.0\&.
+.TP
+\fB>=123\fR
+An integer that is larger than or equal 123\&.
+.TP
+\fB>=123\&.0\fR
+A number -integer or float- that is larger than or equal 123 or 123\&.0\&.
+.TP
+\fB<=123\fR
+An integer that is smaller than or equal 123\&.
+.TP
+\fB<=123\&.0\fR
+A number -integer or float- that is smaller than or equal 123 or 123\&.0\&.
+.TP
+\fB~\fR
+A regular expression as understood by Tcl's \fBregexp\fR command\&.
+.TP
+\fB%\fR
+A format string as understood by Tcl's \fBformat\fR command\&.
+.TP
+\fB\&.\fR
+A string index as understood by Tcl's \fBstring index\fR command\&.
+.TP
+\fB-\fR
+A string range as understood by Tcl's \fBstring range\fR command
+or a string index as understood by Tcl's \fBstring index\fR command\&.
+.TP
+\fB|\fR
+A list of pairs as understood by Tcl's \fBstring map\fR command\&.
+.TP
+\fB:\fR
+A dict as understood by Tcl's \fBdict\fR command\&.
+.TP
+\fB!\fR
+Tcl code, either as a body or as an expression\&.
+.TP
+\fB{}\fR
+A schema\&.
+.TP
+\fB{_}\fR
+A list of schemas\&.
+.TP
+\fB{|}\fR
+A dict of schema-schema pairs\&.
+.TP
+\fB{:}\fR
+A dict of key-schema pairs\&.
+.RE
+.TP
+The \fIbody\fR is the Tcl body of the method\&.
+.RE
+.PP
+See the files
+"\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.0/\fR")
+for examples on how to write your own custom methods\&.
+.SH "NULL HANDLING"
+The procedures \fB::xjson::encode\fR and \fB::xjson::decode\fR treat JSON
+\fInull\fR values literally\&. As with the JSON boolean values \fItrue\fR and
+\fIfalse\fR that are coded as \fBliteral true\fR resp\&.
+\fBliteral false\fR, JSON \fInull\fR values are decoded as
+\fBliteral null\fR by \fB::xjson::decode\fR and the same literal needs to
+be specified to \fB::xjson::encode\fR to produce a JSON \fInull\fR value\&.
+\fB::xjson::decode\fR returns an empty list on empty JSON input, and
+\fB::xjson::encode\fR throws an error on an attempt to encode an empty list\&.
+.PP
+In contrast, the collector/composer objects constructed from the classes
+produced by
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+treat JSON \fInull\fR values symbolically\&.
+.PP
+A \fBliteral null\fR a collector class finds in its decoded JSON input is
+treated as if the data field it fills isn't there\&. JSON \fInull\fRs in arrays
+are simply skipped, and they also don't count for the array length\&. JSON
+\fInull\fRs as the value of an object field are treated the same as if that
+field wasn't specified in that object\&. Schemas may specify a \fBnull\fR
+collecting method that validates a \fBliteral null\fR\&. It is however
+treated as such and will trigger the above null handling in the uplevel schema\&.
+An empty list in the decoded JSON input data is treated the same as a
+\fBliteral null\fR\&. A missing data field is also treated like a
+\fBliteral null\fR\&.
+.PP
+In composer classes, the methods that emit JSON types have a special option
+\fB-null\fR that allows the schema author to tell which Tcl input value
+should be treated as \fBnull\fR, if any\&. If not specified, there will
+never be a \fBnull\fR value emitted at that place\&. The \fBoptional\fR
+method has a special option \fB-emitnull\fR that allows the schema author
+to specify if downlevel \fBnull\fRs should be inserted into the emitted
+JSON object or array literally instead of simply leaving out that field\&.
+.PP
+To change that symbolic treatment of JSON \fInull\fRs at specific places, you
+can use the \fBdefault\fR collecting method and tell a default value that
+should be used whenever a \fInull\fR is encountered in the JSON input at that
+place\&.
+.SH NESTING
+With each collector/composer object you construct from the classes produced by
+\fB::xjson::makeCollectorClass\fR or \fB::xjson::makeComposerClass\fR, you
+may specify other collector/composer objects that should be accessible from
+within the registered schema by a
+\fInestedCollectorName\fR/\fInestedComposerName\fR alias\&.  The rationale of
+this is creating libraries of different collector/composer objects for often
+used JSON aggregates in your application, and calling them from an uplevel or
+the toplevel schema\&.
+.PP
+The \fBnest\fR method makes use of this function\&. It takes an alias name and
+calls the \fBcollect\fR/\fBcompose\fR method of the nested object with the
+decoded JSON input data at that point, and the path\&.
+The nested object takes care of the input data, validates it with
+its own schema, and returns the result to the calling object\&.
+.PP
+The specified nested objects do not have to exist when the calling object is
+constructed\&. It is also not checked which class the nested object has\&. You may
+specify any object that has a \fBcollect\fR/\fBcompose\fR method with the
+same semantics as those produced by
+\fB::xjson::makeCollectorClass\fR resp\&. \fB::xjson::makeComposerClass\fR\&.
+.PP
+The dubious/trusted flag is local to each object\&. This may
+be used to create collector/composer objects with application provided
+schemas and elevated rights that a object with user-provided schem
+and restricted rights may call\&.
+.SH SANDBOXING
+User supplied data is never evaluated as code by any builtin method\&.
+All the considerations below are about configuration-supplied rather than
+programmer-supplied schemas\&.
+.PP
+On construction of the collector/composer object, you may specify the
+\fB-trusted\fR option to enable Tcl code evaluation from the schema\&.
+If not specified, using those methods and options in the supplied schema
+will throw an error instead and the object won't be constructed at all\&.
+.PP
+Schemas may specify collecting/composing methods (e\&.g\&. \fBapply\fR, \fBexpr\fR,
+\fBlmap\fR) or options (e\&.g\&. \fB-test\fR, \fB-transform\fR) that
+rely on Tcl code supplied from within the schema\&. To use such schemas in a safe
+fashion, all that Tcl code is executed in a safe interpreter (a sandbox) as
+supplied by Tcl's \fBinterp -safe\fR command\&.
+.PP
+Sandbox creation and destruction after use happens automatically whenever
+data is collected/composed\&. That sandbox is shared by all methods in the schema
+and may also be used to pass values in global variables between methods\&.
+In addition, a sandbox may be created manually for a sub-schema by using the
+\fBsandbox\fR method\&.
+As a shortcut, all of the methods that have arguments or options allowing
+to specify Tcl code also have an option \fB-isolate\fR, that creates a
+local sandbox just for that method automatically\&.
+.SH "DECODED JSON FORMAT"
+The decoded JSON format as returned by the \fB::xjson::decode\fR and accepted
+by the \fB::xjson::encode\fR commands is a nested list of type-data pairs\&.
+.TP
+The following types are understood:
+.RS
+.TP
+\fBarray \fIlist\fR\fR
+Represents a JSON array\&. The \fIlist\fR argument is a list of type-data pairs\&.
+.TP
+\fBobject \fIdict\fR\fR
+Represents a JSON object\&. The \fIdict\fR argument is a dict of Tcl strings used
+for the JSON object keys and the values as type-data pairs\&.
+.TP
+\fBstring \fIvalue\fR\fR
+Represents a JSON string\&. The \fIvalue\fR argument is the Tcl representation of
+that string\&.
+.TP
+\fBnumber \fIvalue\fR\fR
+Represents a JSON number\&. The \fIvalue\fR argument is the Tcl representation of
+that number\&.
+.TP
+\fBliteral \fIvalue\fR\fR
+Represents a JSON literal\&. The \fIvalue\fR argument is one of the constants
+\fBtrue\fR, \fBfalse\fR, or \fBnull\fR\&.
+.sp
+\fINote:\fR Arbitrary Tcl boolean values are not accepted by \fB::xjson::encode\fR\&.
+The \fIvalue\fR must be one of the constants above\&. The builtin \fBboolean\fR
+method of the composer classes is aware of that\&.
+.TP
+\fBencoded \fIjson\fR\fR
+This type is meant for encoding in multiple steps\&.
+It is accepted by \fB::xjson::encode\fR, it is never returned by \fB::xjson::decode\fR\&.
+No checks are done on the \fIjson\fR argument, it must be valid JSON\&.
+.TP
+\fBdecoded \fIdecodedJson\fR\fR
+This type is meant for encoding in multiple steps\&.
+It is accepted by \fB::xjson::encode\fR, it is never returned by \fB::xjson::decode\fR\&.
+The \fIdecodedJson\fR is first encoded, then inserted in the output\&.
+This is sometimes useful if the type information in the input is dynamic as well\&.
+.RE
+.PP
+.SH "DECODING EXAMPLES"
+Decode an array of array of numbers\&.
+.CS
+
+
+% ::xjson::decode {[[1,2],[3,4]]}
+array {{array {{number 1} {number 2}}} {array {{number 3} {number 4}}}}
+
+
+.CE
+Decode an object of various types\&.
+.CS
+
+
+% ::xjson::decode {{"foo":"hello","bar":42,"quux":null}}
+object {foo {string hello} bar {number 42} quux {literal null}}
+
+
+.CE
+Same with arbitrary whitespace\&.
+.CS
+
+
+% ::xjson::decode {
+{
+    "foo":  "hello",
+    "bar":  42,
+    "quux": null
+}
+}
+object {foo {string hello} bar {number 42} quux {literal null}}
+
+
+.CE
+.SH "ENCODING EXAMPLES"
+Encode an array of array of numbers\&.
+.CS
+
+
+% ::xjson::encode {array {{array {{number 1} {number 2}}} {array {{number 3} {number 4}}}}} 0 {}
+[[1,2],[3,4]]
+
+
+.CE
+Encode an object of various types\&.
+.CS
+
+
+% ::xjson::encode {object {foo {string hello} bar {number 42} quux {literal null}}} 0 {}
+{"foo":"hello","bar":42,"quux":null}
+
+
+.CE
+Same with pretty printing\&.
+.CS
+
+
+% ::xjson::encode {object {foo {string hello} bar {number 42} quux {literal null}}}
+{
+    "foo":  "hello",
+    "bar":  42,
+    "quux": null
+}
+
+
+.CE
+Encode with pre-encoded data\&.
+.CS
+
+
+% set json {"hello"}
+% ::xjson::encode [list object [list foo [list encoded $json] bar {number 42} quux {literal null}]] 0 {}
+{"foo":"hello","bar":42,"quux":null}
+
+
+.CE
+Encode with nested decoded data\&.
+.CS
+
+
+% set type decoded
+% set data {string hello}
+% ::xjson::encode [list object [list foo [list $type $data] bar {number 42} quux {literal null}]] 0 {}
+{"foo":"hello","bar":42,"quux":null}
+
+
+.CE
+.SH "JSON VALIDATION AND DATA COLLECTING EXAMPLE"
+Create a collector class with the class factory and the builtin methods\&. Even
+for advanced usage, you only ever need to do this once\&.  More than once only if
+you want to create multiple collector classes with a different set of builtin
+and your own collection methods, or different options\&.
+.CS
+
+
+% ::xjson::makeCollectorClass ::myCollectorClass
+
+
+.CE
+Create a collector object with a schema\&. You need to do this once per different
+schema you want to use\&.
+.CS
+
+
+% set ::mycollector [::myCollectorClass #auto {
+    object {
+        "articles" {
+            dictby "id" {array -max 100 {object {
+                "id"    integer
+                "extra" {default false boolean}
+                "name"  string
+                "price" {format "%\&.2f" number}
+            }}}
+        }
+    }
+}]
+
+
+.CE
+Feed JSON data into the decoder, and the decoded json data into the collector
+object\&.
+.CS
+
+
+% $::mycollector collect [::xjson::decode {
+    {
+        "articles": [
+            {
+                "id":    101,
+                "name":  "Pizzapane bianca",
+                "price": 4\&.95
+            },
+            {
+                "id":    120,
+                "name":  "Pizza Regina",
+                "price": 9\&.8
+            },
+            {
+                "id":    139,
+                "name":  "Wunschpizza",
+                "price": 12\&.70
+            },
+            {
+                "id":    201,
+                "name":  "Rucola",
+                "extra": true,
+                "price": 1
+            }
+        ]
+    }
+}]
+articles {101 {extra false name {Pizzapane bianca} price 4\&.95} 120 {extra false name {Pizza Regina} price 9\&.80} 139 {extra false name Wunschpizza price 12\&.70} 201 {extra true name Rucola price 1\&.00}}
+
+
+.CE
+.SH "JSON COMPOSING EXAMPLE"
+Create a composer class with the class factory and the builtin methods\&. Even
+for advanced usage, you only ever need to do this once\&.  More than once only if
+you want to create multiple composer classes with a different set of builtin
+and your own composer methods, or different options\&.
+.CS
+
+
+% ::xjson::makeComposerClass ::myComposerClass
+
+
+.CE
+Create a composer object with a schema\&. You need to do this once per different
+schema you want to use\&.
+.CS
+
+
+% set ::mycomposer [::myComposerClass #auto {
+    array {
+        object {
+            id   integer
+            name string
+        }
+    }
+}]
+
+
+.CE
+Feed Tcl data into the composer object, and the result into the encoder\&.
+.CS
+
+
+% ::xjson::encode [$::mycomposer compose {{id 7 name foo} {id 3 name bar}}]
+[
+    {
+        "id":   7,
+        "name": "foo"
+    },
+    {
+        "id":   3,
+        "name": "bar"
+    }
+]
+
+.CE
+.SH "JSON RECOMPOSING EXAMPLE"
+This toy example decodes and validates a JSON input, collects the data, then recomposes the data into JSON\&.
+.CS
+
+
+% ::xjson::makeCollectorClass ::myCollectorClass
+% ::xjson::makeComposerClass ::myComposerClass
+
+% set ::mycollector [::myCollectorClass #auto {
+dictbyindex 1 {array {object -values {id integer name {stringop -toupper {0 end} string} comment string}}}
+}]
+
+% set ::mycomposer [::myComposerClass #auto {
+dictbyindex 1 {array {object -values {id integer name {stringop -tolower {0 end} string} comment string}}}
+}]
+
+% set step0 {[{"id": 1, "name": "abc", "comment": "foo"}, {"id": 981, "name": "xyz", "comment": "bar"}]}
+[{"id": 1, "name": "abc", "comment": "foo"}, {"id": 981, "name": "xyz", "comment": "bar"}]
+
+% set step1 [::xjson::decode $step0]
+array {{object {id {number 1} name {string abc} comment {string foo}}} {object {id {number 981} name {string xyz} comment {string bar}}}}
+
+% set step2 [$mycollector collect $step1]
+ABC {1 foo} XYZ {981 bar}
+
+% set step3 [$mycomposer compose $step2]
+array {{object {id {number 1} name {string abc} comment {string foo}}} {object {id {number 981} name {string xyz} comment {string bar}}}}
+
+% set step4 [::xjson::encode $step3 0 {}]
+[{"id":1,"name":"abc","comment":"foo"},{"id":981,"name":"xyz","comment":"bar"}]
+
+
+.CE
+.SH KEYWORDS
+json, tcl, validation
+.SH COPYRIGHT
+.nf
+Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
+
+.fi
+

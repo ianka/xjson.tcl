@@ -1,0 +1,81 @@
+overview: |-
+  Compose data with integer schema.
+operation: compose
+tests:
+  - name: integer data
+    desc: Number data has to pass "integer" schema.
+    schema: 'integer'
+    data: '123'
+    expected: 'number 123'
+
+  - name: tcl integer data
+    desc: Tcl integer value has to pass "integer" schema.
+    schema: 'integer'
+    data: '+123'
+    expected: 'number +123'
+
+  - name: test option
+    desc: Value has to pass matching "-test" option.
+    schema: 'integer -test {$x == 123}'
+    data: '123'
+    expected: 'number 123'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'integer -test {[interp issafe]}'
+    data: '123'
+    expected: 'number 123'
+
+  - name: non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'integer -test {[info exists ::schemasandbox]}'
+    data: '123'
+    expected: 'number 123'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'integer -isolate -test {![info exists ::schemasandbox]}'
+    data: '123'
+    expected: 'number 123'
+
+  - name: max option
+    desc: Value has to pass matching "-max" option.
+    schema: 'integer -max 123'
+    data: '123'
+    expected: 'number 123'
+
+  - name: xmax option
+    desc: Value has to pass matching "-xmax" option.
+    schema: 'integer -xmax 123'
+    data: '122'
+    expected: 'number 122'
+
+  - name: min option
+    desc: Value has to pass matching "-min" option.
+    schema: 'integer -min 123'
+    data: '123'
+    expected: 'number 123'
+
+  - name: xmin option
+    desc: Value has to pass matching "-xmin" option.
+    schema: 'integer -xmin 122'
+    data: '123'
+    expected: 'number 123'
+
+  - name: multipleof option
+    desc: Value has to pass matching "-multipleof" option.
+    schema: 'integer -multipleof 2'
+    data: '122'
+    expected: 'number 122'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'integer --'
+    data: '0'
+    expected: 'number 0'
+
+  - name: null value
+    desc: Null value that isn't met must be ignored.
+    schema: 'number -null 0'
+    data: '123'
+    expected: 'number 123'

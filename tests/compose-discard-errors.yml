@@ -1,0 +1,23 @@
+overview: |-
+  Compose data with "discard" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'discard -foobar'
+    data: 'true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'discard {}'
+    data: 'true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: do not pass
+    desc: Pass must throw an error when used outside of a control structure.
+    schema: 'discard'
+    data: 'true'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

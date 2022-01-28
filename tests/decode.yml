@@ -1,0 +1,155 @@
+overview: |-
+  Decode JSON to Tcl.
+operation: decode
+tests:
+  - name: whitespace
+    desc: Whitespace outside of quotes is irrelevant.
+    data: '	 	"hello  world" 		'
+    expected: 'string {hello  world}'
+
+  - name: string
+    desc: Strings must be encoded the Tcl way.
+    data: '"hello world"'
+    expected: 'string {hello world}'
+
+  - name: empty string
+    desc: Empty strings must be encoded the Tcl way.
+    data: '""'
+    expected: 'string {}'
+
+  - name: NUL string
+    desc: Escape sequences as \u0000 must be recoded as NUL characters.
+    data: '"\u0000"'
+    expected: "string \u0000"
+
+  - name: quoted string
+    desc: Escaped characters must be recoded.
+    data: '"\u0022\\x\"y\"z"'
+    expected: 'string {"\x"y"z}'
+
+  - name: multiline string
+    desc: Multiline strings must be encoded the Tcl way.
+    data: |-
+      "hello
+      world"
+    expected: |-
+      string {hello
+      world}
+
+  - name: integer number
+    desc: Integers must be encoded the Tcl way.
+    data: '42'
+    expected: 'number 42'
+
+  - name: negative integer number
+    desc: Negative integers must retain their sign.
+    data: '-42'
+    expected: 'number -42'
+
+  - name: real number
+    desc: Real numbers must be encoded the JSON way.
+    data: '4.2'
+    expected: 'number 4.2'
+
+  - name: negative real number
+    desc: Negative real numbers must retain their sign.
+    data: '-4.2'
+    expected: 'number -4.2'
+
+  - name: exponential number
+    desc: Real numbers with exponents must be encoded the Tcl way.
+    data: '2.0e+30'
+    expected: 'number 2e+30'
+
+  - name: literal true
+    desc: The true literal has to be recoded the Tcl way.
+    data: 'true'
+    expected: 'literal true'
+
+  - name: literal false
+    desc: The false literal has to be recoded the Tcl way.
+    data: 'false'
+    expected: 'literal false'
+
+  - name: literal null
+    desc: The null literal has to be recoded the Tcl way.
+    data: 'null'
+    expected: 'literal null'
+
+  - name: array
+    desc: Arrays may consist of arbitrary types.
+    data: |-
+      [
+      	0,
+      	"1",
+      	null
+      ]
+    expected: 'array {{number 0} {string 1} {literal null}}'
+
+  - name: object
+    desc: Objects may consist of arbitrary types.
+    data: |-
+      {
+      	"foo":  0,
+      	"bar":  "1",
+      	"quux": null
+      }
+    expected: 'object {foo {number 0} bar {string 1} quux {literal null}}'
+
+  - name: array array
+    desc: Arrays may be nested.
+    data: |-
+      [
+      	[
+      		1,
+      		2
+      	],
+      	[
+      		"3"
+      	]
+      ]
+    expected: 'array {{array {{number 1} {number 2}}} {array {{string 3}}}}'
+
+  - name: array object
+    desc: Arrays may consist of objects.
+    data: |-
+      [
+      	{
+      		"a":  1,
+      		"bc": "2"
+      	},
+      	{
+      		"de": "3",
+      		"f":  4
+      	}
+      ]
+    expected: 'array {{object {a {number 1} bc {string 2}}} {object {de {string 3} f {number 4}}}}'
+
+  - name: object array
+    desc: Objects may consist of arrays.
+    data: |-
+      {
+      	"a":  [
+      		1,
+      		2
+      	],
+      	"bc": [
+      		"3"
+      	]
+      }
+    expected: 'object {a {array {{number 1} {number 2}}} bc {array {{string 3}}}}'
+
+  - name: object object
+    desc: Objects may be nested.
+    data: |-
+      {
+      	"x":  {
+      		"ab": 1,
+      		"c":  "2"
+      	},
+      	"yz": {
+      		"a": "3"
+      	}
+      }
+    expected: 'object {x {object {ab {number 1} c {string 2}}} yz {object {a {string 3}}}}'
+

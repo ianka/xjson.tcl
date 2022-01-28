@@ -1,0 +1,23 @@
+overview: |-
+  Collect data with "pass" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'pass -foobar'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'pass {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: do not pass
+    desc: Pass must throw an error when used outside of a control structure.
+    schema: 'pass'
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT CANNOT_PASS'

@@ -1,0 +1,47 @@
+overview: |-
+  Collect data with "dictbyindex" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'dictbyindex -foobar {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'dictbyindex'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'dictbyindex {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'dictbyindex {} {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: dict by invalid index
+    desc: An invalid key must throw an error.
+    schema: 'dictbyindex q {array {object -values {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: 'XJSON SCHEMA ARGUMENT TYPE_MISMATCH'
+
+  - name: dict by unknown index
+    desc: An unknown index must throw an error.
+    schema: 'dictbyindex 3 {array {object -values {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: 'XJSON COLLECTOR OBJECT UNKNOWN_FIELD'
+
+  - name: ambiguous key
+    desc: An ambiguous key value must throw an error.
+    schema: 'dictbyindex 0 {array {object -values {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 1} s {string def} b {literal false}}}}'
+    expected: 'XJSON COLLECTOR OBJECT AMBIGUOUS_FIELD'

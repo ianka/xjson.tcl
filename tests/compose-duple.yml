@@ -1,0 +1,57 @@
+overview: |-
+  Compose data with duple schema.
+operation: compose
+tests:
+  - name: duple boolean schema
+    desc: Boolean data has to pass "duple boolean" schema.
+    schema: 'duple {b boolean}'
+    data: 'b true'
+    expected: 'array {{literal true}}'
+
+  - name: duple number schema
+    desc: Number data has to pass "duple number" schema.
+    schema: 'duple {n number}'
+    data: 'n 123.0'
+    expected: 'array {{number 123.0}}'
+
+  - name: duple integer schema
+    desc: List integer data has to pass "duple integer integer" schema.
+    schema: 'duple {i integer}'
+    data: 'i 123'
+    expected: 'array {{number 123}}'
+
+  - name: duple string schema
+    desc: List string data has to pass "duple string string" schema.
+    schema: 'duple {s string}'
+    data: 's ab'
+    expected: 'array {{string ab}}'
+
+  - name: duple array string schema
+    desc: List list string data has to pass "duple array string array string" schema.
+    schema: 'duple {a {array string}}'
+    data: 'a {ab cde}'
+    expected: 'array {{array {{string ab} {string cde}}}}'
+
+  - name: duple object string schema
+    desc: List dict string data has to pass "duple object string" schema.
+    schema: 'duple {o {object {s string}}}'
+    data: 'o {s ab}'
+    expected: 'array {{object {s {string ab}}}}'
+
+  - name: duple number string boolean schema
+    desc: Mixed list data has to pass "duple {number string boolean}" schema.
+    schema: 'duple {n number s string b boolean}'
+    data: 'n 123 s foo b true'
+    expected: 'array {{number 123} {string foo} {literal true}}'
+
+  - name: duples number string boolean mixed schema
+    desc: Duple schema determines array element order.
+    schema: 'duple {n number s string b boolean}'
+    data: 's foo b true n 123'
+    expected: 'array {{number 123} {string foo} {literal true}}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'duple -- {b boolean}'
+    data: 'b true'
+    expected: 'array {{literal true}}'

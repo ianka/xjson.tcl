@@ -1,0 +1,159 @@
+overview: |-
+  Compose data with stringop schema.
+operation: compose
+tests:
+  - name: passthrough
+    desc: Value has to be passed through stringop without options.
+    schema: 'stringop string'
+    data: 'abcde'
+    expected: 'string abcde'
+
+  - name: range option
+    desc: Value has to be modified by "-range" option.
+    schema: 'stringop -range {1 3} string'
+    data: 'abcde'
+    expected: 'string bcd'
+
+  - name: range options must stack
+    desc: Value has to be modified by "-range -range" option.
+    schema: 'stringop -range {1 3} -range {1 2} string'
+    data: 'abcde'
+    expected: 'string cd'
+
+  - name: range index option
+    desc: Value has to be modified by "-range" option with a single index.
+    schema: 'stringop -range 2 string'
+    data: 'abcde'
+    expected: 'string c'
+
+  - name: tolower option
+    desc: Value has to be modified by "-tolower" option.
+    schema: 'stringop -tolower {1 3} string'
+    data: 'ABcDE'
+    expected: 'string AbcdE'
+
+  - name: tolower options must stack
+    desc: Value has to be modified by "-tolower -tolower" option.
+    schema: 'stringop -tolower {1 3} -tolower {0 1} string'
+    data: 'ABcDE'
+    expected: 'string abcdE'
+
+  - name: tolower index option
+    desc: Value has to be modified by "-tolower" option with a single index.
+    schema: 'stringop -tolower 0 string'
+    data: 'ABcDE'
+    expected: 'string aBcDE'
+
+  - name: toupper option
+    desc: Value has to be modified by "-toupper" option.
+    schema: 'stringop -toupper {1 3} string'
+    data: 'abCde'
+    expected: 'string aBCDe'
+
+  - name: toupper options must stack
+    desc: Value has to be modified by "-toupper -toupper" option.
+    schema: 'stringop -toupper {1 3} -toupper {0 1} string'
+    data: 'abCde'
+    expected: 'string ABCDe'
+
+  - name: toupper index option
+    desc: Value has to be modified by "-toupper" option with a single index.
+    schema: 'stringop -toupper 0 string'
+    data: 'abCde'
+    expected: 'string AbCde'
+
+  - name: totitle option
+    desc: Value has to be modified by "-totitle" option.
+    schema: 'stringop -totitle {1 3} string'
+    data: 'abCdE'
+    expected: 'string aBcdE'
+
+  - name: totitle options must stack
+    desc: Value has to be modified by "-totitle -totitle" option.
+    schema: 'stringop -totitle {1 3} -totitle {0 1} string'
+    data: 'abCdE'
+    expected: 'string AbcdE'
+
+  - name: totitle index option
+    desc: Value has to be modified by "-totitle" option with a single index.
+    schema: 'stringop -totitle 0 string'
+    data: 'abCde'
+    expected: 'string AbCde'
+
+  - name: trim option
+    desc: Value has to be modified by "-trim" option.
+    schema: 'stringop -trim ae string'
+    data: 'abCde'
+    expected: 'string bCd'
+
+  - name: trim options must stack
+    desc: Value has to be modified by "-trim -trim" option.
+    schema: 'stringop -trim ae -trim db string'
+    data: 'abCde'
+    expected: 'string C'
+
+  - name: trim option with empty trimchars
+    desc: Value has to be modified by "-trim" option with empty trimchars.
+    schema: 'stringop -trim {} string'
+    data: ' abCde '
+    expected: 'string abCde'
+
+  - name: trimleft option
+    desc: Value has to be modified by "-trimleft" option.
+    schema: 'stringop -trimleft ae string'
+    data: 'abCde'
+    expected: 'string bCde'
+
+  - name: trimleft options must stack
+    desc: Value has to be modified by "-trimleft -trimleft" option.
+    schema: 'stringop -trimleft ae -trimleft db string'
+    data: 'abCde'
+    expected: 'string Cde'
+
+  - name: trimleft option with empty trimchars
+    desc: Value has to be modified by "-trimleft" option with empty trimchars.
+    schema: 'stringop -trimleft {} string'
+    data: ' abCde '
+    expected: 'string {abCde }'
+
+  - name: trimright option
+    desc: Value has to be modified by "-trimright" option.
+    schema: 'stringop -trimright ae string'
+    data: 'abCde'
+    expected: 'string abCd'
+
+  - name: trimright options must stack
+    desc: Value has to be modified by "-trimright -trimright" option.
+    schema: 'stringop -trimright ae -trimright db string'
+    data: 'abCde'
+    expected: 'string abC'
+
+  - name: trimright option with empty trimchars
+    desc: Value has to be modified by "-trimright" option with empty trimchars.
+    schema: 'stringop -trimright {} string'
+    data: ' abCde '
+    expected: 'string { abCde}'
+
+  - name: map option
+    desc: Value has to be modified by "-map" option.
+    schema: 'stringop -map {cd X b Y} string'
+    data: 'abcde'
+    expected: 'string aYXe'
+
+  - name: nocase map option
+    desc: Value has to be modified by "-nocase -map" option.
+    schema: 'stringop -nocase -map {cd X b Y} string'
+    data: 'aBcDe'
+    expected: 'string aYXe'
+
+  - name: map options must stack
+    desc: Value has to be modified by "-map -map" option.
+    schema: 'stringop -nocase -map {cd X b Y} -case -map {YX a a b} -map {B q} string'
+    data: 'abcde'
+    expected: 'string bae'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'stringop -- string'
+    data: '0'
+    expected: 'string 0'

@@ -1,0 +1,65 @@
+overview: |-
+  Collect data with boolean schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'boolean -foobar'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'boolean {}'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'boolean'
+    data: 'foobar'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: invalid literal
+    desc: Invalid literal data must throw an error.
+    schema: 'boolean'
+    data: 'literal foobar'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: empty data
+    desc: Empty data must throw an error.
+    schema: 'boolean'
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: null data
+    desc: Literal null data must throw an error.
+    schema: 'boolean'
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: number data
+    desc: Number data must throw an error.
+    schema: 'boolean'
+    data: 'number 0'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: string data
+    desc: String data must throw an error.
+    schema: 'boolean'
+    data: 'string a'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: array data
+    desc: Array data must throw an error.
+    schema: 'boolean'
+    data: 'array {literal true}'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: object data
+    desc: Object data must throw an error.
+    schema: 'boolean'
+    data: 'object {t {literal true}}'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'

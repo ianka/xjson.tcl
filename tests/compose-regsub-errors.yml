@@ -1,0 +1,53 @@
+overview: |-
+  Compose data with "regsub" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'regsub -foobar {} {} {}'
+    data: 'number 123'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'regsub'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'regsub {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: two arguments
+    desc: Just two arguments must throw an error.
+    schema: 'regsub {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'regsub {} {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing start option value
+    desc: Missing option value to the "-start" option must throw an error.
+    schema: 'regsub -start'
+    data: 'string foofoo'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid regexp
+    desc: Invalid regular expressions must throw an error.
+    schema: 'regsub {[feo.} bar string'
+    data: 'string foofoo'
+    expected: 'XJSON SCHEMA ARGUMENT TYPE_MISMATCH'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'regsub -- -all {[fe]o.} bar string'
+    data: 'string abcde'
+    expected: 'XJSON SCHEMA WRONGARGS'

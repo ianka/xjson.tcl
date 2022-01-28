@@ -1,0 +1,27 @@
+overview: |-
+  Compose data with "format" schema.
+operation: compose
+tests:
+  - name: simple value
+    desc: A simple value may be caught by a single format specifier.
+    schema: 'format %.2f number'
+    data: '123.456'
+    expected: 'number 123.46'
+
+  - name: array value
+    desc: An array needs a matching number of format specifiers.
+    schema: 'format "%.2f %d" {array number}'
+    data: '123.456 789'
+    expected: 'array {{number 123.46} {number 789}}'
+
+  - name: overflow values
+    desc: overflow values are ignored
+    schema: 'format "%.2f %d" {array number}'
+    data: '123.456 789 321'
+    expected: 'array {{number 123.46} {number 789}}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'format -- %.2f number'
+    data: '123.456'
+    expected: 'number 123.46'

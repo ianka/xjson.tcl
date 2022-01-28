@@ -1,0 +1,39 @@
+overview: |-
+  Compose data with "optional" schema.
+operation: compose
+tests:
+  - name: pass through
+    desc: Data that validates against the schema must pass through.
+    schema: 'object {b {optional boolean}}'
+    data: 'b true'
+    expected: 'object {b {literal true}}'
+
+  - name: null data
+    desc: Null data must be treated as an optional field.
+    schema: 'object {b {optional {boolean -null {}}}}'
+    data: 'b {}'
+    expected: 'object {}'
+
+  - name: emitted null data
+    desc: Null data must be emitted if specified.
+    schema: 'object {b {optional -emitnull {boolean -null {}}}}'
+    data: 'b {}'
+    expected: 'object {b {literal null}}'
+
+  - name: missing field
+    desc: Missing fields must be treated as an optional field.
+    schema: 'object -missing foobar {b {optional {boolean -null foobar}}}'
+    data: ''
+    expected: 'object {}'
+
+  - name: emitted missing field
+    desc: Missing fields must be emitted if specified.
+    schema: 'object -missing foobar {b {optional -emitnull {boolean -null foobar}}}'
+    data: ''
+    expected: 'object {b {literal null}}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'optional -- boolean'
+    data: 'true'
+    expected: 'literal true'

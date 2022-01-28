@@ -1,0 +1,33 @@
+overview: |-
+  Collect data with "optional" schema.
+operation: collect
+tests:
+  - name: pass through
+    desc: Data that validates against the schema must pass through.
+    schema: 'object {b {optional boolean}}'
+    data: 'object {b {literal true}}'
+    expected: 'b true'
+
+  - name: missing field
+    desc: Missing fields must be treated as an optional field.
+    schema: 'object {b {optional boolean}}'
+    data: 'object {}'
+    expected: ''
+
+  - name: empty data
+    desc: Empty data must be treated as an optional field.
+    schema: 'object {b {optional boolean}}'
+    data: 'object {b {}}'
+    expected: ''
+
+  - name: null data
+    desc: Null data must be treated as an optional field.
+    schema: 'object {b {optional boolean}}'
+    data: 'object {b {literal null}}'
+    expected: ''
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'optional -- boolean'
+    data: 'literal true'
+    expected: 'true'

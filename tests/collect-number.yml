@@ -1,0 +1,69 @@
+overview: |-
+  Collect data with number schema.
+operation: collect
+tests:
+  - name: number data
+    desc: Number data has to pass "number" schema.
+    schema: 'number'
+    data: 'number 123'
+    expected: '123'
+
+  - name: tcl number data
+    desc: Tcl number value has to pass "number" schema.
+    schema: 'number'
+    data: 'number +123.0e-0'
+    expected: '+123.0e-0'
+
+  - name: test option
+    desc: Value has to pass matching "-test" option.
+    schema: 'number -test {$x == 123}'
+    data: 'number 123.0'
+    expected: '123.0'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'number -test {[interp issafe]}'
+    data: 'number 123'
+    expected: '123'
+
+  - name: non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'number -test {[info exists ::schemasandbox]}'
+    data: 'number 123'
+    expected: '123'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'number -isolate -test {![info exists ::schemasandbox]}'
+    data: 'number 123'
+    expected: '123'
+
+  - name: max option
+    desc: Value has to pass matching "-max" option.
+    schema: 'number -max 123'
+    data: 'number 123.0'
+    expected: '123.0'
+
+  - name: xmax option
+    desc: Value has to pass matching "-xmax" option.
+    schema: 'number -xmax 123.00000000000001'
+    data: 'number 123.0'
+    expected: '123.0'
+
+  - name: min option
+    desc: Value has to pass matching "-min" option.
+    schema: 'number -min 123'
+    data: 'number 123.0'
+    expected: '123.0'
+
+  - name: xmin option
+    desc: Value has to pass matching "-xmin" option.
+    schema: 'number -xmin 122.99999999999999'
+    data: 'number 123.0'
+    expected: '123.0'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'number --'
+    data: 'number 0'
+    expected: '0'

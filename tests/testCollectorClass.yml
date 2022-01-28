@@ -1,0 +1,27 @@
+overview: |-
+  Test JSON collector class constructor.
+operation: testCollectorClass
+tests:
+  - name: unsafe methods
+    desc: Use of unsafe methods in trusted schemas must not throw an error.
+    fparams: '::testClass foobar {-unsafe foobar schema{} {}}'
+    cparams: '::testObject -trusted {foobar {}}'
+    expected: '::testObject'
+
+  - name: subschema unsafe methods
+    desc: Use of unsafe methods outside of non-trusted subschemas of trusted schemas must not throw an error.
+    fparams: '::testClass foobar {-unsafe foobar schema{} {}}'
+    cparams: '::testObject -trusted {foobar {dubious {boolean}}}'
+    expected: '::testObject'
+
+  - name: code methods
+    desc: Use of methods that employ code in normal schemas must not throw an error.
+    fparams: '::testClass'
+    cparams: '::testObject -trusted {expr x {$x != 0} number}'
+    expected: '::testObject'
+
+  - name: subschema code methods
+    desc: Use of unsafe methods outside of non-trusted subschemas of trusted schemas must not throw an error.
+    fparams: '::testClass'
+    cparams: '::testObject -trusted {object {o {expr x {$x != 0} number} f {dubious {number}}}}'
+    expected: '::testObject'

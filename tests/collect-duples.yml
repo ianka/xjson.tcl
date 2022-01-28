@@ -1,0 +1,195 @@
+overview: |-
+  Collect data with duples schema.
+operation: collect
+tests:
+  - name: duples empty schema empty data
+    desc: Array empty data has to pass "duples {}" schema.
+    schema: 'duples {}'
+    data: 'array {}'
+    expected: ''
+
+  - name: duples empty schema null data
+    desc: Array null data has to pass "duples {}" schema.
+    schema: 'duples {}'
+    data: 'array {{literal null}}'
+    expected: ''
+
+  - name: duples null schema empty data
+    desc: Array empty data has to pass "duples {n null}" schema.
+    schema: 'duples {n null}'
+    data: 'array {}'
+    expected: ''
+
+  - name: duples null schema null data
+    desc: Array null data has to pass "duples {n null}" schema.
+    schema: 'duples {n null}'
+    data: 'array {{literal null}}'
+    expected: ''
+
+  - name: duples boolean schema
+    desc: Array boolean data has to pass "duples boolean" schema.
+    schema: 'duples {b boolean}'
+    data: 'array {{literal true} {literal false}}'
+    expected: '{b true} {b false}'
+
+  - name: mixed boolean empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples {b boolean}'
+    data: 'array {{literal true} {} {literal null} {literal false}}'
+    expected: '{b true} {b false}'
+
+  - name: duples number schema
+    desc: Array number data has to pass "duples number" schema.
+    schema: 'duples {n number}'
+    data: 'array {{number 0} {number 123.0}}'
+    expected: '{n 0} {n 123.0}'
+
+  - name: mixed number empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples {n number}'
+    data: 'array {{number 0} {} {literal null} {number 123.0}}'
+    expected: '{n 0} {n 123.0}'
+
+  - name: duples integer schema
+    desc: Array integer data has to pass "duples integer" schema.
+    schema: 'duples {i integer}'
+    data: 'array {{number 0} {number 123}}'
+    expected: '{i 0} {i 123}'
+
+  - name: mixed integer empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples {i integer}'
+    data: 'array {{} {number 0} {literal null} {number 123}}'
+    expected: '{i 0} {i 123}'
+
+  - name: duples string schema
+    desc: Array string data has to pass "duples string" schema.
+    schema: 'duples {s string}'
+    data: 'array {{string ab} {string cde}}'
+    expected: '{s ab} {s cde}'
+
+  - name: mixed string empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples {s string}'
+    data: 'array {{string ab} {} {string cde} {literal null}}'
+    expected: '{s ab} {s cde}'
+
+  - name: duples array string schema
+    desc: Array array string data has to pass "duples array string" schema.
+    schema: 'duples {a {array string}}'
+    data: 'array {{array {{string ab} {string cde}}} {array {{string fg} {string hij}}}}'
+    expected: '{a {ab cde}} {a {fg hij}}'
+
+  - name: mixed array empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples {a {array string}}'
+    data: 'array {{array {{string ab} {string cde}}} {} {literal null} {array {{string fg} {string hij}}}}'
+    expected: '{a {ab cde}} {a {fg hij}}'
+
+  - name: duples object string schema
+    desc: Array object string data has to pass "duples object string" schema.
+    schema: 'duples {o {object {s string}}}'
+    data: 'array {{object {s {string ab}}} {object {s {string hij}}}}'
+    expected: '{o {s ab}} {o {s hij}}'
+
+  - name: mixed object empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples {o {object {s string}}}'
+    data: 'array {{object {s {string ab}}} {} {literal null} {object {s {string hij}}}}'
+    expected: '{o {s ab}} {o {s hij}}'
+
+  - name: duples number string boolean schema
+    desc: Mixed list data has to pass "duples {number string boolean}" schema.
+    schema: 'duples {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: mixed number string boolean empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {} {literal true} {literal null} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: test option
+    desc: Tuple count has to pass matching "-test" option.
+    schema: 'duples -test {$x == 2} {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: test option empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples -test {$x == 2} {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {} {literal true} {literal null} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'duples -test {[interp issafe]} {n number}'
+    data: 'array {{number 123}}'
+    expected: '{n 123}'
+
+  - name: non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'duples -test {[info exists ::schemasandbox]} {n number}'
+    data: 'array {{number 123}}'
+    expected: '{n 123}'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'duples -isolate -test {![info exists ::schemasandbox]} {n number}'
+    data: 'array {{number 123}}'
+    expected: '{n 123}'
+
+  - name: max option
+    desc: Tuple count has to pass matching "-max" option.
+    schema: 'duples -max 2 {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: max option empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples -max 2 {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {} {literal true} {literal null} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: xmax option
+    desc: Tuple count has to pass matching "-xmax" option.
+    schema: 'duples -xmax 3 {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: xmax option empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples -xmax 3 {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {} {literal true} {literal null} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: min option
+    desc: Tuple count has to pass matching "-min" option.
+    schema: 'duples -min 2 {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: xmin option
+    desc: Tuple count has to pass matching "-xmin" option.
+    schema: 'duples -xmin 1 {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: multipleof option
+    desc: Tuple count has to pass matching "-multipleof" option.
+    schema: 'duples -multipleof 2 {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: max option empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duples -multipleof 2 {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {} {literal true} {literal null} {number 456} {string bar} {literal false}}'
+    expected: '{n 123 s foo b true} {n 456 s bar b false}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'duples -- {}'
+    data: 'array {}'
+    expected: ''

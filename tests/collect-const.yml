@@ -1,0 +1,27 @@
+overview: |-
+  Collect data with const schema.
+operation: collect
+tests:
+  - name: ignore data
+    desc: Data must be ignored.
+    schema: 'const foobar'
+    data: 'literal true'
+    expected: 'foobar'
+
+  - name: empty data
+    desc: Empty data must be ignored.
+    schema: 'const foobar'
+    data: ''
+    expected: 'foobar'
+
+  - name: null data
+    desc: Null data must be ignored.
+    schema: 'const foobar'
+    data: 'literal null'
+    expected: 'foobar'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'const -- foobar'
+    data: 'literal true'
+    expected: 'foobar'

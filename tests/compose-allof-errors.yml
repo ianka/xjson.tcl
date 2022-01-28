@@ -1,0 +1,35 @@
+overview: |-
+  Compose data with allof schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'allof -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    schema: 'allof'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'allof {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null data
+    desc: Null data must be reported as null.
+    schema: 'allof {{number -null false} {string -null false} {boolean -null false}}'
+    data: 'false'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: unmatching data
+    desc: Unmatching data must throw an error.
+    schema: 'allof {number boolean}'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT ALTERNATIVES_MISMATCH'

@@ -1,0 +1,41 @@
+overview: |-
+  Collect data with allof schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'allof -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    schema: 'allof'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'allof {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: empty data
+    desc: Empty data must be reported as null.
+    schema: 'allof {number string boolean}'
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: null data
+    desc: Null data must be reported as null.
+    schema: 'allof {number string boolean}'
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: unmatching data
+    desc: Unmatching data must throw an error.
+    schema: 'allof {{number -max 10} {number -max 5}}'
+    data: 'number 7'
+    expected: 'XJSON COLLECTOR OBJECT ALTERNATIVES_MISMATCH'

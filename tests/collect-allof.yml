@@ -1,0 +1,15 @@
+overview: |-
+  Collect data with allof schema.
+operation: collect
+tests:
+  - name: matching data
+    desc: Succeed with first matching schema.
+    schema: 'allof {{stringop -map {3 A} {number -max 10}} {stringop -map {3 B} {number -max 5}}}'
+    data: 'number 3'
+    expected: 'A'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'allof -- boolean'
+    data: 'literal true'
+    expected: 'true'

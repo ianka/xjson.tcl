@@ -1,0 +1,23 @@
+overview: |-
+  Collect data with "discard" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'discard -foobar'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'discard {}'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: discard data
+    desc: Discard must return a null.
+    schema: 'discard'
+    data: 'literal true'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'

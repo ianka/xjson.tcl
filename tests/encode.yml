@@ -1,0 +1,134 @@
+overview: |-
+  Encode Tcl to JSON with pretty printing.
+operation: encode
+tests:
+  - name: string
+    desc: Strings must be encoded the JSON way.
+    data: 'string "hello world"'
+    expected: '"hello world"'
+
+  - name: empty string
+    desc: Empty strings must be encoded the JSON way.
+    data: 'string {}'
+    expected: '""'
+
+  - name: NUL string
+    desc: NUL characters put as \x00 must be recoded as \u0000 sequences.
+    data: 'string "\x00"'
+    expected: '"\u0000"'
+
+  - name: quoted string
+    desc: Escape sequences must be told apart from escaped characters.
+    data: 'string "\x1f\\x\"y\"z"'
+    expected: '"\u001f\\x\"y\"z"'
+
+  - name: integer number
+    desc: Integers must be encoded the JSON way.
+    data: 'number 42'
+    expected: '42'
+
+  - name: negative integer number
+    desc: Negative integers must retain their sign.
+    data: 'number -42'
+    expected: '-42'
+
+  - name: positive integer number
+    desc: Explicit positive integers must lose their sign.
+    data: 'number +42'
+    expected: '42'
+
+  - name: spaced integer number
+    desc: Spaced explicit positive integers must be trimmed and lose their sign.
+    data: 'number " +084 "'
+    expected: '84'
+
+  - name: real number
+    desc: Real numbers must be encoded the JSON way.
+    data: 'number 4.2'
+    expected: '4.2'
+
+  - name: negative real number
+    desc: Negative real numbers must retain their sign.
+    data: 'number -4.2'
+    expected: '-4.2'
+
+  - name: positive real number
+    desc: Explicit positive real numbers must lose their sign.
+    data: 'number +4.2'
+    expected: '4.2'
+
+  - name: spaced real number
+    desc: Spaced explicit positive real numbers must be trimmed and lose their sign.
+    data: 'number " +04.20 "'
+    expected: '4.2'
+
+  - name: real number w/o leading zero
+    desc: Real numbers without leading zeroes must be encoded with a leading zero.
+    data: 'number .2'
+    expected: '0.2'
+
+  - name: negative real number w/o leading zero
+    desc: Negative real numbers without leading zeroes must be encoded with a leading zero.
+    data: 'number -.2'
+    expected: '-0.2'
+
+  - name: positive real number w/o leading zero
+    desc: Explicit positive real numbers without leading zeroes must be encoded with a leading zero and lose their sign.
+    data: 'number +.2'
+    expected: '0.2'
+
+  - name: real number w/o trailing zero
+    desc: Real numbers without trailing zeroes must be encoded with a trailing zero.
+    data: 'number +2.'
+    expected: '2.0'
+
+  - name: exponential number
+    desc: Real numbers with exponents must be encoded the JSON way.
+    data: 'number 2e5'
+    expected: '2.0e+5'
+
+  - name: literal true
+    desc: The true literal has to be recoded the JSON way.
+    data: 'literal true'
+    expected: 'true'
+
+  - name: literal false
+    desc: The false literal has to be recoded the JSON way.
+    data: 'literal false'
+    expected: 'false'
+
+  - name: literal null
+    desc: The null literal has to be recoded the JSON way.
+    data: 'literal null'
+    expected: 'null'
+
+  - name: pre-encoded data
+    desc: Pre-encoded data has to be taken literally.
+    data: 'encoded {"hello world"}'
+    expected: '"hello world"'
+
+  - name: decoded data
+    desc: Decoded data has to run through an extra encoding round.
+    data: 'decoded {string "hello world"}'
+    expected: '"hello world"'
+
+  - name: array
+    desc: Arrays must be pretty-printed without an unnecessary comma on the last item.
+    data: 'array {{number 0} {number 1} {number 2} {number 3}}'
+    expected: |-
+      [
+      	0,
+      	1,
+      	2,
+      	3
+      ]
+
+  - name: object
+    desc: Objects must be pretty-printed without an unnecessary comma on the last component.
+    data: 'object {foo {number 0} bar {number 1} quux {number 2}}'
+    expected: |-
+      {
+      	"foo":  0,
+      	"bar":  1,
+      	"quux": 2
+      }

@@ -1,0 +1,50 @@
+overview: |-
+  Collect data with "nest" schema. Error handling.
+operation: nestedCollect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    fparams: '::testClass'
+    nestedname: 'myarray'
+    nestedschema: 'array boolean'
+    schema: 'nest -foobar'
+    data: 'array {{literal true} {literal false}}'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    fparams: '::testClass'
+    nestedname: 'myarray'
+    nestedschema: 'array boolean'
+    schema: 'nest'
+    data: 'array {{literal true} {literal false}}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    fparams: '::testClass'
+    nestedname: 'myarray'
+    nestedschema: 'array boolean'
+    schema: 'nest myarray {}'
+    data: 'array {{literal true} {literal false}}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: trusted nested object
+    desc: A nested object may be trusted while the calling object isn't.
+    fparams: '::testClass foobar {-unsafe foobar {} {return "foobar"}}'
+    nestedname: 'myfoobar'
+    nestedschema: 'foobar'
+    schema: 'object {m {nest myfoobar} f foobar}'
+    data: 'm {literal true} f {literal false}'
+    expected: 'XJSON SCHEMA UNSAFE_METHOD'
+
+  - name: nested object code
+    desc: A nested object may execute code while the calling object can't.
+    fparams: '::testClass'
+    nestedname: 'myarray'
+    nestedschema: 'array {number -test {$x != 0}}'
+    schema: 'object {m {nest myarray} f {number -test {$x != 0}}}'
+    data: 'm {array {{number 1} {number 2}}} f {number 3}'
+    expected: 'XJSON SCHEMA OPTION CODE_FORBIDDEN'

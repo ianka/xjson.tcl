@@ -1,0 +1,21 @@
+overview: |-
+  Compose data with allof schema.
+operation: compose
+tests:
+  - name: matching data
+    desc: Succeed with first matching schema.
+    schema: 'allof {{stringop -map {A 7} {number -min 5}} {stringop -map {A 3} {number -max 5}}}'
+    data: 'A'
+    expected: 'number 7'
+
+  - name: mixed null data
+    desc: Mixed null data must be reported as the first matching schema.
+    schema: 'allof {boolean {number -null false} string}'
+    data: 'false'
+    expected: 'literal false'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'allof -- boolean'
+    data: 'true'
+    expected: 'literal true'

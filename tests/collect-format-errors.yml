@@ -1,0 +1,47 @@
+overview: |-
+  Collect data with "format" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'format -foobar {} {}'
+    data: 'number 123'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'format'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'format {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'format {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: bad field specifier
+    desc: Bad field specifiers must throw an error.
+    schema: 'format %t number'
+    data: 'number 3'
+    expected: 'XJSON SCHEMA ARGUMENT TYPE_MISMATCH'
+
+  - name: field specifier mismatch
+    desc: Non-matching field specifiers must throw an error.
+    schema: 'format %d number'
+    data: 'number 1.23'
+    expected: 'XJSON COLLECTOR OBJECT FORMAT_VALUE'
+
+  - name: too many field specifiers
+    desc: Too many field specifiers must throw an error.
+    schema: 'format "%d %d %d" {array number}'
+    data: 'array {{number 1} {number 2}}'
+    expected: 'XJSON COLLECTOR OBJECT FORMAT_FIELDVARMISMATCH'

@@ -1,0 +1,39 @@
+overview: |-
+  Collect data with apply schema.
+operation: collect
+tests:
+  - name: single variable single value
+    desc: A single value may be caught by a single variable.
+    schema: 'apply x {string reverse $x} number'
+    data: 'number 123'
+    expected: '321'
+
+  - name: single variable array value
+    desc: A array fed into a single variable is treated as a Tcl list.
+    schema: 'apply x {llength $x} {array number}'
+    data: 'array {{number 123} {number 456} {number 789}}'
+    expected: '3'
+
+  - name: multiple variables array value
+    desc: A array fed into a multiple variables makes the last variable get the list of remaining values.
+    schema: 'apply {x y} {list [string reverse $x] $y} {array number}'
+    data: 'array {{number 123} {number 456} {number 789}}'
+    expected: '321 {456 789}'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'apply x {list $x [interp issafe] [info exists ::schemasandbox]} number'
+    data: 'number 123'
+    expected: '123 1 1'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'apply -isolate x {list $x [interp issafe] [info exists ::schemasandbox]} number'
+    data: 'number 123'
+    expected: '123 1 0'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'apply -- x {string reverse $x} number'
+    data: 'number 123'
+    expected: '321'

@@ -1,0 +1,29 @@
+overview: |-
+  Collect data with "dubious" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'dubious -foobar {}'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'dubious'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'dubious {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: failed validation
+    desc: Validation errors must be passed through.
+    schema: 'dubious {number -max 5}'
+    data: 'number 6'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'

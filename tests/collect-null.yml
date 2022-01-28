@@ -1,0 +1,35 @@
+overview: |-
+  Collect data with null schema.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: null data
+    desc: Literal null data has to pass "null" schema.
+    schema: 'null'
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: end of options
+    desc: End of options marker must be ignored.
+    schema: 'null --'
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: empty schema
+    desc: Empty schemas evaluate as "null" schemas.
+    schema: ''
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: empty data
+    desc: Empty data evaluate as "literal null" data.
+    schema: 'null'
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: empty schema and data
+    desc: Empty schemas evaluate as "null" schemas. Empty data evaluates as "literal null" data.
+    schema: ''
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'

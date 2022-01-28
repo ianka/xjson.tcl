@@ -1,0 +1,41 @@
+overview: |-
+  Compose data with boolean schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'boolean'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'boolean -foobar'
+    data: 'true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing option value
+    desc: Missing option value to the "-null" option must throw an error.
+    schema: 'boolean -null'
+    data: 'true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'boolean -- -null {}'
+    data: 'true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'boolean {}'
+    data: 'true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'boolean -null true'
+    data: 'true'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

@@ -1,0 +1,63 @@
+overview: |-
+  Collect data with "switch" schema.
+operation: collect
+tests:
+  - name: matching data
+    desc: Matching data must be passed to the "then" schema.
+    schema: 'switch {boolean {stringop -map {false foo} boolean}} {stringop -map {false bar} string} {const quux}'
+    data: 'literal false'
+    expected: 'foo'
+
+  - name: nonmatching data
+    desc: Non matching data must be passed to the "else" schema.
+    schema: 'switch {boolean {stringop -map {false foo} boolean}} {stringop -map {false bar} string} {const quux}'
+    data: 'string false'
+    expected: 'bar'
+
+  - name: pass through
+    desc: Matching data must be passed through if the "then" schema is "pass".
+    schema: 'switch {boolean pass} {const bar} {const quux}'
+    data: 'literal true'
+    expected: 'true'
+
+  - name: empty data empty test schema
+    desc: Empty data must be treated as null.
+    schema: 'switch {{} {const foo}} {const bar} {const quux}'
+    data: ''
+    expected: 'quux'
+
+  - name: null data empty test schema
+    desc: Null data must be treated as null.
+    schema: 'switch {{} {const foo}} {const bar} {const quux}'
+    data: 'literal null'
+    expected: 'quux'
+
+  - name: empty data null test schema
+    desc: Empty data must be treated as null.
+    schema: 'switch {null {const foo}} {const bar} {const quux}'
+    data: ''
+    expected: 'quux'
+
+  - name: null data null test schema
+    desc: Null data must be treated as null.
+    schema: 'switch {null {const foo}} {const bar} {const quux}'
+    data: 'literal null'
+    expected: 'quux'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'switch -- {boolean {const foo}} {const bar} {const quux}'
+    data: 'literal true'
+    expected: 'foo'
+
+  - name: first matching data
+    desc: Data must be passed into the "then" schema of the first matching "test" schema.
+    schema: 'switch {number pass boolean {stringop -map {false foo} boolean} boolean pass} {const xuuq} {const quux}'
+    data: 'literal false'
+    expected: 'foo'
+
+  - name: ignore nulls
+    desc: Tests resulting in "null" must be ignored as long not all tests are null.
+    schema: 'switch {discard pass boolean {stringop -map {false foo} boolean}} {const xuuq} {const quux}'
+    data: 'literal false'
+    expected: 'foo'

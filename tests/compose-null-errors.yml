@@ -1,0 +1,41 @@
+overview: |-
+  Compose data with null schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'null'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: empty schema
+    desc: Empty schemas evaluate as "null" schemas without options.
+    schema: ''
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: unknown option
+    desc: Unknown options to the "null" schema must throw an error.
+    schema: 'null -foobar'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing option value
+    desc: Missing option value to the "-null" option must throw an error.
+    schema: 'null -null'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'null -- -null {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid arguments
+    desc: Invalid arguments to the "null" schema must throw an error.
+    schema: 'null {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'

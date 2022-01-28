@@ -1,0 +1,33 @@
+overview: |-
+  Compose data with "if" schema.
+operation: compose
+tests:
+  - name: matching data
+    desc: Matching data must be passed to the "then" schema.
+    schema: 'if boolean {stringop -map {false true} boolean} {stringop -map {false bar} string} {const string quux}'
+    data: 'false'
+    expected: 'literal true'
+
+  - name: nonmatching data
+    desc: Non matching data must be passed to the "else" schema.
+    schema: 'if boolean {stringop -map {false true} boolean} {stringop -map {foo bar} string} {const string quux}'
+    data: 'foo'
+    expected: 'string bar'
+
+  - name: pass through
+    desc: Matching data must be passed through if the "then" schema is "pass".
+    schema: 'if boolean pass {const string bar} {const string quux}'
+    data: 'true'
+    expected: 'literal true'
+
+  - name: null data null test schema
+    desc: Null data must be treated as null.
+    schema: 'if {null -null {}} {const string foo} {const string bar} {const string quux}'
+    data: ''
+    expected: 'string quux'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'if -- boolean {const string foo} {const string bar} {const string quux}'
+    data: 'true'
+    expected: 'string foo'

@@ -1,0 +1,35 @@
+overview: |-
+  Encode Tcl to JSON. Error handling.
+operation: encode
+testerror: true
+testcode:  true
+tests:
+  - name: empty input data
+    desc: Invalid data length must throw an error.
+    data: ''
+    expected: 'XJSON ENCODE DATA_FORMAT'
+
+  - name: single element input data
+    desc: Invalid data length must throw an error.
+    data: 'foo'
+    expected: 'XJSON ENCODE DATA_FORMAT'
+
+  - name: three element input data
+    desc: Invalid data length must throw an error.
+    data: 'foo bar quux'
+    expected: 'XJSON ENCODE DATA_FORMAT'
+
+  - name: invalid number format
+    desc: Invalid numbers must throw an error.
+    data: 'number 1e1.0'
+    expected: 'XJSON ENCODE INVALID_NUMBER'
+
+  - name: invalid literal value
+    desc: Invalid literals must throw an error.
+    data: 'literal 0'
+    expected: 'XJSON ENCODE INVALID_LITERAL'
+
+  - name: unknown type value
+    desc: Unknown types must throw an error.
+    data: 'foo 0'
+    expected: 'XJSON ENCODE UNKNOWN_TYPE'

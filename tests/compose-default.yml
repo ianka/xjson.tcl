@@ -1,0 +1,21 @@
+overview: |-
+  Compose data with "default" schema.
+operation: compose
+tests:
+  - name: pass through
+    desc: Data that validates against the schema must pass through.
+    schema: 'default foo bar boolean'
+    data: 'true'
+    expected: 'literal true'
+
+  - name: null data
+    desc: Null data must be replaced by the default.
+    schema: 'default foo bar {boolean -null {}}'
+    data: ''
+    expected: 'foo bar'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'default -- foo bar boolean'
+    data: 'true'
+    expected: 'literal true'

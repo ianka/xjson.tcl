@@ -1,0 +1,197 @@
+overview: |-
+  Compose data with integer schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'integer -foobar'
+    data: '123'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing null option value
+    desc: Missing option value to the "-null" option must throw an error.
+    schema: 'integer -null'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing test option value
+    desc: Missing option value to the "-test" option must throw an error.
+    schema: 'integer -test'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing max option value
+    desc: Missing option value to the "-max" option must throw an error.
+    schema: 'integer -max'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmax option value
+    desc: Missing option value to the "-xmax" option must throw an error.
+    schema: 'integer -xmax'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing min option value
+    desc: Missing option value to the "-min" option must throw an error.
+    schema: 'integer -min'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmin option value
+    desc: Missing option value to the "-xmin" option must throw an error.
+    schema: 'integer -xmin'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing multipleof option value
+    desc: Missing option value to the "-multipleof" option must throw an error.
+    schema: 'integer -multipleof'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: non-integer max option value
+    desc: Non-integer option value to the "-max" option must throw an error.
+    schema: 'integer -max 123.0'
+    data: '122'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmax option value
+    desc: Non-integer option value to the "-xmax" option must throw an error.
+    schema: 'integer -xmax 123.0'
+    data: '122'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer min option value
+    desc: Non-integer option value to the "-min" option must throw an error.
+    schema: 'integer -min 123.0'
+    data: '123'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmin option value
+    desc: Non-integer option value to the "-xmin" option must throw an error.
+    schema: 'integer -xmin 123.0'
+    data: '124'
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-positive integer multipleof option value
+    desc: Non-positive integer option value to the "-multipleof" option must throw an error.
+    schema: 'integer -multipleof 0'
+    data: '123'
+    expected: 'XJSON SCHEMA OPTION BOUNDARY_MISMATCH'
+
+  - name: invalid test option value
+    desc: Invalid option value to the "-test" option must throw an error.
+    schema: 'integer -test foobar'
+    data: '123'
+    expected: 'TCL PARSE EXPR BAREWORD'
+
+  - name: sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    schema: 'integer -test {[puts bar]}'
+    data: '123'
+    expected: 'TCL LOOKUP CHANNEL stdout'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'integer -- -max 0'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'integer {}'
+    data: '123'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'integer'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: invalid literal
+    desc: Invalid number data must throw an error.
+    schema: 'integer'
+    data: 'a'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: empty data
+    desc: Empty data must throw an error.
+    schema: 'integer'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: null data
+    desc: Literal null data must throw an error.
+    schema: 'integer -null {}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: boolean data
+    desc: Boolean data must throw an error.
+    schema: 'integer'
+    data: 'true'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: test option
+    desc: Value that fails "-test" option must throw an error.
+    schema: 'integer -test {$x != 123}'
+    data: '123'
+    expected: 'XJSON COMPOSER OBJECT TEST_FAILED'
+
+  - name: max option
+    desc: Value that fails "-max" option must throw an error.
+    schema: 'integer -max 122'
+    data: '123'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xmax option
+    desc: Value that fails "-xmax" option must throw an error.
+    schema: 'integer -xmax 123'
+    data: '123'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: min option
+    desc: Value that fails "-min" option must throw an error.
+    schema: 'integer -min 123'
+    data: '122'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xmin option
+    desc: Value that fails "-xmin" option must throw an error.
+    schema: 'integer -xmin 123'
+    data: '123'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: multipleof option
+    desc: Value has to pass matching "-multipleof" option.
+    schema: 'integer -multipleof 2'
+    data: '123'
+    expected: 'XJSON COMPOSER OBJECT NOT_A_MULTIPLE'
+
+  - name: string data
+    desc: String data must throw an error.
+    schema: 'integer'
+    data: 'string a'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: array data
+    desc: Array data must throw an error.
+    schema: 'integer'
+    data: '{1 2 3}'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: object data
+    desc: Object data must throw an error.
+    schema: 'boolean'
+    data: '{n 123}'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'number -null 123'
+    data: '123'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

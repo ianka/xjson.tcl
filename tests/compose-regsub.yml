@@ -1,0 +1,39 @@
+overview: |-
+  Compose data with "regsub" schema.
+operation: compose
+tests:
+  - name: first match regexp
+    desc: A simple regexp must substitute the first match.
+    schema: 'regsub {[ef]o.} bar string'
+    data: 'fooeob'
+    expected: 'string bareob'
+
+  - name: start option
+    desc: A regexp with "-start" option must substitute the first match from then.
+    schema: 'regsub -start 1 {[ef]o.} bar string'
+    data: 'fooeob'
+    expected: 'string foobar'
+
+  - name: all option
+    desc: A regexp with "-all" option must substitute all matches.
+    schema: 'regsub -all {[ef]o.} bar string'
+    data: 'fooeob'
+    expected: 'string barbar'
+
+  - name: mixed start all options
+    desc: A regexp with "-start -all" options must substitute all matches from then
+    schema: 'regsub -start 1 -all {[ef]o.} bar string'
+    data: 'foofooeob'
+    expected: 'string foobarbar'
+
+  - name: nocase option
+    desc: A regexp with "-nocase" option must tolower input data before matching
+    schema: 'regsub -nocase {[ef]o.} bar string'
+    data: 'FoOeob'
+    expected: 'string bareob'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'regsub {^[ef]o.} bar string'
+    data: 'foo'
+    expected: 'string bar'

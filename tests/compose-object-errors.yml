@@ -1,0 +1,113 @@
+overview: |-
+  Compose data with object schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'object -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing null option value
+    desc: Missing option value to the "-null" option must throw an error.
+    schema: 'object -null'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing missing option value
+    desc: Missing option value to the "-missing" option must throw an error.
+    schema: 'object -missing'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'object -- -values {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    schema: 'object'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'object {} {}'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid schema argument
+    desc: invalid schema argument must throw an error.
+    schema: 'object {f foobar}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: unmatching data
+    desc: unmatching data must throw an error.
+    schema: 'object {n number}'
+    data: 'n true'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'object {n null}'
+    data: 'n foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: invalid literal
+    desc: Invalid literal data must throw an error.
+    schema: 'object {n null}'
+    data: 'n true'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: object empty schema null data
+    desc: Null elements have to be emitted.
+    schema: 'object -null {} {}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: object null schema null data
+    desc: Null elements have to be emitted.
+    schema: 'object -null {} {n null}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'object -null {1 2 3} {n number}'
+    data: '1 2 3'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: incomplete object
+    desc: Incomplete object must throw an error.
+    schema: 'object {n number s string b boolean}'
+    data: 'n 456 s bar'
+    expected: 'XJSON COMPOSER OBJECT MISSING_FIELD'
+
+  - name: incomplete object missing option
+    desc: Incomplete object must throw an error.
+    schema: 'object -missing foo {n number s string b {boolean -null foo}}'
+    data: 'n 456 s bar'
+    expected: 'XJSON COMPOSER OBJECT MISSING_FIELD'
+
+  - name: overflow field
+    desc: overflow fields must throw an error.
+    schema: 'object -values {n number s string b boolean}'
+    data: '456 bar true foo'
+    expected: 'XJSON COMPOSER OBJECT OVERFLOW_FIELD'
+
+  - name: unknown field
+    desc: Unknown field must throw an error.
+    schema: 'object {n number s string}'
+    data: 'n 456 b false s bar'
+    expected: 'XJSON COMPOSER OBJECT UNKNOWN_FIELD'
+
+  - name: ambiguous field
+    desc: Ambiguous field must throw an error.
+    schema: 'object {n number s string b boolean}'
+    data: 'n 456 b false s bar b true'
+    expected: 'XJSON COMPOSER OBJECT AMBIGUOUS_FIELD'

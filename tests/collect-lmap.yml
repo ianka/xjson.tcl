@@ -1,0 +1,39 @@
+overview: |-
+  Collect data with lmap schema.
+operation: collect
+tests:
+  - name: single variable single value
+    desc: A single value may be caught by a single variable.
+    schema: 'lmap x {string reverse $x} number'
+    data: 'number 123'
+    expected: '321'
+
+  - name: single variable array value
+    desc: A array fed into a single variable is treated as a Tcl list.
+    schema: 'lmap x {string length $x} {array number}'
+    data: 'array {{number 12} {number 345} {number 6789}}'
+    expected: '2 3 4'
+
+  - name: multiple variables array value
+    desc: A array fed into a multiple variables makes them alternate between values.
+    schema: 'lmap {x y} {format $x $y} {array {anyof {string number}}}'
+    data: 'array {{string %.2f} {number 123.456} {string %d} {number 321}}'
+    expected: '123.46 321'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'lmap x {list $x [interp issafe] [info exists ::schemasandbox]} number'
+    data: 'number 123'
+    expected: '{123 1 1}'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'lmap -isolate x {list $x [interp issafe] [info exists ::schemasandbox]} number'
+    data: 'number 123'
+    expected: '{123 1 0}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'lmap -- x {string reverse $x} number'
+    data: 'number 123'
+    expected: '321'

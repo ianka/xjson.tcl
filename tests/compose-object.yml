@@ -1,0 +1,75 @@
+overview: |-
+  Compose data with object schema.
+operation: compose
+tests:
+  - name: object boolean schema
+    desc: Boolean data has to pass "object boolean" schema.
+    schema: 'object {b boolean}'
+    data: 'b true'
+    expected: 'object {b {literal true}}'
+
+  - name: object number schema
+    desc: Number data has to pass "object number" schema.
+    schema: 'object {n number}'
+    data: 'n 123.0'
+    expected: 'object {n {number 123.0}}'
+
+  - name: object integer schema
+    desc: List integer data has to pass "object integer" schema.
+    schema: 'object {i integer}'
+    data: 'i 123'
+    expected: 'object {i {number 123}}'
+
+  - name: object string schema
+    desc: List string data has to pass "object string" schema.
+    schema: 'object {s string}'
+    data: 's ab'
+    expected: 'object {s {string ab}}'
+
+  - name: object array string schema
+    desc: List list string data has to pass "object object string" schema.
+    schema: 'object {a {array string}}'
+    data: 'a {ab cde}'
+    expected: 'object {a {array {{string ab} {string cde}}}}'
+
+  - name: object object string schema
+    desc: List dict string data has to pass "object object string" schema.
+    schema: 'object {o {object {s string}}}'
+    data: 'o {s ab}'
+    expected: 'object {o {object {s {string ab}}}}'
+
+  - name: object number string boolean schema
+    desc: Mixed list data has to pass "object {n number s string b boolean}" schema.
+    schema: 'object {n number s string b boolean}'
+    data: 'n 123 s foo b true'
+    expected: 'object {n {number 123} s {string foo} b {literal true}}'
+
+  - name: object number string boolean mixed schema
+    desc: Duple schema determines object element order.
+    schema: 'object {n number s string b boolean}'
+    data: 's foo b true n 123'
+    expected: 'object {n {number 123} s {string foo} b {literal true}}'
+
+  - name: optional field
+    desc: Present optional fields have to be passed through.
+    schema: 'object {n number s {optional {string -null {}}} b boolean}'
+    data: 'n 123 s foo b true'
+    expected: 'object {n {number 123} s {string foo} b {literal true}}'
+
+  - name: missing optional field
+    desc: Missing ptional fields have to be left out.
+    schema: 'object -missing {} {n number s {optional {string -null {}}} b boolean}'
+    data: 'n 123 b true'
+    expected: 'object {n {number 123} b {literal true}}'
+
+  - name: values option
+    desc: Keys are omitted when using the "-values" option.
+    schema: 'object -values {n number s string b boolean}'
+    data: '123 foo true'
+    expected: 'object {n {number 123} s {string foo} b {literal true}}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'object -- {}'
+    data: ''
+    expected: 'object {}'

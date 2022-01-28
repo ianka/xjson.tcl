@@ -1,0 +1,27 @@
+overview: |-
+  Collect data with "default" schema.
+operation: collect
+tests:
+  - name: pass through
+    desc: Data that validates against the schema must pass through.
+    schema: 'default foobar boolean'
+    data: 'literal true'
+    expected: 'true'
+
+  - name: empty data
+    desc: Empty data must be replaced by the default.
+    schema: 'default foobar boolean'
+    data: ''
+    expected: 'foobar'
+
+  - name: null data
+    desc: Null data must be replaced by the default.
+    schema: 'default foobar boolean'
+    data: 'literal null'
+    expected: 'foobar'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'default -- foobar boolean'
+    data: 'literal true'
+    expected: 'true'

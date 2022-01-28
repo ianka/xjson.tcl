@@ -1,0 +1,27 @@
+overview: |-
+  Collect data with boolean schema.
+operation: collect
+tests:
+  - name: true data
+    desc: Literal true has to pass "boolean" schema.
+    schema: 'boolean'
+    data: 'literal true'
+    expected: 'true'
+
+  - name: false data
+    desc: Literal false has to pass "boolean" schema.
+    schema: 'boolean'
+    data: 'literal false'
+    expected: 'false'
+
+  - name: tcl boolean data
+    desc: Tcl boolean value has to pass "boolean" schema.
+    schema: 'boolean'
+    data: 'literal yes'
+    expected: 'yes'
+
+  - name: end of options
+    desc: End of options marker must be ignored.
+    schema: 'boolean --'
+    data: 'literal true'
+    expected: 'true'

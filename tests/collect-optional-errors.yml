@@ -1,0 +1,41 @@
+overview: |-
+  Collect data with "optional" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'optional -foobar {}'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    schema: 'optional'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'optional {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: failed validation
+    desc: Validation errors must be passed through.
+    schema: 'optional {number -max 5}'
+    data: 'number 6'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: empty data
+    desc: Empty data must be reported as optional.
+    schema: 'optional number'
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT IS_OPTIONAL'
+
+  - name: null data
+    desc: Null data must be reported as optional.
+    schema: 'optional number'
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_OPTIONAL'

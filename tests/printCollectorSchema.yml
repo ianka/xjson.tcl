@@ -1,0 +1,115 @@
+overview: |-
+  Print JSON collector schema.
+operation: printCollectorSchema
+tests:
+  - name: print parsed schema with defaults
+    desc: The schema has to be returned with -tabulator "\t" -maxldepth 4 and -maxweight 5 and default indent 0.
+    fparams: '::testClass'
+    cparams: '::testObject'
+    mparams: ''
+    schema: |-
+      array {
+      	array {
+      		array {
+      			object {
+      				b boolean
+      				i integer
+      				s string
+      			}
+      		}
+      	}
+      }
+    expected: |-
+      {array {array {array {object {
+      	"b" boolean
+      	"i" integer
+      	"s" string
+      }}}}}
+
+  - name: print parsed schema with alternative tabulator
+    desc: The schema has to be returned with -tabulator ".___"
+    fparams: '-tabulator ".___" ::testClass'
+    cparams: '::testObject'
+    mparams: ''
+    schema: |-
+      array {
+      	array {
+      		array {
+      			object {
+      				b boolean
+      				i integer
+      				s string
+      			}
+      		}
+      	}
+      }
+    expected: |-
+      {array {array {array {object {
+      .___"b" boolean
+      .___"i" integer
+      .___"s" string
+      }}}}}
+
+  - name: print parsed schema with alternative maxldepth
+    desc: The schema has to be returned with -maxldepth 2
+    fparams: '-maxldepth 2 ::testClass'
+    cparams: '::testObject'
+    mparams: ''
+    schema: |-
+      array {
+      	array {
+      		array {
+      			object {
+      				b boolean
+      				i integer
+      				s string
+      			}
+      		}
+      	}
+      }
+    expected: |-
+      {array {
+      	array {
+      		array {object {
+      			"b" boolean
+      			"i" integer
+      			"s" string
+      		}}}}}
+
+  - name: print parsed schema with alternative maxweight
+    desc: The schema has to be returned with -maxweight 2
+    fparams: '-maxweight 2 ::testClass'
+    cparams: '::testObject'
+    mparams: ''
+    schema: |-
+      array {anyof {boolean integer string}}
+    expected: |-
+      {array {anyof {
+      	boolean
+      	integer
+      	string
+      }}}
+
+  - name: print parsed schema with indent
+    desc: The schema has to be returned with indent 2.
+    fparams: '::testClass'
+    cparams: '::testObject'
+    mparams: '2'
+    schema: |-
+      array {
+      	array {
+      		array {
+      			object {
+      				b boolean
+      				i integer
+      				s string
+      			}
+      		}
+      	}
+      }
+    expected: |-
+      		{array {array {array {object {
+      			"b" boolean
+      			"i" integer
+      			"s" string
+      		}}}}}

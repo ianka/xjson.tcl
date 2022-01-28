@@ -1,0 +1,55 @@
+overview: |-
+  Make a JSON collector class. Error handling.
+operation: makeCollectorClass
+testerror: true
+testcode:  true
+tests:
+  - name: no class name
+    desc: Missing class name must throw an error.
+    fparams: ''
+    expected: 'XJSON COLLECTOR FACTORY WRONGARGS'
+
+  - name: no method definition
+    desc: Missing method definition must throw an error.
+    fparams: '::testClass foobar'
+    expected: 'XJSON COLLECTOR FACTORY WRONGARGS'
+
+  - name: method definition parameter option
+    desc: Method definition with wrong option must throw an error.
+    fparams: '::testClass foobar {-quux {} {}}'
+    expected: 'XJSON COLLECTOR FACTORY METHOD UNKNOWN_OPTION'
+
+  - name: method definition parameter methods arguments
+    desc: Method definition parameter methods argument names that aren't pure alphas must throw an error.
+    fparams: '::testClass foobar {quux a0 {}}'
+    expected: 'XJSON COLLECTOR FACTORY METHOD WRONGARGS'
+
+  - name: method definition parameter methods options
+    desc: Method definition parameter methods option names that aren't pure alphas must throw an error.
+    fparams: '::testClass foobar {quux -a0 {}}'
+    expected: 'XJSON COLLECTOR FACTORY METHOD WRONGARGS'
+
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    fparams: '-foobar ::testClass'
+    expected: 'XJSON COLLECTOR FACTORY UNKNOWN_OPTION'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    fparams: '-- -nobuiltins ::testClass'
+    expected: 'XJSON COLLECTOR FACTORY WRONGARGS'
+
+  - name: maxldepth option
+    desc: Maxldepth option used with a non-integer value must throw an error.
+    fparams: '-maxldepth x -- ::testClass'
+    expected: 'XJSON COLLECTOR FACTORY OPTION_TYPE_MISMATCH'
+
+  - name: maxweight option
+    desc: Maxweight option used with a non-integer value must throw an error.
+    fparams: '-maxweight x -- ::testClass'
+    expected: 'XJSON COLLECTOR FACTORY OPTION_TYPE_MISMATCH'
+
+  - name: maxlines option
+    desc: Maxweight option used with a non-integer value must throw an error.
+    fparams: '-maxweight x -- ::testClass'
+    expected: 'XJSON COLLECTOR FACTORY OPTION_TYPE_MISMATCH'

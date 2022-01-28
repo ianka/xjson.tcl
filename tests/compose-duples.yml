@@ -1,0 +1,304 @@
+overview: |-
+  Compose data with duples schema.
+operation: compose
+tests:
+  - name: duples empty schema
+    desc: Empty data has to pass "duples {}" schema.
+    schema: 'duples {}'
+    data: ''
+    expected: 'array {}'
+
+  - name: duples null schema null data
+    desc: Null elements have to be emitted.
+    schema: 'duples {n {optional -emitnull {null -null {}}}}'
+    data: '{n {}}'
+    expected: 'array {{literal null}}'
+
+  - name: duples boolean schema
+    desc: Boolean data has to pass "duples boolean" schema.
+    schema: 'duples {b boolean}'
+    data: '{b true} {b false}'
+    expected: 'array {{literal true} {literal false}}'
+
+  - name: mixed boolean null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {b {boolean -null {}}}'
+    data: '{b true} {} {b false}'
+    expected: 'array {{literal true} {literal false}}'
+
+  - name: mixed boolean marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {b {boolean -null {}}}'
+    data: '{b true} {b {}} {b false}'
+    expected: 'array {{literal true} {literal false}}'
+
+  - name: mixed boolean emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'duples {b {optional -emitnull {boolean -null {}}}}'
+    data: '{b true} {b {}} {b false}'
+    expected: 'array {{literal true} {literal null} {literal false}}'
+
+  - name: duples number schema
+    desc: Number data has to pass "duples number" schema.
+    schema: 'duples {n number}'
+    data: '{n 0} {n 123.0}'
+    expected: 'array {{number 0} {number 123.0}}'
+
+  - name: mixed number null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {n {number -null {}}}'
+    data: '{n 0} {} {n 123.0}'
+    expected: 'array {{number 0} {number 123.0}}'
+
+  - name: mixed number marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {n {number -null {}}}'
+    data: '{n 0} {n {}} {n 123}'
+    expected: 'array {{number 0} {number 123}}'
+
+  - name: mixed number emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'duples {n {optional -emitnull {number -null {}}}}'
+    data: '{n 0} {n {}} {n 123.0}'
+    expected: 'array {{number 0} {literal null} {number 123.0}}'
+
+  - name: duples integer schema
+    desc: List integer data has to pass "duples integer" schema.
+    schema: 'duples {i integer}'
+    data: '{i 0} {i 123}'
+    expected: 'array {{number 0} {number 123}}'
+
+  - name: mixed integer null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {i {integer -null {}}}'
+    data: '{i 0} {} {i 123}'
+    expected: 'array {{number 0} {number 123}}'
+
+  - name: mixed integer marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {i {integer -null {}}}'
+    data: '{i 0} {i {}} {i 123}'
+    expected: 'array {{number 0} {number 123}}'
+
+  - name: mixed integer emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'duples {i {optional -emitnull {integer -null {}}}}'
+    data: '{i 0} {i {}} {i 123}'
+    expected: 'array {{number 0} {literal null} {number 123}}'
+
+  - name: duples string schema
+    desc: List string data has to pass "duples string" schema.
+    schema: 'duples {s string}'
+    data: '{s ab} {s cde}'
+    expected: 'array {{string ab} {string cde}}'
+
+  - name: mixed string null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {s {string -null {}}}'
+    data: '{s ab} {} {s cde}'
+    expected: 'array {{string ab} {string cde}}'
+
+  - name: mixed string marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {s {string -null {}}}'
+    data: '{s ab} {s {}} {s cde}'
+    expected: 'array {{string ab} {string cde}}'
+
+  - name: mixed string emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'duples {s {optional -emitnull {string -null {}}}}'
+    data: '{s ab} {s {}} {s cde}'
+    expected: 'array {{string ab} {literal null} {string cde}}'
+
+  - name: duples array string schema
+    desc: List list string data has to pass "duples array string" schema.
+    schema: 'duples {a {array string}}'
+    data: '{a {ab cde}} {a {fg hij}}'
+    expected: 'array {{array {{string ab} {string cde}}} {array {{string fg} {string hij}}}}'
+
+  - name: mixed array null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {a {array -null {} string}}'
+    data: '{} {a {ab cde}} {a {fg hij}} {}'
+    expected: 'array {{array {{string ab} {string cde}}} {array {{string fg} {string hij}}}}'
+
+  - name: mixed array marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {a {array -null {} string}}'
+    data: '{a {}} {a {ab cde}} {a {fg hij}} {a {}}'
+    expected: 'array {{array {{string ab} {string cde}}} {array {{string fg} {string hij}}}}'
+
+  - name: mixed array emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'duples {a {optional -emitnull {array -null {} string}}}'
+    data: '{a {}} {a {ab cde}} {a {fg hij}} {a {}}'
+    expected: 'array {{literal null} {array {{string ab} {string cde}}} {array {{string fg} {string hij}}} {literal null}}'
+
+  - name: duples object string schema
+    desc: List dict string data has to pass "duples object string" schema.
+    schema: 'duples {o {object {s string}}}'
+    data: '{o {s ab}} {o {s hij}}'
+    expected: 'array {{object {s {string ab}}} {object {s {string hij}}}}'
+
+  - name: mixed object empty null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {o {object -null {} {s string}}}'
+    data: '{o {s ab}} {} {o {s hij}}'
+    expected: 'array {{object {s {string ab}}} {object {s {string hij}}}}'
+
+  - name: mixed object marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples {o {object -null {} {s string}}}'
+    data: '{o {s ab}} {o {}} {o {s hij}}'
+    expected: 'array {{object {s {string ab}}} {object {s {string hij}}}}'
+
+  - name: mixed object emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'duples {o {optional -emitnull {object -null {} {s string}}}}'
+    data: '{o {s ab}} {o {}} {o {s hij}}'
+    expected: 'array {{object {s {string ab}}} {literal null} {object {s {string hij}}}}'
+
+  - name: duples number string boolean schema
+    desc: Mixed list data has to pass "duples {n number s string b boolean}" schema.
+    schema: 'duples {n number s string b boolean}'
+    data: '{n 123 s foo b true} {n 456 s bar b false}'
+    expected: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+
+  - name: duples number string boolean mixed schema
+    desc: Duple schema determines array element order.
+    schema: 'duples {n number s string b boolean}'
+    data: '{s foo b true n 123} {b false n 456 s bar}'
+    expected: 'array {{number 123} {string foo} {literal true} {number 456} {string bar} {literal false}}'
+
+  - name: test option
+    desc: Array element count has to pass matching "-test" option.
+    schema: 'duples -test {$x == 6} {n number}'
+    data: '{n 0} {n 1} {n 2} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: test option null data
+    desc: Null elements have to be ignored.
+    schema: 'duples -test {$x == 6} {n {number -null {}}}'
+    data: '{n 0} {n 1} {n 2} {} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: test option marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples -test {$x == 6} {n {number -null {}}}'
+    data: '{n 0} {n 1} {n 2} {n {}} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: test option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'duples -test {$x == 6} {n {optional -emitnull {number -null {}}}}'
+    data: '{n 0} {n 1} {n 2} {n {}} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'duples -test {[interp issafe]} {n number}'
+    data: '{n 123}'
+    expected: 'array {{number 123}}'
+
+  - name: non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'duples -test {[info exists ::schemasandbox]} {n number}'
+    data: '{n 123}'
+    expected: 'array {{number 123}}'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'duples -isolate -test {![info exists ::schemasandbox]} {n number}'
+    data: '{n 123}'
+    expected: 'array {{number 123}}'
+
+  - name: max option
+    desc: Array element count has to pass matching "-max" option.
+    schema: 'duples -max 6 {n number}'
+    data: '{n 0} {n 1} {n 2} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: max option null data
+    desc: Null elements have to be ignored.
+    schema: 'duples -max 6 {n {number -null {}}}'
+    data: '{n 0} {n 1} {n 2} {} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: max option marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples -max 6 {n {number -null {}}}'
+    data: '{n 0} {n 1} {n 2} {n {}} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: max option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'duples -max 6 {n {optional -emitnull {number -null {}}}}'
+    data: '{n 0} {n 1} {n 2} {n {}} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+
+  - name: xmax option
+    desc: Array element count has to pass matching "-xmax" option.
+    schema: 'duples -xmax 7 {n number}'
+    data: '{n 0} {n 1} {n 2} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: xmax option null data
+    desc: Null elements have to be ignored.
+    schema: 'duples -xmax 7 {n {number -null {}}}'
+    data: '{n 0} {n 1} {n 2} {} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: xmax option marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples -xmax 7 {n {number -null {}}}'
+    data: '{n 0} {n 1} {n 2} {n {}} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: xmax option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'duples -xmax 7 {n {optional -emitnull {number -null {}}}}'
+    data: '{n 0} {n 1} {n 2} {n {}} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+
+  - name: min option
+    desc: Array element count has to pass matching "-min" option.
+    schema: 'duples -min 6 {n number}'
+    data: '{n 0} {n 1} {n 2} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: xmin option
+    desc: Array element count has to pass matching "-xmin" option.
+    schema: 'duples -xmin 5 {n number}'
+    data: '{n 0} {n 1} {n 2} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: multipleof option
+    desc: Array element count has to pass matching "-multipleof" option.
+    schema: 'duples -multipleof 2 {n number}'
+    data: '{n 0} {n 1} {n 2} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: multipleof option null data
+    desc: Null elements have to be ignored.
+    schema: 'duples -multipleof 2 {n {number -null {}}}'
+    data: '{n 0} {n 1} {n 2} {} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: multipleof option marked null data
+    desc: Null elements have to be ignored.
+    schema: 'duples -multipleof 2 {n {number -null {}}}'
+    data: '{n 0} {n 1} {n 2} {n {}} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+
+  - name: multipleof option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'duples -multipleof 2 {n {optional -emitnull {number -null {}}}}'
+    data: '{n 0} {n 1} {n 2} {n {}} {n 3} {n 4} {n 5}'
+    expected: 'array {{number 0} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'duples -- {}'
+    data: ''
+    expected: 'array {}'
+

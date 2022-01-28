@@ -1,0 +1,47 @@
+overview: |-
+  Collect data with oneof schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'oneof -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    schema: 'oneof'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'oneof {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: empty data
+    desc: Empty data must be reported as null.
+    schema: 'oneof {number string boolean}'
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: null data
+    desc: Null data must be reported as null.
+    schema: 'oneof {number string boolean}'
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: unmatching data
+    desc: Unmatching data must throw an error.
+    schema: 'oneof {{number -max 1} {number -max 3} {number -max 5}}'
+    data: 'number 10'
+    expected: 'XJSON COLLECTOR OBJECT ALTERNATIVES_MISMATCH'
+
+  - name: multiple matching data
+    desc: Data matching more than one schema must throw an error.
+    schema: 'oneof {{number -max 1} {number -max 3} {number -max 5}}'
+    data: 'number 3'
+    expected: 'XJSON COLLECTOR OBJECT ALTERNATIVES_MISMATCH'

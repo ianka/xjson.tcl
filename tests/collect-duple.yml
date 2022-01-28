@@ -1,0 +1,93 @@
+overview: |-
+  Collect data with duple schema.
+operation: collect
+tests:
+  - name: duple boolean schema
+    desc: Array boolean data has to pass "duple boolean" schema.
+    schema: 'duple {b boolean}'
+    data: 'array {{literal true}}'
+    expected: 'b true'
+
+  - name: mixed boolean empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duple {b boolean}'
+    data: 'array {{} {literal true} {literal null}}'
+    expected: 'b true'
+
+  - name: duple number schema
+    desc: Array number data has to pass "duple number" schema.
+    schema: 'duple {n number}'
+    data: 'array {{number 123.0}}'
+    expected: 'n 123.0'
+
+  - name: mixed number empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duple {n number}'
+    data: 'array {{} {literal null} {number 123.0}}'
+    expected: 'n 123.0'
+
+  - name: duple integer schema
+    desc: Array integer data has to pass "duple integer" schema.
+    schema: 'duple {i integer}'
+    data: 'array {{number 123}}'
+    expected: 'i 123'
+
+  - name: mixed integer empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duple {i integer}'
+    data: 'array {{} {literal null} {number 123}}'
+    expected: 'i 123'
+
+  - name: duple string schema
+    desc: Array string data has to pass "duple string" schema.
+    schema: 'duple {s string}'
+    data: 'array {{string ab}}'
+    expected: 's ab'
+
+  - name: mixed string empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duple {s string}'
+    data: 'array {{} {string cde} {literal null}}'
+    expected: 's cde'
+
+  - name: duple array string schema
+    desc: Array array string data has to pass "duple array string" schema.
+    schema: 'duple {a {array string}}'
+    data: 'array {{array {{string ab} {string cde}}}}'
+    expected: 'a {ab cde}'
+
+  - name: mixed array empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duple {a {array string}}'
+    data: 'array {{} {array {{string ab} {string cde}}} {literal null}}'
+    expected: 'a {ab cde}'
+
+  - name: duple object string schema
+    desc: Array object string data has to pass "array object string" schema.
+    schema: 'duple {o {object {s string}}}'
+    data: 'array {{object {s {string ab}}}}'
+    expected: 'o {s ab}'
+
+  - name: mixed object empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duple {o {object {s string}}}'
+    data: 'array {{} {object {s {string ab}}} {literal null}}'
+    expected: 'o {s ab}'
+
+  - name: duple number string boolean schema
+    desc: Mixed list data has to pass "duple {number string boolean}" schema.
+    schema: 'duple {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {literal true}}'
+    expected: 'n 123 s foo b true'
+
+  - name: mixed number string boolean empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'duple {n number s string b boolean}'
+    data: 'array {{number 123} {string foo} {} {literal true} {literal null}}'
+    expected: 'n 123 s foo b true'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'duple -- {b boolean}'
+    data: 'array {{literal true}}'
+    expected: 'b true'

@@ -1,0 +1,183 @@
+overview: |-
+  Collect data with array schema.
+operation: collect
+tests:
+  - name: array empty schema empty data
+    desc: Array empty data has to pass "array {}" schema.
+    schema: 'array {}'
+    data: 'array {}'
+    expected: ''
+
+  - name: array empty schema null data
+    desc: Array null data has to pass "array {}" schema.
+    schema: 'array {}'
+    data: 'array {{literal null}}'
+    expected: ''
+
+  - name: array null schema empty data
+    desc: Array empty data has to pass "array null" schema.
+    schema: 'array null'
+    data: 'array {}'
+    expected: ''
+
+  - name: array null schema null data
+    desc: Array null data has to pass "array null" schema.
+    schema: 'array null'
+    data: 'array {{literal null}}'
+    expected: ''
+
+  - name: array boolean schema
+    desc: Array boolean data has to pass "array boolean" schema.
+    schema: 'array boolean'
+    data: 'array {{literal true} {literal false}}'
+    expected: 'true false'
+
+  - name: mixed boolean empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array boolean'
+    data: 'array {{literal true} {} {literal null} {literal false}}'
+    expected: 'true false'
+
+  - name: array number schema
+    desc: Array number data has to pass "array number" schema.
+    schema: 'array number'
+    data: 'array {{number 0} {number 123.0}}'
+    expected: '0 123.0'
+
+  - name: mixed number empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array number'
+    data: 'array {{number 0} {} {literal null} {number 123.0}}'
+    expected: '0 123.0'
+
+  - name: array integer schema
+    desc: Array integer data has to pass "array integer" schema.
+    schema: 'array integer'
+    data: 'array {{number 0} {number 123}}'
+    expected: '0 123'
+
+  - name: mixed integer empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array integer'
+    data: 'array {{} {number 0} {literal null} {number 123}}'
+    expected: '0 123'
+
+  - name: array string schema
+    desc: Array string data has to pass "array string" schema.
+    schema: 'array string'
+    data: 'array {{string ab} {string cde}}'
+    expected: 'ab cde'
+
+  - name: mixed string empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array string'
+    data: 'array {{string ab} {} {string cde} {literal null}}'
+    expected: 'ab cde'
+
+  - name: array array string schema
+    desc: Array array string data has to pass "array array string" schema.
+    schema: 'array {array string}'
+    data: 'array {{array {{string ab} {string cde}}} {array {{string fg} {string hij}}}}'
+    expected: '{ab cde} {fg hij}'
+
+  - name: mixed array empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array {array string}'
+    data: 'array {{array {{literal null}}} {array {{string ab} {string cde}}} {} {literal null} {array {{string fg} {string hij}}} {array {}}}'
+    expected: '{} {ab cde} {fg hij} {}'
+
+  - name: array object string schema
+    desc: Array object string data has to pass "array object string" schema.
+    schema: 'array {object {s string}}'
+    data: 'array {{object {s {string ab}}} {object {s {string hij}}}}'
+    expected: '{s ab} {s hij}'
+
+  - name: mixed object empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array {object {s string}}'
+    data: 'array {{object {s {string ab}}} {} {literal null} {object {s {string hij}}}}'
+    expected: '{s ab} {s hij}'
+
+  - name: test option
+    desc: Array element count has to pass matching "-test" option.
+    schema: 'array -test {$x == 6} number'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: test option empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array -test {$x == 6} number'
+    data: 'array {{number 0} {number 1} {} {number 2} {number 3} {number 4} {literal null} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'array -test {[interp issafe]} number'
+    data: 'array {{number 123}}'
+    expected: '123'
+
+  - name: non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'array -test {[info exists ::schemasandbox]} number'
+    data: 'array {{number 123}}'
+    expected: '123'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'array -isolate -test {![info exists ::schemasandbox]} number'
+    data: 'array {{number 123}}'
+    expected: '123'
+
+  - name: max option
+    desc: Array element count has to pass matching "-max" option.
+    schema: 'array -max 6 number'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: max option null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array -max 6 number'
+    data: 'array {{number 0} {} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: xmax option
+    desc: Array element count has to pass matching "-xmax" option.
+    schema: 'array -xmax 7 number'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: xmax option null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array -max 7 number'
+    data: 'array {{number 0} {} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: min option
+    desc: Array element count has to pass matching "-min" option.
+    schema: 'array -min 6 number'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: xmin option
+    desc: Array element count has to pass matching "-xmin" option.
+    schema: 'array -xmin 5 number'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: multipleof option
+    desc: Array element count has to pass matching "-multipleof" option.
+    schema: 'array -multipleof 2 number'
+    data: 'array {{number 0} {number 1} {number 2} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: multipleof option null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'array -multipleof 3 number'
+    data: 'array {{number 0} {} {number 1} {number 2} {literal null} {number 3} {number 4} {number 5}}'
+    expected: '0 1 2 3 4 5'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'array -- {}'
+    data: 'array {}'
+    expected: ''

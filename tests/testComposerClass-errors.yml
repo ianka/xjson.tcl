@@ -1,0 +1,125 @@
+overview: |-
+  Test JSON composer class constructor. Error handling.
+operation: testComposerClass
+testerror: true
+testcode:  true
+tests:
+  - name: empty object name
+    desc: Empty object name must throw an error.
+    fparams: '::testClass'
+    cparams: '{}'
+    expected: 'TCL OO EMPTY_NAME'
+
+  - name: missing schema
+    desc: Missing schema must throw an error.
+    fparams: '::testClass'
+    cparams: '#auto'
+    expected: 'XJSON COMPOSER CLASS WRONGARGS'
+
+  - name: missing nested composer object name
+    desc: Missing nested composer object name must throw an error.
+    fparams: '::testClass'
+    cparams: '#auto {} {}'
+    expected: 'XJSON COMPOSER CLASS WRONGARGS'
+
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    fparams: '::testClass'
+    cparams: '#auto -foobar {}'
+    expected: 'XJSON COMPOSER CLASS UNKNOWN_OPTION'
+
+  - name: missing init option value
+    desc: Missing option value to the "-init" option must throw an error.
+    fparams: '::testClass'
+    cparams: '#auto -init'
+    expected: 'XJSON COMPOSER CLASS WRONGARGS'
+
+  - name: missing recursionlimit option value
+    desc: Missing option value to the "-recursionlimit" option must throw an error.
+    fparams: '::testClass'
+    cparams: '#auto -recursionlimit'
+    expected: 'XJSON COMPOSER CLASS WRONGARGS'
+
+  - name: recursionlimit option value
+    desc: Recursionlimit value that isn't an integer must throw an error.
+    fparams: '::testClass'
+    cparams: '#auto -recursionlimit foo {}'
+    expected: 'XJSON COMPOSER CLASS WRONGARGS'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    fparams: '::testClass'
+    cparams: '#auto -- -trusted {}'
+    expected: 'XJSON COMPOSER CLASS WRONGARGS'
+
+  - name: no builtins
+    desc: The -nobuiltins option disables all builtin composing methods, including "null".
+    fparams: '-nobuiltins ::testClass'
+    cparams: '::testObject {}'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: removed builtin
+    desc: Builtins may be removed selectively.
+    fparams: '::testClass number {}'
+    cparams: '::testObject number'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: schema pairs argument no pairs
+    desc: Lists with an odd number of elements to schemaPairs must throw an error.
+    fparams: '::testClass foobar {foobar schemaPairs{|} {}}'
+    cparams: '::testObject {foobar boolean}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: schema dict argument no dict
+    desc: Lists with an odd number of elements to schemaDicts must throw an error.
+    fparams: '::testClass foobar {foobar schemaDict{:} {}}'
+    cparams: '::testObject {foobar boolean}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: schema dict argument repeated keys
+    desc: Repeated keys in schemaDicts must throw an error.
+    fparams: '::testClass foobar {foobar schemaDict{:} {}}'
+    cparams: '::testObject {foobar {b boolean b boolean}}'
+    expected: 'XJSON SCHEMA AMBIGUOUS_FIELD'
+
+  - name: schema pairs option no pairs
+    desc: Lists with an odd number of elements to schemaPairs must throw an error.
+    fparams: '::testClass foobar {foobar -schemaPairs{|} {}}'
+    cparams: '::testObject {foobar -schemaPairs boolean}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: schema dict option no dict
+    desc: Lists with an odd number of elements to schemaDicts must throw an error.
+    fparams: '::testClass foobar {foobar -schemaDict{:} {}}'
+    cparams: '::testObject {foobar -schemaDict boolean}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: schema dict option repeated keys
+    desc: Repeated keys in schemaDicts must throw an error.
+    fparams: '::testClass foobar {foobar -schemaDict{:} {}}'
+    cparams: '::testObject {foobar -schemaDict {b boolean b boolean}}'
+    expected: 'XJSON SCHEMA AMBIGUOUS_FIELD'
+
+  - name: unsafe methods
+    desc: Use of unsafe methods in non-trusted schemas must throw an error.
+    fparams: '::testClass foobar {-unsafe foobar {} {}}'
+    cparams: '::testObject {foobar}'
+    expected: 'XJSON SCHEMA UNSAFE_METHOD'
+
+  - name: subschema unsafe methods
+    desc: Use of unsafe methods in non-trusted subschemas must throw an error.
+    fparams: '::testClass foobar {-unsafe foobar {} {}}'
+    cparams: '::testObject -trusted {dubious {foobar}}'
+    expected: 'XJSON SCHEMA UNSAFE_METHOD'
+
+  - name: code methods
+    desc: Use of methods that employ code in non-trusted schemas must throw an error.
+    fparams: '::testClass'
+    cparams: '::testObject {expr x {$x != 0} number}'
+    expected: 'XJSON SCHEMA ARGUMENT CODE_FORBIDDEN'
+
+  - name: subschema code methods
+    desc: Use of unsafe methods in dubious subschemas of trusted schemas must not throw an error.
+    fparams: '::testClass'
+    cparams: '::testObject -trusted {dubious {expr x {$x != 0} number}}'
+    expected: 'XJSON SCHEMA ARGUMENT CODE_FORBIDDEN'

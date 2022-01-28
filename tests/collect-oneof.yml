@@ -1,0 +1,15 @@
+overview: |-
+  Collect data with oneof schema.
+operation: collect
+tests:
+  - name: matching data
+    desc: Succeed with first matching schema.
+    schema: 'oneof {{number -max 10} {number -max 5}}'
+    data: 'number 7'
+    expected: '7'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'oneof -- boolean'
+    data: 'literal true'
+    expected: 'true'

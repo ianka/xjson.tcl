@@ -1,0 +1,93 @@
+overview: |-
+  Collect data with tuple schema.
+operation: collect
+tests:
+  - name: tuple boolean schema
+    desc: Array boolean data has to pass "tuple boolean boolean" schema.
+    schema: 'tuple {boolean boolean}'
+    data: 'array {{literal true} {literal false}}'
+    expected: 'true false'
+
+  - name: mixed boolean empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'tuple {boolean boolean}'
+    data: 'array {{literal true} {} {literal null} {literal false}}'
+    expected: 'true false'
+
+  - name: tuple number schema
+    desc: Array number data has to pass "tuple number number" schema.
+    schema: 'tuple {number number}'
+    data: 'array {{number 0} {number 123.0}}'
+    expected: '0 123.0'
+
+  - name: mixed number empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'tuple {number number}'
+    data: 'array {{number 0} {} {literal null} {number 123.0}}'
+    expected: '0 123.0'
+
+  - name: tuple integer schema
+    desc: Array integer data has to pass "tuple integer integer" schema.
+    schema: 'tuple {integer integer}'
+    data: 'array {{number 0} {number 123}}'
+    expected: '0 123'
+
+  - name: mixed integer empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'tuple {integer integer}'
+    data: 'array {{} {number 0} {literal null} {number 123}}'
+    expected: '0 123'
+
+  - name: tuple string schema
+    desc: Array string data has to pass "tuple string string" schema.
+    schema: 'tuple {string string}'
+    data: 'array {{string ab} {string cde}}'
+    expected: 'ab cde'
+
+  - name: mixed string empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'tuple {string string}'
+    data: 'array {{string ab} {} {string cde} {literal null}}'
+    expected: 'ab cde'
+
+  - name: tuple array string schema
+    desc: Array array string data has to pass "tuple array string array string" schema.
+    schema: 'tuple {{array string} {array string}}'
+    data: 'array {{array {{string ab} {string cde}}} {array {{string fg} {string hij}}}}'
+    expected: '{ab cde} {fg hij}'
+
+  - name: mixed array empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'tuple {{array string} {array string}}'
+    data: 'array {{array {{string ab} {string cde}}} {} {literal null} {array {{string fg} {string hij}}}}'
+    expected: '{ab cde} {fg hij}'
+
+  - name: tuple object string schema
+    desc: Array object string data has to pass "array object string object string" schema.
+    schema: 'tuple {{object {s string}} {object {s string}}}'
+    data: 'array {{object {s {string ab}}} {object {s {string hij}}}}'
+    expected: '{s ab} {s hij}'
+
+  - name: mixed object empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'tuple {{object {s string}} {object {s string}}}'
+    data: 'array {{object {s {string ab}}} {} {literal null} {object {s {string hij}}}}'
+    expected: '{s ab} {s hij}'
+
+  - name: tuple number string boolean schema
+    desc: Mixed list data has to pass "tuple {number string boolean}" schema.
+    schema: 'tuple {number string boolean}'
+    data: 'array {{number 123} {string foo} {literal true}}'
+    expected: '123 foo true'
+
+  - name: mixed number string boolean empty null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'tuple {number string boolean}'
+    data: 'array {{number 123} {string foo} {} {literal true} {literal null}}'
+    expected: '123 foo true'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'tuple -- boolean'
+    data: 'array {{literal true}}'
+    expected: 'true'

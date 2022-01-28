@@ -1,0 +1,41 @@
+overview: |-
+  Compose data with "optional" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'optional -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    schema: 'optional'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'optional {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: failed validation
+    desc: Validation errors must be passed through.
+    schema: 'optional {number -max 5}'
+    data: '6'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: null data
+    desc: Null data must be reported as optional.
+    schema: 'optional {number -null foobar}'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT IS_OPTIONAL'
+
+  - name: emitted null data
+    desc: Null data must be emitted if speficied.
+    schema: 'optional -emitnull {number -null foobar}'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT IS_EXPLICIT_NULL'

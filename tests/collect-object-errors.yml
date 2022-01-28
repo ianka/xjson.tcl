@@ -1,0 +1,101 @@
+overview: |-
+  Collect data with object schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'object -foobar {}'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'object -- -values {}'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    schema: 'object'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'object {} {}'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid schema argument
+    desc: invalid schema argument must throw an error.
+    schema: 'object {f foobar}'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: unmatching data
+    desc: unmatching data must throw an error.
+    schema: 'object {n number}'
+    data: 'array {{literal true}}'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'object {}'
+    data: 'foobar'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: invalid literal
+    desc: Invalid number data must throw an error.
+    schema: 'object {}'
+    data: 'literal foobar'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: empty data
+    desc: Empty data must throw an error.
+    schema: 'object {}'
+    data: ''
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: null data
+    desc: Literal null data must throw an error.
+    schema: 'object {}'
+    data: 'literal null'
+    expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: boolean data
+    desc: Boolean data must throw an error.
+    schema: 'object {}'
+    data: 'literal true'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: string data
+    desc: String data must throw an error.
+    schema: 'object {}'
+    data: 'string a'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: array data
+    desc: Array data must throw an error.
+    schema: 'object {}'
+    data: 'array {{number {}}}'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: ambiguous field
+    desc: Ambiguous field must throw an error.
+    schema: 'object {n number s string b boolean}'
+    data: 'object {n {number 123} b {literal false} s {string foo} b {literal true}}'
+    expected: 'XJSON COLLECTOR OBJECT AMBIGUOUS_FIELD'
+
+  - name: unknown field
+    desc: Unknown field must throw an error.
+    schema: 'object {n number s string b boolean}'
+    data: 'object {n {number 123} b {literal false} s {string foo} c {literal true}}'
+    expected: 'XJSON COLLECTOR OBJECT UNKNOWN_FIELD'
+
+  - name: missing field
+    desc: Unknown field must throw an error.
+    schema: 'object {n number s string b boolean}'
+    data: 'object {n {number 123} b {literal false}}'
+    expected: 'XJSON COLLECTOR OBJECT MISSING_FIELD'

@@ -1,0 +1,15 @@
+overview: |-
+  Compose data with const schema.
+operation: compose
+tests:
+  - name: ignore data
+    desc: Data must be ignored.
+    schema: 'const foo bar'
+    data: 'true'
+    expected: 'foo bar'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'const -- foo bar'
+    data: 'true'
+    expected: 'foo bar'

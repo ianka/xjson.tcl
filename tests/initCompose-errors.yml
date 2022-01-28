@@ -1,0 +1,12 @@
+overview: |-
+  Tests for the composer initscript. Error handling.
+operation: initCompose
+testerror: true
+testcode:  true
+tests:
+  - name: sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    init: 'puts foo'
+    schema: 'integer'
+    data: '123'
+    expected: 'TCL LOOKUP CHANNEL stdout'

@@ -1,0 +1,645 @@
+overview: |-
+  Collect data with string schema.
+operation: collect
+tests:
+  - name: string data
+    desc: String data has to pass "string" schema.
+    schema: 'string'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: is alnum option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is alnum'
+    data: 'string abcde01234'
+    expected: 'abcde01234'
+
+  - name: is alpha option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is alpha'
+    data: 'string abcdeäöüßABCDEÄÖÜ'
+    expected: 'abcdeäöüßABCDEÄÖÜ'
+
+  - name: is ascii option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is ascii'
+    data: 'string ?=/&_'
+    expected: '?=/&_'
+
+  - name: is boolean option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is boolean'
+    data: 'string no'
+    expected: 'no'
+
+  - name: is control option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is control'
+    data: 'string \t'
+    expected: '	'
+
+  - name: is digit option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is digit'
+    data: 'string 01234'
+    expected: '01234'
+
+  - name: is double option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is double'
+    data: 'string +123e-0'
+    expected: '+123e-0'
+
+  - name: is entier option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is entier'
+    data: 'string 123456789012345678901234567890123456789012345678901234567890'
+    expected: '123456789012345678901234567890123456789012345678901234567890'
+
+  - name: is false option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is false'
+    data: 'string 0'
+    expected: '0'
+
+  - name: is graph option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is graph'
+    data: 'string 語'
+    expected: '語'
+
+  - name: is integer option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is integer'
+    data: 'string 1234567890'
+    expected: '1234567890'
+
+  - name: is list option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is list'
+    data: 'string \ '
+    expected: ' '
+
+  - name: is lower option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is lower'
+    data: 'string abcdeäöüß'
+    expected: 'abcdeäöüß'
+
+  - name: is print option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is print'
+    data: 'string \ '
+    expected: ' '
+
+  - name: is punct option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is punct'
+    data: 'string 。'
+    expected: '。'
+
+  - name: is space option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is space'
+    data: 'string 　'
+    expected: '　'
+
+  - name: is true option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is true'
+    data: 'string 1'
+    expected: '1'
+
+  - name: is upper option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is upper'
+    data: 'string ABCDEÄÖÜ'
+    expected: 'ABCDEÄÖÜ'
+
+  - name: is wideinteger option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is wideinteger'
+    data: 'string 12345678901234567890'
+    expected: '12345678901234567890'
+
+  - name: is xdigit option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is xdigit'
+    data: 'string 0123456789abcdefABCDEF'
+    expected: '0123456789abcdefABCDEF'
+
+  - name: match option
+    desc: Value has to pass matching "-match" option.
+    schema: 'string -match *cde'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: nocase match option
+    desc: Value has to pass matching "-nocase -match" option.
+    schema: 'string -nocase -match *CdE'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: case option may only affect following matches
+    desc: Value has to pass matching "-nocase -match -case -match" option.
+    schema: 'string -nocase -match *CdE -case -match ab???'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: regexp option
+    desc: Value has to pass matching "-regexp" option.
+    schema: 'string -regexp .*cde'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: nocase regexp option
+    desc: Value has to pass matching "-nocase -regexp" option.
+    schema: 'string -nocase -regexp .*CdE'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: case option may only affect following regexpes
+    desc: Value has to pass matching "-nocase -regexp -case -regexp" option.
+    schema: 'string -nocase -regexp .*CdE -case -regexp ab...'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: regexp start option
+    desc: Value has to pass matching "-start -regexp" options.
+    schema: 'string -start 3 -regexp .{7}'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: test option
+    desc: Value has to pass matching "-test" option.
+    schema: 'string -test {$x eq "abcde"}'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: test sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'string -test {[interp issafe]}'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: test non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'string -test {[info exists ::schemasandbox]}'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: test isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'string -isolate -test {![info exists ::schemasandbox]}'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: max option
+    desc: Value has to pass matching "-max" option.
+    schema: 'string -max 5'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: xmax option
+    desc: Value has to pass matching "-xmax" option.
+    schema: 'string -xmax 6'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: min option
+    desc: Value has to pass matching "-min" option.
+    schema: 'string -min 5'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: xmin option
+    desc: Value has to pass matching "-xmin" option.
+    schema: 'string -xmin 4'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: multipleof option
+    desc: Value has to pass matching "-multipleof" option.
+    schema: 'string -multipleof 2'
+    data: 'string abcdef'
+    expected: 'abcdef'
+
+  - name: needle not found
+    desc: Value has to pass non-matching "-first -xmaxpos 0" options.
+    schema: 'string -first xy -xmaxpos 0'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: first maxpos option
+    desc: Value has to pass matching "-first -maxpos" options.
+    schema: 'string -first cd -maxpos 2'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first xmaxpos option
+    desc: Value has to pass matching "-first -xmaxpos" options.
+    schema: 'string -first cd -xmaxpos 3'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first minpos option
+    desc: Value has to pass matching "-first -minpos" options.
+    schema: 'string -first cd -minpos 2'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first xminpos option
+    desc: Value has to pass matching "-first -xminpos" options.
+    schema: 'string -first cd -xminpos 1'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first multipleofpos option
+    desc: Value has to pass matching "-first -multipleofpos" options.
+    schema: 'string -first cd -multipleofpos 2'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last maxpos option
+    desc: Value has to pass matching "-last -maxpos" options.
+    schema: 'string -last cd -maxpos 7'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last xmaxpos option
+    desc: Value has to pass matching "-last -xmaxpos" options.
+    schema: 'string -last cd -xmaxpos 8'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last minpos option
+    desc: Value has to pass matching "-last -minpos" options.
+    schema: 'string -last cd -minpos 7'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last xminpos option
+    desc: Value has to pass matching "-last -xminpos" options.
+    schema: 'string -last cd -xminpos 6'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last multipleofpos option
+    desc: Value has to pass matching "-last -multipleofpos" options.
+    schema: 'string -last bc -multipleofpos 2'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first maxpos start option
+    desc: Value has to pass matching "-start -first -maxpos" options.
+    schema: 'string -start 5 -first cd -maxpos 7'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first xmaxpos start option
+    desc: Value has to pass matching "-start -first -xmaxpos" options.
+    schema: 'string -start 5 -first cd -xmaxpos 8'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first minpos start option
+    desc: Value has to pass matching "-start -first -minpos" options.
+    schema: 'string -start 5 -first cd -minpos 7'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first xminpos start option
+    desc: Value has to pass matching "-start -first -xminpos" options.
+    schema: 'string -start 5 -first cd -xminpos 6'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: first multipleofpos start option
+    desc: Value has to pass matching "-start -first -multipleofpos" options.
+    schema: 'string -start 5 -first bc -multipleofpos 2'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last maxpos start option
+    desc: Value has to pass matching "-start -last -maxpos" options.
+    schema: 'string -start 5 -last cd -maxpos 2'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last xmaxpos start option
+    desc: Value has to pass matching "-start -last -xmaxpos" options.
+    schema: 'string -start 5 -last cd -xmaxpos 3'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last minpos start option
+    desc: Value has to pass matching "-start -last -minpos" options.
+    schema: 'string -start 5 -last cd -minpos 2'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last xminpos start option
+    desc: Value has to pass matching "-start -last -xminpos" options.
+    schema: 'string -start 5 -last cd -xminpos 1'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: last multipleofpos start option
+    desc: Value has to pass matching "-start -last -multipleofpos" options.
+    schema: 'string -start 5 -last cd -multipleofpos 2'
+    data: 'string abcdeabcde'
+    expected: 'abcdeabcde'
+
+  - name: before option
+    desc: Value has to pass matching "-before" option.
+    schema: 'string -before abcde'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: xbefore option
+    desc: Value has to pass matching "-xbefore" option.
+    schema: 'string -xbefore abcdf'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: behind option
+    desc: Value has to pass matching "-behind" option.
+    schema: 'string -behind abcde'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: xbehind option
+    desc: Value has to pass matching "-xbehind" option.
+    schema: 'string -xbehind abcdc'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: equal option
+    desc: Value has to pass matching "-equal" option.
+    schema: 'string -equal abcde'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: before clength option
+    desc: Value has to pass matching "-clength -before" options.
+    schema: 'string -clength 3 -before abcaaa'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: xbefore clength option
+    desc: Value has to pass matching "-clength -xbefore" options.
+    schema: 'string -clength 3 -xbefore abddd'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: behind clength option
+    desc: Value has to pass matching "-clength -behind" options.
+    schema: 'string -clength 3 -behind abcdd'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: xbehind clength option
+    desc: Value has to pass matching "-clength -xbehind" options.
+    schema: 'string -clength 3 -xbehind abbbb'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: equal clength option
+    desc: Value has to pass matching "-clength -equal" options.
+    schema: 'string -clength 3 -equal abc12'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: before nocase option
+    desc: Value has to pass matching "-nocase -before" options.
+    schema: 'string -nocase -before AbcDE'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: xbefore nocase option
+    desc: Value has to pass matching "-nocase -xbefore" option.
+    schema: 'string -nocase -xbefore AbcdF'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: behind nocase option
+    desc: Value has to pass matching "-nocase -behind" option.
+    schema: 'string -nocase -behind aBCde'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: xbehind nocase option
+    desc: Value has to pass matching "-nocase -xbehind" option.
+    schema: 'string -nocase -xbehind aBcDc'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: equal nocase option
+    desc: Value has to pass matching "-nocase equal" option.
+    schema: 'string -nocase -equal AbcdE'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: case option may only affect following string comparisons
+    desc: Value has to pass matching "-nocase -equal -case -xbehind" option.
+    schema: 'string -nocase -equal abcdE -case -xbehind abcdE'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: range option
+    desc: Value has to pass matching "-range -equal" option.
+    schema: 'string -range {1 3} -equal bcd'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: range options must stack
+    desc: Value has to pass matching "-range -equal -range -equal" option.
+    schema: 'string -range {1 3} -equal bcd -range {1 2} -equal cd'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: range index option
+    desc: Value has to pass matching "-range -equal" option with a single index.
+    schema: 'string -range 2 -equal c'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: reverse option
+    desc: Value has to pass matching "-reverse -regexp" option.
+    schema: 'string -reverse -regexp e.*'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: reverse options must stack
+    desc: Value has to pass matching "-reverse -regexp -range -reverse -regexp" option.
+    schema: 'string -reverse -regexp e.* -range {1 4} -reverse -regexp bc.*'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: tolower option
+    desc: Value has to pass matching "-tolower -equal" option.
+    schema: 'string -tolower {1 3} -equal AbcdE'
+    data: 'string ABcDE'
+    expected: 'ABcDE'
+
+  - name: tolower options must stack
+    desc: Value has to pass matching "-tolower -equal -tolower -equal" option.
+    schema: 'string -tolower {1 3} -equal AbcdE -tolower {0 1} -equal abcdE'
+    data: 'string ABcDE'
+    expected: 'ABcDE'
+
+  - name: tolower index option
+    desc: Value has to pass matching "-tolower -equal" option with a single index.
+    schema: 'string -tolower 0 -equal aBcDE'
+    data: 'string ABcDE'
+    expected: 'ABcDE'
+
+  - name: toupper option
+    desc: Value has to pass matching "-toupper -equal" option.
+    schema: 'string -toupper {1 3} -equal aBCDe'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: toupper options must stack
+    desc: Value has to pass matching "-toupper -equal -toupper -equal" option.
+    schema: 'string -toupper {1 3} -equal aBCDe -toupper {0 1} -equal ABCDe'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: toupper index option
+    desc: Value has to pass matching "-toupper -equal" option with a single index.
+    schema: 'string -toupper 0 -equal AbCde'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: totitle option
+    desc: Value has to pass matching "-totitle -equal" option.
+    schema: 'string -totitle {1 3} -equal aBcdE'
+    data: 'string abCdE'
+    expected: 'abCdE'
+
+  - name: totitle options must stack
+    desc: Value has to pass matching "-totitle -equal -totitle -equal" option.
+    schema: 'string -totitle {1 3} -equal aBcdE -totitle {0 1} -equal AbcdE'
+    data: 'string abCdE'
+    expected: 'abCdE'
+
+  - name: totitle index option
+    desc: Value has to pass matching "-totitle -equal" option with a single index.
+    schema: 'string -totitle 0 -equal AbCde'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: trim option
+    desc: Value has to pass matching "-trim -equal" option.
+    schema: 'string -trim ae -equal bCd'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: trim options must stack
+    desc: Value has to pass matching "-trim -trim -equal" option.
+    schema: 'string -trim ae -trim db -equal C'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: trim option with empty trimchars
+    desc: Value has to pass matching "-trim -equal" option with empty trimchars.
+    schema: 'string -trim {} -equal abCde'
+    data: 'string { abCde }'
+    expected: ' abCde '
+
+  - name: trimleft option
+    desc: Value has to pass matching "-trimleft -equal" option.
+    schema: 'string -trimleft ae -equal bCde'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: trimleft options must stack
+    desc: Value has to pass matching "-trimleft -trimleft -equal" option.
+    schema: 'string -trimleft ae -trimleft db -equal Cde'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: trimleft option with empty trimchars
+    desc: Value has to pass matching "-trimleft -equal" option with empty trimchars.
+    schema: 'string -trimleft {} -equal {abCde }'
+    data: 'string { abCde }'
+    expected: ' abCde '
+
+  - name: trimright option
+    desc: Value has to pass matching "-trimright -equal" option.
+    schema: 'string -trimright ae -equal abCd'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: trimright options must stack
+    desc: Value has to pass matching "-trimright -trimright -equal" option.
+    schema: 'string -trimright ae -trimright db -equal abC'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: trimright option with empty trimchars
+    desc: Value has to pass matching "-trimright -equal" option with empty trimchars.
+    schema: 'string -trimright {} -equal { abCde}'
+    data: 'string { abCde }'
+    expected: ' abCde '
+
+  - name: transform option
+    desc: Value has to pass matching "-transform -equal" option.
+    schema: 'string -transform {regsub -all C $x X} -equal abXde'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: transform options must stack
+    desc: Value has to pass matching "-transform -transform -equal" option.
+    schema: 'string -transform {regsub -all C $x X} -transform {regsub -all de $x Y} -equal abXY'
+    data: 'string abCde'
+    expected: 'abCde'
+
+  - name: transform sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'string -transform {if {[interp issafe]} {string reverse $x}} -equal edcba'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: transform non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'string -transform {if {[info exists ::schemasandbox]} {string reverse $x}} -equal edcba'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: transform isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'string -isolate -transform {if {![info exists ::schemasandbox]} {string reverse $x}} -equal edcba'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: map option
+    desc: Value has to pass matching "-map -equal" option.
+    schema: 'string -map {cd X b Y} -equal aYXe'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: nocase map option
+    desc: Value has to pass matching "-nocase -map -case -equal" option.
+    schema: 'string -nocase -map {cd X b Y} -case -equal aYXe'
+    data: 'string aBcDe'
+    expected: 'aBcDe'
+
+  - name: map options must stack
+    desc: Value has to pass matching "-map -map -equal" option.
+    schema: 'string -map {cd X b Y} -map {YX a a b} -equal bae'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: and option
+    desc: Test value has to be reset by "-and" option.
+    schema: 'string -map {cd X b Y} -equal aYXe -and -map {cd A b B} -equal aBAe'
+    data: 'string abcde'
+    expected: 'abcde'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'string --'
+    data: 'string 0'
+    expected: '0'

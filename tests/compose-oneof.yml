@@ -1,0 +1,21 @@
+overview: |-
+  Compose data with oneof schema.
+operation: compose
+tests:
+  - name: matching data
+    desc: Succeed with first matching schema.
+    schema: 'oneof {{stringop -map {A 3} {number -min 5}} {stringop -map {A 7} {number -min 5}}}'
+    data: 'A'
+    expected: 'number 7'
+
+  - name: mixed null data
+    desc: Mixed null data must be reported as the last matching schema.
+    schema: 'oneof {boolean number}'
+    data: 'false'
+    expected: 'literal false'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'oneof -- boolean'
+    data: 'true'
+    expected: 'literal true'

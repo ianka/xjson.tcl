@@ -1,0 +1,15 @@
+overview: |-
+  Collect data with "dubious" schema.
+operation: collect
+tests:
+  - name: pass through
+    desc: Data that validates against the schema must pass through.
+    schema: 'dubious boolean'
+    data: 'literal true'
+    expected: 'true'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'dubious -- boolean'
+    data: 'literal true'
+    expected: 'true'

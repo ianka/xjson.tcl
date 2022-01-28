@@ -1,0 +1,98 @@
+overview: |-
+  Test JSON collector class. Error log tests.
+operation: testCollectorClass
+testerror: true
+tests:
+  - name: top level error with tabulators
+    desc: Uplevel tabulators have to be removed when printing a log message.
+    fparams: '::testClass'
+    cparams: |-
+      ::testObject {array -foobar {
+      	object {
+      		b boolean
+      		i integer
+      		s string
+      	}
+      }}
+    expected: |-
+      invalid schema {array -foobar {
+      	object {
+      		b boolean
+      		i integer
+      		s string
+      	}
+      }} at /
+      method "array" does not take the option "-foobar".
+
+  - name: second level error with tabulators
+    desc: Uplevel tabulators have to be removed when printing a log message.
+    fparams: '::testClass'
+    cparams: |-
+      ::testObject {array {
+      	array -foobar {
+      		object {
+      			b boolean
+      			i integer
+      			s string
+      		}
+      	}
+      }}
+    expected: |-
+      invalid schema {array -foobar {
+      	object {
+      		b boolean
+      		i integer
+      		s string
+      	}
+      }} at /array/
+      method "array" does not take the option "-foobar".
+
+  - name: third level error with tabulators
+    desc: Uplevel tabulators have to be removed when printing a log message.
+    fparams: '::testClass'
+    cparams: |-
+      ::testObject {array {
+      	array {
+      		array -foobar {
+      			object {
+      				b boolean
+      				i integer
+      				s string
+      			}
+      		}
+      	}
+      }}
+    expected: |-
+      invalid schema {array -foobar {
+      	object {
+      		b boolean
+      		i integer
+      		s string
+      	}
+      }} at /array/array/
+      method "array" does not take the option "-foobar".
+
+  - name: third level error with custom tabulator
+    desc: Uplevel tabulators have to be removed when printing a log message.
+    fparams: '-tabulator ".___" ::testClass'
+    cparams: |-
+      ::testObject {array {
+      	array {
+      		array -foobar {
+      			object {
+      				b boolean
+      				i integer
+      				s string
+      			}
+      		}
+      	}
+      }}
+    expected: |-
+      invalid schema {array -foobar {
+      .___object {
+      .___.___b boolean
+      .___.___i integer
+      .___.___s string
+      .___}
+      }} at /array/array/
+      method "array" does not take the option "-foobar".

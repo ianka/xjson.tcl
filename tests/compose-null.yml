@@ -1,0 +1,23 @@
+overview: |-
+  Compose data with null schema.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: empty data
+    desc: Empty data has to pass "null -null {}" schema.
+    schema: 'null -null {}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: arbitrary null data
+    desc: Data "mynull" has to pass "null -null mynull" schema.
+    schema: 'null -null mynull'
+    data: 'mynull'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: end of options
+    desc: End of options marker after options must be ignored.
+    schema: 'null -null {} --'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

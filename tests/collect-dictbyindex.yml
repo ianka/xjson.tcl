@@ -1,0 +1,21 @@
+overview: |-
+  Collect data with dictbyindex schema.
+operation: collect
+tests:
+  - name: dict by index
+    desc: Form a dict by an index number.
+    schema: 'dictbyindex 1 {array {object -values {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: 'abc {1 true} def {2 false}'
+
+  - name: dict by multiple indices
+    desc: Form a dict by a list of index numbers.
+    schema: 'dictbyindex {0 2} {array {object -values {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: '{1 true} abc {2 false} def'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'dictbyindex -- 1 {array {object -values {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: 'abc {1 true} def {2 false}'

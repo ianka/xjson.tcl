@@ -1,0 +1,15 @@
+overview: |-
+  Compose data with anyof schema.
+operation: compose
+tests:
+  - name: matching data
+    desc: Succeed with first matching schema.
+    schema: 'anyof {{stringop -map {A 7} {number -min 5}} {stringop -map {A 3} {number -max 5}}}'
+    data: 'A'
+    expected: 'number 7'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'anyof -- boolean'
+    data: 'true'
+    expected: 'literal true'

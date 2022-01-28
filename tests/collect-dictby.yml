@@ -1,0 +1,21 @@
+overview: |-
+  Collect data with dictby schema.
+operation: collect
+tests:
+  - name: dict by keys
+    desc: Form a dict by a key name.
+    schema: 'dictby n {array {object {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: '1 {s abc b true} 2 {s def b false}'
+
+  - name: dict by multiple keys
+    desc: Form a dict by a list of key names.
+    schema: 'dictby {n s} {array {object {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: '{1 abc} {b true} {2 def} {b false}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'dictby -- n {array {object {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: '1 {s abc b true} 2 {s def b false}'

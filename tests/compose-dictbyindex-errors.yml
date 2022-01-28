@@ -1,0 +1,35 @@
+overview: |-
+  Compose data with "dictbyindex" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'dictbyindex -foobar {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'dictbyindex'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'dictbyindex {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'dictbyindex {} {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: dict by invalid index
+    desc: An invalid key must throw an error.
+    schema: 'dictbyindex q {array {object -values {n number s string b boolean}}}'
+    data: '1 {abc true} 2 {abc false}'
+    expected: 'XJSON SCHEMA ARGUMENT TYPE_MISMATCH'

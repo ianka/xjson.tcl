@@ -1,0 +1,13 @@
+overview: |-
+  Print JSON composer schema. Error handling.
+operation: printComposerSchema
+testerror: true
+testcode:  true
+tests:
+  - name: indent parameter
+    desc: A non-integer indent parameter must throw an error.
+    fparams: '::testClass'
+    cparams: '::testObject'
+    mparams: 'a'
+    schema: ''
+    expected: 'TCL VALUE NUMBER'

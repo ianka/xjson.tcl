@@ -1,0 +1,41 @@
+overview: |-
+  Collect data with "dictby" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'dictby -foobar {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'dictby'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'dictby {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'dictby {} {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: unknown key
+    desc: An unknown key must throw an error.
+    schema: 'dictby q {array {object {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 2} s {string def} b {literal false}}}}'
+    expected: 'XJSON COLLECTOR OBJECT UNKNOWN_FIELD'
+
+  - name: ambiguous key
+    desc: An ambiguous key value must throw an error.
+    schema: 'dictby n {array {object {n number s string b boolean}}}'
+    data: 'array {{object {n {number 1} s {string abc} b {literal true}}} {object {n {number 1} s {string def} b {literal false}}}}'
+    expected: 'XJSON COLLECTOR OBJECT AMBIGUOUS_FIELD'

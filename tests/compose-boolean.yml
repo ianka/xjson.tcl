@@ -1,0 +1,27 @@
+overview: |-
+  Compose data with boolean schema.
+operation: compose
+tests:
+  - name: tcl boolean true data
+    desc: Tcl boolean true value has to pass "boolean" schema.
+    schema: 'boolean'
+    data: 'yes'
+    expected: 'literal true'
+
+  - name: tcl boolean false data
+    desc: Tcl boolean false value has to pass "boolean" schema.
+    schema: 'boolean'
+    data: 'no'
+    expected: 'literal false'
+
+  - name: null value
+    desc: Null value that isn't met must be ignored.
+    schema: 'boolean -null {}'
+    data: 'yes'
+    expected: 'literal true'
+
+  - name: end of options
+    desc: End of options marker after options must be ignored.
+    schema: 'boolean --'
+    data: 'yes'
+    expected: 'literal true'

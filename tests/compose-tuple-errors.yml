@@ -1,0 +1,83 @@
+overview: |-
+  Compose data with tuple schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'tuple -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'tuple'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid schema argument
+    desc: invalid schema argument must throw an error.
+    schema: 'tuple foobar'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: unmatching data
+    desc: unmatching data must throw an error.
+    schema: 'tuple number'
+    data: 'true'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'tuple {}'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: invalid literal
+    desc: Invalid literal data must throw an error.
+    schema: 'tuple {}'
+    data: 'true'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: tuple empty schema null data
+    desc: Null elements have to be emitted.
+    schema: 'tuple -null {} {}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: tuple null schema null data
+    desc: Null elements have to be emitted.
+    schema: 'tuple -null {} null'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: max option
+    desc: Value that fails "-max 1" option must throw an error.
+    schema: 'tuple number'
+    data: '0 1'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: min option
+    desc: Value that fails "-min" option must throw an error.
+    schema: 'tuple number'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: min option null data
+    desc: Null elements have to be ignored.
+    schema: 'tuple {{number -null {}}}'
+    data: '{}'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'tuple -null {1 2 3} number'
+    data: '1 2 3'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: incomplete tuple
+    desc: Incomplete tuple must throw an error.
+    schema: 'tuple {number string boolean}'
+    data: '456 bar'
+    expected: 'XJSON COMPOSER OBJECT INCOMPLETE_TUPLE'

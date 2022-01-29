@@ -2075,11 +2075,10 @@ supplied by Tcl's __interp \-safe__ command\.
 
 Sandbox creation and destruction after use happens automatically whenever data
 is collected/composed\. That sandbox is shared by all methods in the schema and
-may also be used to pass values in global variables between methods\. In
-addition, a sandbox may be created manually for a sub\-schema by using the
-__sandbox__ method\. As a shortcut, all of the methods that have arguments or
-options allowing to specify Tcl code also have an option __\-isolate__, that
-creates a local sandbox just for that method automatically\.
+may also be used to pass values in global variables between methods\. As a
+shortcut, all of the methods that have arguments or options allowing to specify
+Tcl code also have an option __\-isolate__, that creates a local sandbox just
+for that method automatically\.
 
 # <a name='section13'></a>DECODED JSON FORMAT
 

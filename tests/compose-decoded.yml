@@ -1,0 +1,21 @@
+overview: |-
+  Compose data with "decoded" schema.
+operation: compose
+tests:
+  - name: any value
+    desc: Any value has to pass "decoded" schema.
+    schema: 'decoded'
+    data: 'array {{number 123} {string abc} {literal false}}'
+    expected: 'decoded {array {{number 123} {string abc} {literal false}}}'
+
+  - name: null value
+    desc: Null value that isn't met must be ignored.
+    schema: 'decoded -null {}'
+    data: 'array {{number 123} {string abc} {literal false}}'
+    expected: 'decoded {array {{number 123} {string abc} {literal false}}}'
+
+  - name: end of options
+    desc: End of options marker after options must be ignored.
+    schema: 'decoded --'
+    data: 'array {{number 123} {string abc} {literal false}}'
+    expected: 'decoded {array {{number 123} {string abc} {literal false}}}'

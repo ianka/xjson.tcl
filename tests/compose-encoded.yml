@@ -1,0 +1,21 @@
+overview: |-
+  Compose data with "encoded" schema.
+operation: compose
+tests:
+  - name: any value
+    desc: Any value has to pass "decoded" schema.
+    schema: 'encoded'
+    data: '[123,"abc",false]'
+    expected: 'encoded {[123,"abc",false]}'
+
+  - name: null value
+    desc: Null value that isn't met must be ignored.
+    schema: 'encoded -null {}'
+    data: '[123,"abc",false]'
+    expected: 'encoded {[123,"abc",false]}'
+
+  - name: end of options
+    desc: End of options marker after options must be ignored.
+    schema: 'encoded --'
+    data: '[123,"abc",false]'
+    expected: 'encoded {[123,"abc",false]}'

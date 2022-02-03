@@ -2,14 +2,14 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.0]
+[manpage_begin xjson n 1.1]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON decoder, validator, data collector, composer, encoder, pretty printer}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
 [keywords tcl json validation]
 [require Tcl 8.6-]
 [require itcl 4.0-]
-[require xjson [opt 1.0]]
+[require xjson [opt 1.1]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -465,6 +465,54 @@ set data {
 					[list_end]
 				[list_end]
 			[list_end]
+
+		[cmd_def decoded]
+			[list_begin definitions]
+			[def "for collecting"]
+				This method does not exist in collector objects as the [cmd "::xjson::decode"]
+				function never returns a [const "decoded"] type.
+
+			[def "for composing"]
+				Validates a decoded JSON input [emph "value"] as understood by [cmd "::xjson::encode"].
+				See [sectref "DECODED JSON FORMAT"] for details.
+				[para]
+				Returns [const "decoded [arg value]"].
+
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+				[list_end]
+			[list_end]
+
+		[cmd_def encoded]
+			[list_begin definitions]
+			[def "for collecting"]
+				This method does not exist in collector objects as the [cmd "::xjson::decode"]
+				function never returns an [const "encoded"] type.
+
+			[def "for composing"]
+				Validates a JSON input [emph "value"] as understood by [cmd "::xjson::decode"].
+				[para]
+				Returns [const "encoded [arg value]"].
+
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+				[list_end]
+			[list_end]
+
+			[emph "Note:"] The [arg methodName] for this method as used by the
+			[cmd ::xjson::makeComposerClass] class factory procedures is [cmd decoded].
 
 		[cmd_def "integer [arg [opt options]]"]
 			[list_begin definitions]
@@ -1639,7 +1687,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array boolean const default expr dictby dictbyindex discard dubious escalate format if nest not null number object oneof optional otherwise pass regsub string stringop switch"]
+		[cmd "allof anyof apply array boolean const decoded default expr dictby dictbyindex discard dubious escalate format if nest not null number object oneof optional otherwise pass regsub string stringop switch"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -1662,7 +1710,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array boolean const default duple duples expr dictby dictbyindex discard dubious escalate format if integer lmap nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples"]
+		[cmd "allof anyof apply array boolean const decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]
@@ -1781,7 +1829,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.0/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.1/])
 	for examples on how to write your own custom methods.
 
 [section "NULL HANDLING"]

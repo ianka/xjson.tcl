@@ -1,0 +1,41 @@
+overview: |-
+  Compose data with "decoded" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'decoded -foobar'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing option value
+    desc: Missing option value to the "-null" option must throw an error.
+    schema: 'decoded -null'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'decoded -- -null {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'decoded {}'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'decoded -null {literal true}'
+    data: 'literal true'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: invalid decoded json
+    desc: Invalid decoded JSON must throw an error.
+    schema: 'decoded'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'

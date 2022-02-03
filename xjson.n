@@ -2,7 +2,7 @@
 '\" Generated from file '' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
 '\"
-.TH "xjson" n 1\&.0  "xjson\&.tcl"
+.TH "xjson" n 1\&.1  "xjson\&.tcl"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -278,7 +278,7 @@ package require \fBTcl  8\&.6-\fR
 .sp
 package require \fBitcl  4\&.0-\fR
 .sp
-package require \fBxjson  ?1\&.0?\fR
+package require \fBxjson  ?1\&.1?\fR
 .sp
 \fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
 .sp
@@ -730,6 +730,56 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 .RE
 .RE
 .RE
+.TP
+\fBdecoded\fR
+.RS
+.TP
+for collecting
+This method does not exist in collector objects as the \fB::xjson::decode\fR
+function never returns a \fBdecoded\fR type\&.
+.TP
+for composing
+Validates a decoded JSON input \fIvalue\fR as understood by \fB::xjson::encode\fR\&.
+See \fBDECODED JSON FORMAT\fR for details\&.
+.sp
+Returns \fBdecoded \fIvalue\fR\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.TP
+\fBencoded\fR
+.RS
+.TP
+for collecting
+This method does not exist in collector objects as the \fB::xjson::decode\fR
+function never returns an \fBencoded\fR type\&.
+.TP
+for composing
+Validates a JSON input \fIvalue\fR as understood by \fB::xjson::decode\fR\&.
+.sp
+Returns \fBencoded \fIvalue\fR\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.IP
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeComposerClass\fR class factory procedures is \fBdecoded\fR\&.
 .TP
 \fBinteger \fI?options?\fR\fR
 .RS
@@ -1958,7 +2008,7 @@ parameters and options\&. They are sorted out from within their Tcl body by the
 actual method name used in the schema then\&.
 The following \fImethodName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array boolean const default expr dictby dictbyindex discard dubious escalate format if nest not null number object oneof optional otherwise pass regsub string stringop switch\fR
+\fBallof anyof apply array boolean const decoded default expr dictby dictbyindex discard dubious escalate format if nest not null number object oneof optional otherwise pass regsub string stringop switch\fR
 .sp
 You may of course overwrite those as well but it will break compatibility with
 existing schemas\&. For forward compatibility with new versions of
@@ -1980,7 +2030,7 @@ or (simplified)
 In the simplified variant, the method has only one name and one set of parameters\&.
 The following \fIaliasName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array boolean const default duple duples expr dictby dictbyindex discard dubious escalate format if integer lmap nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples\fR
+\fBallof anyof apply array boolean const decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples\fR
 .RS
 .TP
 The following \fImethodOptions\fR may be specified:
@@ -2096,7 +2146,7 @@ The \fIbody\fR is the Tcl body of the method\&.
 .PP
 See the files
 "\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
-from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.0/\fR")
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.1/\fR")
 for examples on how to write your own custom methods\&.
 .SH "NULL HANDLING"
 The procedures \fB::xjson::encode\fR and \fB::xjson::decode\fR treat JSON

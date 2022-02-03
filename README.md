@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.0  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.1  "xjson\.tcl")
 
 # NAME
 
@@ -59,7 +59,7 @@ pretty printer
 
 package require Tcl 8\.6\-  
 package require itcl 4\.0\-  
-package require xjson ?1\.0?  
+package require xjson ?1\.1?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
@@ -568,6 +568,57 @@ it is used inside the schema, unless otherwise noted\.
                     Specifies a Tcl input value that should be treated as
                     __null__\. See the section [NULL
                     HANDLING](#section10) for additional information\.
+
+      * __decoded__
+
+          + for collecting
+
+            This method does not exist in collector objects as the
+            __::xjson::decode__ function never returns a __decoded__
+            type\.
+
+          + for composing
+
+            Validates a decoded JSON input *value* as understood by
+            __::xjson::encode__\. See [DECODED JSON FORMAT](#section13)
+            for details\.
+
+            Returns __decoded *value*__\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section10) for additional information\.
+
+      * __encoded__
+
+          + for collecting
+
+            This method does not exist in collector objects as the
+            __::xjson::decode__ function never returns an __encoded__
+            type\.
+
+          + for composing
+
+            Validates a JSON input *value* as understood by
+            __::xjson::decode__\.
+
+            Returns __encoded *value*__\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section10) for additional information\.
+
+        *Note:* The *methodName* for this method as used by the
+        __::xjson::makeComposerClass__ class factory procedures is
+        __decoded__\.
 
       * __integer *?options?*__
 
@@ -1816,9 +1867,9 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     the actual method name used in the schema then\. The following
     *methodName*s are reserved for the builtin methods:
 
-    __allof anyof apply array boolean const default expr dictby dictbyindex
-    discard dubious escalate format if nest not null number object oneof
-    optional otherwise pass regsub string stringop switch__
+    __allof anyof apply array boolean const decoded default expr dictby
+    dictbyindex discard dubious escalate format if nest not null number object
+    oneof optional otherwise pass regsub string stringop switch__
 
     You may of course overwrite those as well but it will break compatibility
     with existing schemas\. For forward compatibility with new versions of
@@ -1842,10 +1893,10 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     parameters\. The following *aliasName*s are reserved for the builtin
     methods:
 
-    __allof anyof apply array boolean const default duple duples expr dictby
-    dictbyindex discard dubious escalate format if integer lmap nest not null
-    number object oneof optional otherwise pass regsub string stringop switch
-    tuple tuples__
+    __allof anyof apply array boolean const decoded default duple duples
+    encoded expr dictby dictbyindex discard dubious escalate format if integer
+    lmap nest not null number object oneof optional otherwise pass regsub string
+    stringop switch tuple tuples__
 
       * The following *methodOptions* may be specified:
 
@@ -1990,7 +2041,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.0/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.1/"\) for
 examples on how to write your own custom methods\.
 
 # <a name='section10'></a>NULL HANDLING

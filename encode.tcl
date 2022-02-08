@@ -57,7 +57,7 @@ proc ::xjson::encode {data {indent 0} {tabulator "\t"} {nest 0}} {
 			if {$tabulator ne {}} {
 				## Pretty printed output
 				## Get the length of the longest key string for value indentation.
-				set keylength [::tcl::mathfunc::max {*}[lmap {key element} $value {string length $key}]]
+				set keylength [::tcl::mathfunc::max 0 {*}[lmap {key element} $value {string length $key}]]
 				incr keylength +3
 				set format "%-${keylength}s"
 			} else {

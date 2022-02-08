@@ -2,14 +2,14 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.1]
+[manpage_begin xjson n 1.1.1]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON decoder, validator, data collector, composer, encoder, pretty printer}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
 [keywords tcl json validation]
 [require Tcl 8.6-]
 [require itcl 4.0-]
-[require xjson [opt 1.1]]
+[require xjson [opt 1.1.1]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -1829,7 +1829,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.1/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.1.1/])
 	for examples on how to write your own custom methods.
 
 [section "NULL HANDLING"]

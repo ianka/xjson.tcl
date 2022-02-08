@@ -2,7 +2,7 @@
 '\" Generated from file '' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
 '\"
-.TH "xjson" n 1\&.1  "xjson\&.tcl"
+.TH "xjson" n 1\&.1\&.1  "xjson\&.tcl"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -278,7 +278,7 @@ package require \fBTcl  8\&.6-\fR
 .sp
 package require \fBitcl  4\&.0-\fR
 .sp
-package require \fBxjson  ?1\&.1?\fR
+package require \fBxjson  ?1\&.1\&.1?\fR
 .sp
 \fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
 .sp
@@ -2146,7 +2146,7 @@ The \fIbody\fR is the Tcl body of the method\&.
 .PP
 See the files
 "\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
-from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.1/\fR")
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.1\&.1/\fR")
 for examples on how to write your own custom methods\&.
 .SH "NULL HANDLING"
 The procedures \fB::xjson::encode\fR and \fB::xjson::decode\fR treat JSON

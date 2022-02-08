@@ -43,8 +43,8 @@ proc ::xjson::encode {data {indent 0} {tabulator "\t"} {nest 0}} {
 			}
 
 			## Append the array.
-			if {$tabulator ne {}} {
-				## Pretty printed output
+			if {$tabulator ne {} && $lines ne {}} {
+				## Pretty printed output.
 				append result "\[\n" [join $lines ",\n"] "\n" [string repeat $tabulator $indent] "\]"
 			} else {
 				## Plain output.
@@ -55,7 +55,7 @@ proc ::xjson::encode {data {indent 0} {tabulator "\t"} {nest 0}} {
 			## Recursively encode each object key and element.
 			## Get object key format.
 			if {$tabulator ne {}} {
-				## Pretty printed output
+				## Pretty printed output.
 				## Get the length of the longest key string for value indentation.
 				set keylength [::tcl::mathfunc::max 0 {*}[lmap {key element} $value {string length $key}]]
 				incr keylength +3
@@ -74,7 +74,7 @@ proc ::xjson::encode {data {indent 0} {tabulator "\t"} {nest 0}} {
 			}
 
 			## Append the object.
-			if {$tabulator ne {}} {
+			if {$tabulator ne {} && $lines ne {}} {
 				## Pretty printed output
 				append result "{\n" [join $lines ",\n"] "\n" [string repeat $tabulator $indent] "}"
 			} else {

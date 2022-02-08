@@ -123,6 +123,11 @@ tests:
       	3
       ]
 
+  - name: empty array
+    desc: Empty arrays must be encoded and pretty-printed in a compact way.
+    data: 'array {}'
+    expected: '[]'
+
   - name: object
     desc: Objects must be pretty-printed without an unnecessary comma on the last component.
     data: 'object {foo {number 0} bar {number 1} quux {number 2}}'
@@ -132,3 +137,8 @@ tests:
       	"bar":  1,
       	"quux": 2
       }
+
+  - name: empty object
+    desc: Empty objects must be encoded and pretty-printed in a compact way.
+    data: 'object {}'
+    expected: '{}'

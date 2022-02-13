@@ -1,7 +1,7 @@
 ##
 ## xjson - extended JSON functions for tcl
 ##
-## Basic definitions for the decode.tcl, encode.tcl, and collector.tcl files.
+## Basic definitions for the other source files.
 ##
 ## Written by Jan Kandziora <jjj@gmx.de>
 ##
@@ -11,9 +11,11 @@
 ##
 
 
-## This software requires Tcl 8.6 or higher, as well as
-## itcl 4.0 or higher, which is included in the Tcl 8.6 distribution.
+## This software requires Tcl 8.6 or higher.
 package require Tcl 8.6-
+
+## ::xjson::makeCollectorClass and ::xjson::makeComposerClass need itcl 4.0 or higher.
+## That's included in the Tcl 8.6 distribution.
 package require itcl 4.0-
 
 ## Create a namespace for all xjson functions.

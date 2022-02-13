@@ -47,20 +47,9 @@ proc ::xjson::decode {json {indexVar {}}} {
 					[string cat "invalid JSON ..." [string trim [string range $json $index-20 $index+60]] "... at index " $index ": " \
 						"strings must end with a close quote."]
 			}
-			set value [string range $json {*}$sub]
 
 			## Process all backslash substitutions in the value.
-			set start 0
-			while {[regexp -indices -start $start {\\u[[:xdigit:]]{4}|\\[^u]} $value sub]} {
-				set char [string index $value [expr {[lindex $sub 0]+1}]]
-				switch -- $char {
-					u {set char [subst [string range $value {*}$sub]]}
-					b {set char \b} f {set char \f} n {set char \n}
-					r {set char \r} t {set char \t}
-				}
-				set value [string replace $value {*}$sub $char]
-				set start [expr {[lindex $sub 0]+1}]
-			}
+			set value [_decodeString [string range $json {*}$sub]]
 		}
 		"\{" - "\[" {
 			## JSON objects/arrays start with open brace/bracket.
@@ -130,7 +119,7 @@ proc ::xjson::decode {json {indexVar {}}} {
 					[string cat "invalid JSON ..." [string trim [string range $json $index-20 $index+60]] "... at index " $index ": " \
 						"not a valid number."]
 			}
-			set value [expr [string range $json {*}$range]]
+			set value [_decodeNumber [string range $json {*}$range]]
 		}
 		default {
 			## JSON allows only the above-listed types.
@@ -152,4 +141,28 @@ proc ::xjson::decode {json {indexVar {}}} {
 
 	## Return the type and value.
 	list $type $value
+}
+
+
+## Decode a string.
+proc ::xjson::_decodeString {s} {
+	set start 0
+	while {[regexp -indices -start $start {\\u[[:xdigit:]]{4}|\\[^u]} $s sub]} {
+		set char [string index $s [expr {[lindex $sub 0]+1}]]
+		switch -- $char {
+			u {set char [subst [string range $s {*}$sub]]}
+			b {set char \b} f {set char \f} n {set char \n}
+			r {set char \r} t {set char \t}
+		}
+		set s [string replace $s {*}$sub $char]
+		set start [expr {[lindex $sub 0]+1}]
+	}
+
+	return $s
+}
+
+
+## Decode a number
+proc ::xjson::_decodeNumber {n} {
+	expr {$n}
 }

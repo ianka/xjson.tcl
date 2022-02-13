@@ -69,7 +69,7 @@ proc ::xjson::encode {data {indent 0} {tabulator "\t"} {nest 0}} {
 			set lines {}
 			dict for {key element} $value {
 				lappend lines [string cat [string repeat $tabulator [expr {$indent+1}]] "\"" \
-					[format $format [string cat [string map $::xjson::stringmap $key] "\":"]] \
+					[format $format [string cat [_encodeString $key] "\":"]] \
 					[encode $element [expr {$indent+1}] $tabulator [expr {$nest+1}]]]
 			}
 
@@ -83,22 +83,12 @@ proc ::xjson::encode {data {indent 0} {tabulator "\t"} {nest 0}} {
 			}
 		}
 		"string" {
-			## Append recoded string.
-			append result "\"" [string map $::xjson::stringmap $value] "\""
+			## Append encoded string.
+			append result "\"" [_encodeString $value] "\""
 		}
 		"number" {
 			## Attempt to normalize the number to comply with the JSON standard.
-			regsub {^[\f\n\r\t\v ]+} $value  {}      rvalue ;# Strip leading space.
-			regsub {[\f\n\r\t\v ]+$} $rvalue {}      rvalue ;# Strip trailing space.
-			regsub {^\+(?=[\d.])}    $rvalue {}      rvalue ;# Strip leading plus.
-			regsub {^(-?)0+(?=\d)}   $rvalue {\1}    rvalue ;# Strip leading zeroes.
-			regsub {(\.\d*[1-9])0+}  $rvalue {\1}    rvalue ;# Strip trailing zeroes.
-			regsub {E}               $rvalue {e}     rvalue ;# Normalize exponent, 1.
-			regsub {^(-?\d+)e}       $rvalue {\1.0e} rvalue ;# Normalize exponent, 2.
-			regsub {\.e}             $rvalue {.0e}   rvalue ;# Normalize exponent, 3.
-			regsub {e(\d)}           $rvalue {e+\1}  rvalue ;# Normalize exponent, 4.
-			regsub {(^|-)\.(?=\d)}   $rvalue {\10.}  rvalue ;# Prefix leading dot.
-			regsub {(\d)\.(?=\D|$)}  $rvalue {\1.0}  rvalue ;# Suffix trailing dot.
+			set rvalue [_encodeNumber $value]
 			if {![regexp {^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][-+]?\d+)?$} $rvalue]} {
 				return -code error -errorcode {XJSON ENCODE INVALID_NUMBER} \
 					[string cat "invalid JSON number \"" $value "\": see https://tools.ietf.org/html/rfc7159#section-6 ."]
@@ -128,13 +118,35 @@ proc ::xjson::encode {data {indent 0} {tabulator "\t"} {nest 0}} {
 		default {
 			## Invalid type.
 			return -code error -errorcode {XJSON ENCODE UNKNOWN_TYPE} \
-				[string cat "invalid JSON type \"" $type "\": must be array, object, string, number, " \
-					"literal, encoded, decoded."]
+				[string cat "invalid JSON type \"" $type "\": must be array, object, string, number, literal, encoded, decoded."]
 		}
 	}
 
 	## Return result.
 	return $result
+}
+
+
+## Encode a string with the mapping.
+proc ::xjson::_encodeString {s} {
+	string map $::xjson::stringmap $s
+}
+
+
+## Encode a number to comply with the JSON standard.
+proc ::xjson::_encodeNumber {n} {
+	regsub {^[\f\n\r\t\v ]+} $n {}      n ;# Strip leading space.
+	regsub {[\f\n\r\t\v ]+$} $n {}      n ;# Strip trailing space.
+	regsub {^\+(?=[\d.])}    $n {}      n ;# Strip leading plus.
+	regsub {^(-?)0+(?=\d)}   $n {\1}    n ;# Strip leading zeroes.
+	regsub {(\.\d*[1-9])0+}  $n {\1}    n ;# Strip trailing zeroes.
+	regsub {E}               $n {e}     n ;# Normalize exponent, 1.
+	regsub {^(-?\d+)e}       $n {\1.0e} n ;# Normalize exponent, 2.
+	regsub {\.e}             $n {.0e}   n ;# Normalize exponent, 3.
+	regsub {e(\d)}           $n {e+\1}  n ;# Normalize exponent, 4.
+	regsub {(^|-)\.(?=\d)}   $n {\10.}  n ;# Prefix leading dot.
+	regsub {(\d)\.(?=\D|$)}  $n {\1.0}  n ;# Suffix trailing dot.
+	return $n
 }
 
 

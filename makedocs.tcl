@@ -2,17 +2,18 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.1.1]
+[manpage_begin xjson n 1.2]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON decoder, validator, data collector, composer, encoder, pretty printer}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
 [keywords tcl json validation]
 [require Tcl 8.6-]
 [require itcl 4.0-]
-[require xjson [opt 1.1.1]]
+[require xjson [opt 1.2]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
+[usage [cmd ::xjson::recode] [arg decodedJson]]
 [usage [cmd ::xjson::makeCollectorClass] [opt [arg options]] [arg collectorClassName] [opt [arg {methodName methodDefinition ...}]]]
 [usage [arg collectorClassName] [arg collectorObjName] [opt [arg options]] [opt [arg {nestedCollectorName nestedCollectorObjName ...}]] [arg schema]]
 [usage [arg collectorObjName] [method collect] [arg decodedJson] [opt [arg path]]]
@@ -25,7 +26,8 @@ set data {
 [description]
 	This package is a set of extended JSON functions for Tcl. It allows decoding,
 	encoding, and pretty-printing of JSON structures from Tcl structures and vice
-	versa.
+	versa. In addition, decoded JSON that was created by functions outside of this
+	package may be recoded.
 	[para]
 	The main feature of this package however are two class factories that produce
 	itcl classes that construct validator and data collector/composer objects.
@@ -89,6 +91,23 @@ set data {
 		format accepted by this procedure.
 		[para]
 		See the section [sectref "ENCODING EXAMPLES"] for examples.
+
+	[def "[cmd ::xjson::recode] [arg decodedJson]"]
+		Recode the given Tcl [arg decodedJson] data so that the included [const encoded]
+		and	[const decoded] data types are replaced by their encoded and decoded
+		equivalents. The other types are recoded as [cmd ::xjson::encode] followed by
+		a subsequent [cmd ::xjson::decode] would do it. This may be used to	check data
+		coming from sources outside of this library for syntatic correctness as well as
+		for feeding it into a collector class.
+		[para]
+		[emph "Note:"] This function is basically a very lightweight alternative to
+		[example_begin]
+		% ::xjson::decode [lb]::xjson::encode [arg decodedJson][rb]
+		[example_end]
+		See the section [sectref "DECODED JSON FORMAT"] for a description of the data
+		format accepted by this procedure.
+		[para]
+		See the section [sectref "RECODING EXAMPLES"] for examples.
 
 	[def "[cmd ::xjson::makeCollectorClass] [opt [arg options]] [arg collectorClassName] [opt [arg {methodName methodDefinition ...}]]"]
 
@@ -1829,7 +1848,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.1.1/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.2/])
 	for examples on how to write your own custom methods.
 
 [section "NULL HANDLING"]
@@ -2038,8 +2057,28 @@ set data {
 	[example_begin]
 		% set type decoded
 		% set data {string hello}
-		% ::xjson::encode [lb]list object [lb]list foo [lb]list $type $data[rb] bar {number 42} quux {literal null}[rb][rb] 0 {}
+		% ::xjson::encode [lb]list object [lb]list foo [lb]list $type $data[rb] bar {number +42} quux {literal null}[rb][rb] 0 {}
 		{"foo":"hello","bar":42,"quux":null}
+
+	[example_end]
+
+[section "RECODING EXAMPLES"]
+	Recode pre-encoded data.
+
+	[example_begin]
+		% set json {"oof rab"}
+		% ::xjson::recode [lb]list object [lb]list foo [lb]list encoded $json[rb] bar {number +42} quux {literal null}[rb][rb]
+		object {foo {string {oof rab}} bar {number 42} quux {literal null}}
+
+	[example_end]
+
+	Encode with nested decoded data.
+
+	[example_begin]
+		% set type decoded
+		% set data {string "oof rab"}
+		% ::xjson::recode [lb]list object [lb]list foo [lb]list $type $data[rb] bar {number +42} quux {literal null}[rb][rb]
+		object {foo {string {oof rab}} bar {number 42} quux {literal null}}
 
 	[example_end]
 

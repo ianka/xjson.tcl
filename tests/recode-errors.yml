@@ -1,40 +1,45 @@
 overview: |-
-  Encode Tcl to JSON. Error handling.
-operation: encode
+  Recode Tcl to Tcl. Error handling.
+operation: recode
 testerror: true
 testcode:  true
 tests:
   - name: empty input data
     desc: Invalid data length must throw an error.
     data: ''
-    expected: 'XJSON ENCODE DATA_FORMAT'
+    expected: 'XJSON RECODE DATA_FORMAT'
 
   - name: single element input data
     desc: Invalid data length must throw an error.
     data: 'foo'
-    expected: 'XJSON ENCODE DATA_FORMAT'
+    expected: 'XJSON RECODE DATA_FORMAT'
 
   - name: three element input data
     desc: Invalid data length must throw an error.
     data: 'foo bar quux'
-    expected: 'XJSON ENCODE DATA_FORMAT'
+    expected: 'XJSON RECODE DATA_FORMAT'
 
   - name: invalid number format
     desc: Invalid numbers must throw an error.
     data: 'number 1e1.0'
-    expected: 'XJSON ENCODE INVALID_NUMBER'
+    expected: 'XJSON RECODE INVALID_NUMBER'
 
   - name: invalid literal value
     desc: Invalid literals must throw an error.
     data: 'literal 0'
-    expected: 'XJSON ENCODE INVALID_LITERAL'
+    expected: 'XJSON RECODE INVALID_LITERAL'
 
   - name: unknown type value
     desc: Unknown types must throw an error.
     data: 'foo 0'
-    expected: 'XJSON ENCODE UNKNOWN_TYPE'
+    expected: 'XJSON RECODE UNKNOWN_TYPE'
+
+  - name: invalid encoded data
+    desc: Invalid encoded data must throw an error.
+    data: 'encoded {foo}'
+    expected: 'XJSON RECODE INVALID_LITERAL'
 
   - name: invalid decoded data
     desc: Invalid decoded data must throw an error.
     data: 'decoded {foo}'
-    expected: 'XJSON ENCODE DATA_FORMAT'
+    expected: 'XJSON RECODE DATA_FORMAT'

@@ -33,8 +33,14 @@ proc ldrop {} {
 proc test {operation test} {
 	## Do the test.
 	switch -- $operation {
-		encode - decode {
+		encode - decode - recode {
 			::xjson::$operation [dict get $test data]
+		}
+		diff {
+			::xjson::$operation [dict get $test odata] [dict get $test ndata]
+		}
+		patch {
+			::xjson::$operation [dict get $test odata] [dict get $test patch]
 		}
 		makeCollectorClass - makeComposerClass {
 			::xjson::$operation {*}[dict get $test fparams]
@@ -137,6 +143,15 @@ proc failedTest {test result} {
 	if {[dict exists $test data]} {
 		log "Data: [dict get $test data]"
 	}
+	if {[dict exists $test odata]} {
+		log "Old data: [dict get $test odata]"
+	}
+	if {[dict exists $test ndata]} {
+		log "New data: [dict get $test ndata]"
+	}
+	if {[dict exists $test patch]} {
+		log "Patch: [dict get $test patch]"
+	}
 	log "Expected: \"[string map {" " "."} [dict get $test expected]]\""
 	log "Result: \"[string map {" " "."} $result]\""
 }
@@ -151,8 +166,8 @@ proc checkTestResult {test result} {
 	} else {
 		## Failed test due to unexpected result.
 		failedTest $test $result
+		puts stderr $::errorInfo
 	}
-#	puts stderr $::errorInfo
 }
 
 

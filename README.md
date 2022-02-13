@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.1\.1  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.2  "xjson\.tcl")
 
 # NAME
 
@@ -45,11 +45,13 @@ pretty printer
 
   - [ENCODING EXAMPLES](#section15)
 
-  - [JSON VALIDATION AND DATA COLLECTING EXAMPLE](#section16)
+  - [RECODING EXAMPLES](#section16)
 
-  - [JSON COMPOSING EXAMPLE](#section17)
+  - [JSON VALIDATION AND DATA COLLECTING EXAMPLE](#section17)
 
-  - [JSON RECOMPOSING EXAMPLE](#section18)
+  - [JSON COMPOSING EXAMPLE](#section18)
+
+  - [JSON RECOMPOSING EXAMPLE](#section19)
 
   - [Keywords](#keywords)
 
@@ -59,10 +61,11 @@ pretty printer
 
 package require Tcl 8\.6\-  
 package require itcl 4\.0\-  
-package require xjson ?1\.1\.1?  
+package require xjson ?1\.2?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
+__::xjson::recode__ *decodedJson*  
 __::xjson::makeCollectorClass__ ?*options*? *collectorClassName* ?*methodName methodDefinition \.\.\.*?  
 *collectorClassName* *collectorObjName* ?*options*? ?*nestedCollectorName nestedCollectorObjName \.\.\.*? *schema*  
 *collectorObjName* __collect__ *decodedJson* ?*path*?  
@@ -76,7 +79,8 @@ __::xjson::makeComposerClass__ ?*options*? *composerClassName* ?*methodName meth
 
 This package is a set of extended JSON functions for Tcl\. It allows decoding,
 encoding, and pretty\-printing of JSON structures from Tcl structures and vice
-versa\.
+versa\. In addition, decoded JSON that was created by functions outside of this
+package may be recoded\.
 
 The main feature of this package however are two class factories that produce
 itcl classes that construct validator and data collector/composer objects\. Those
@@ -143,6 +147,25 @@ The package defines the following public procedures:
     the data format accepted by this procedure\.
 
     See the section [ENCODING EXAMPLES](#section15) for examples\.
+
+  - __::xjson::recode__ *decodedJson*
+
+    Recode the given Tcl *decodedJson* data so that the included
+    __encoded__ and __decoded__ data types are replaced by their encoded
+    and decoded equivalents\. The other types are recoded as
+    __::xjson::encode__ followed by a subsequent __::xjson::decode__
+    would do it\. This may be used to check data coming from sources outside of
+    this library for syntatic correctness as well as for feeding it into a
+    collector class\.
+
+    *Note:* This function is basically a very lightweight alternative to
+
+    > % ::xjson::decode \[::xjson::encode *decodedJson*\]
+
+    See the section [DECODED JSON FORMAT](#section13) for a description of
+    the data format accepted by this procedure\.
+
+    See the section [RECODING EXAMPLES](#section16) for examples\.
 
   - __::xjson::makeCollectorClass__ ?*options*? *collectorClassName* ?*methodName methodDefinition \.\.\.*?
 
@@ -2041,7 +2064,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.1\.1/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.2/"\) for
 examples on how to write your own custom methods\.
 
 # <a name='section10'></a>NULL HANDLING
@@ -2237,10 +2260,25 @@ Encode with nested decoded data\.
 
     % set type decoded
     % set data {string hello}
-    % ::xjson::encode [list object [list foo [list $type $data] bar {number 42} quux {literal null}]] 0 {}
+    % ::xjson::encode [list object [list foo [list $type $data] bar {number +42} quux {literal null}]] 0 {}
     {"foo":"hello","bar":42,"quux":null}
 
-# <a name='section16'></a>JSON VALIDATION AND DATA COLLECTING EXAMPLE
+# <a name='section16'></a>RECODING EXAMPLES
+
+Recode pre\-encoded data\.
+
+    % set json {"oof rab"}
+    % ::xjson::recode [list object [list foo [list encoded $json] bar {number +42} quux {literal null}]]
+    object {foo {string {oof rab}} bar {number 42} quux {literal null}}
+
+Encode with nested decoded data\.
+
+    % set type decoded
+    % set data {string "oof rab"}
+    % ::xjson::recode [list object [list foo [list $type $data] bar {number +42} quux {literal null}]]
+    object {foo {string {oof rab}} bar {number 42} quux {literal null}}
+
+# <a name='section17'></a>JSON VALIDATION AND DATA COLLECTING EXAMPLE
 
 Create a collector class with the class factory and the builtin methods\. Even
 for advanced usage, you only ever need to do this once\. More than once only if
@@ -2297,7 +2335,7 @@ object\.
     }]
     articles {101 {extra false name {Pizzapane bianca} price 4.95} 120 {extra false name {Pizza Regina} price 9.80} 139 {extra false name Wunschpizza price 12.70} 201 {extra true name Rucola price 1.00}}
 
-# <a name='section17'></a>JSON COMPOSING EXAMPLE
+# <a name='section18'></a>JSON COMPOSING EXAMPLE
 
 Create a composer class with the class factory and the builtin methods\. Even for
 advanced usage, you only ever need to do this once\. More than once only if you
@@ -2332,7 +2370,7 @@ Feed Tcl data into the composer object, and the result into the encoder\.
         }
     ]
 
-# <a name='section18'></a>JSON RECOMPOSING EXAMPLE
+# <a name='section19'></a>JSON RECOMPOSING EXAMPLE
 
 This toy example decodes and validates a JSON input, collects the data, then
 recomposes the data into JSON\.

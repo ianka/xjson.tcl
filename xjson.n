@@ -2,7 +2,7 @@
 '\" Generated from file '' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
 '\"
-.TH "xjson" n 1\&.1\&.1  "xjson\&.tcl"
+.TH "xjson" n 1\&.2  "xjson\&.tcl"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -278,11 +278,13 @@ package require \fBTcl  8\&.6-\fR
 .sp
 package require \fBitcl  4\&.0-\fR
 .sp
-package require \fBxjson  ?1\&.1\&.1?\fR
+package require \fBxjson  ?1\&.2?\fR
 .sp
 \fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
 .sp
 \fB::xjson::encode\fR \fIdecodedJson\fR ?\fIindent\fR? ?\fItabulator\fR? ?\fInest\fR?
+.sp
+\fB::xjson::recode\fR \fIdecodedJson\fR
 .sp
 \fB::xjson::makeCollectorClass\fR ?\fIoptions\fR? \fIcollectorClassName\fR ?\fImethodName methodDefinition \&.\&.\&.\fR?
 .sp
@@ -304,7 +306,8 @@ package require \fBxjson  ?1\&.1\&.1?\fR
 .SH DESCRIPTION
 This package is a set of extended JSON functions for Tcl\&. It allows decoding,
 encoding, and pretty-printing of JSON structures from Tcl structures and vice
-versa\&.
+versa\&. In addition, decoded JSON that was created by functions outside of this
+package may be recoded\&.
 .PP
 The main feature of this package however are two class factories that produce
 itcl classes that construct validator and data collector/composer objects\&.
@@ -365,6 +368,27 @@ See the section \fBDECODED JSON FORMAT\fR for a description of the data
 format accepted by this procedure\&.
 .sp
 See the section \fBENCODING EXAMPLES\fR for examples\&.
+.TP
+\fB::xjson::recode\fR \fIdecodedJson\fR
+Recode the given Tcl \fIdecodedJson\fR data so that the included \fBencoded\fR
+and \fBdecoded\fR data types are replaced by their encoded and decoded
+equivalents\&. The other types are recoded as \fB::xjson::encode\fR followed by
+a subsequent \fB::xjson::decode\fR would do it\&. This may be used to check data
+coming from sources outside of this library for syntatic correctness as well as
+for feeding it into a collector class\&.
+.sp
+\fINote:\fR This function is basically a very lightweight alternative to
+.CS
+
+
+% ::xjson::decode [::xjson::encode \fIdecodedJson\fR]
+
+.CE
+.IP
+See the section \fBDECODED JSON FORMAT\fR for a description of the data
+format accepted by this procedure\&.
+.sp
+See the section \fBRECODING EXAMPLES\fR for examples\&.
 .TP
 \fB::xjson::makeCollectorClass\fR ?\fIoptions\fR? \fIcollectorClassName\fR ?\fImethodName methodDefinition \&.\&.\&.\fR?
 .TP
@@ -2146,7 +2170,7 @@ The \fIbody\fR is the Tcl body of the method\&.
 .PP
 See the files
 "\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
-from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.1\&.1/\fR")
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.2/\fR")
 for examples on how to write your own custom methods\&.
 .SH "NULL HANDLING"
 The procedures \fB::xjson::encode\fR and \fB::xjson::decode\fR treat JSON
@@ -2358,8 +2382,30 @@ Encode with nested decoded data\&.
 
 % set type decoded
 % set data {string hello}
-% ::xjson::encode [list object [list foo [list $type $data] bar {number 42} quux {literal null}]] 0 {}
+% ::xjson::encode [list object [list foo [list $type $data] bar {number +42} quux {literal null}]] 0 {}
 {"foo":"hello","bar":42,"quux":null}
+
+
+.CE
+.SH "RECODING EXAMPLES"
+Recode pre-encoded data\&.
+.CS
+
+
+% set json {"oof rab"}
+% ::xjson::recode [list object [list foo [list encoded $json] bar {number +42} quux {literal null}]]
+object {foo {string {oof rab}} bar {number 42} quux {literal null}}
+
+
+.CE
+Encode with nested decoded data\&.
+.CS
+
+
+% set type decoded
+% set data {string "oof rab"}
+% ::xjson::recode [list object [list foo [list $type $data] bar {number +42} quux {literal null}]]
+object {foo {string {oof rab}} bar {number 42} quux {literal null}}
 
 
 .CE

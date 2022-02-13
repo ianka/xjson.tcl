@@ -759,11 +759,12 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 .RS
 .TP
 for collecting
-This method does not exist in collector objects as the \fB::xjson::decode\fR
-function never returns a \fBdecoded\fR type\&.
+This method does not exist in collector objects as the \fB::xjson::decode\fR and
+\fB::xjson::recode\fR functions never return a \fBdecoded\fR type\&.
 .TP
 for composing
-Validates a decoded JSON input \fIvalue\fR as understood by \fB::xjson::encode\fR\&.
+Validates a decoded JSON input \fIvalue\fR as understood by \fB::xjson::encode\fR
+and \fB::xjson::recode\fR\&.
 See \fBDECODED JSON FORMAT\fR for details\&.
 .sp
 Returns \fBdecoded \fIvalue\fR\fR\&.
@@ -783,8 +784,8 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 .RS
 .TP
 for collecting
-This method does not exist in collector objects as the \fB::xjson::decode\fR
-function never returns an \fBencoded\fR type\&.
+This method does not exist in collector objects as the \fB::xjson::decode\fR and
+\fB::xjson::recode\fR functions never return an \fBencoded\fR type\&.
 .TP
 for composing
 Validates a JSON input \fIvalue\fR as understood by \fB::xjson::decode\fR\&.
@@ -2173,14 +2174,16 @@ See the files
 from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.2/\fR")
 for examples on how to write your own custom methods\&.
 .SH "NULL HANDLING"
-The procedures \fB::xjson::encode\fR and \fB::xjson::decode\fR treat JSON
+The procedures \fB::xjson::encode\fR, \fB::xjson::recode\fR, and
+\fB::xjson::decode\fR treat JSON
 \fInull\fR values literally\&. As with the JSON boolean values \fItrue\fR and
 \fIfalse\fR that are coded as \fBliteral true\fR resp\&.
 \fBliteral false\fR, JSON \fInull\fR values are decoded as
 \fBliteral null\fR by \fB::xjson::decode\fR and the same literal needs to
 be specified to \fB::xjson::encode\fR to produce a JSON \fInull\fR value\&.
 \fB::xjson::decode\fR returns an empty list on empty JSON input, and
-\fB::xjson::encode\fR throws an error on an attempt to encode an empty list\&.
+\fB::xjson::encode\fR and \fB::xjson::recode\fR throw an error on an
+attempt to encode an empty list\&.
 .PP
 In contrast, the collector/composer objects constructed from the classes
 produced by
@@ -2260,7 +2263,8 @@ to specify Tcl code also have an option \fB-isolate\fR, that creates a
 local sandbox just for that method automatically\&.
 .SH "DECODED JSON FORMAT"
 The decoded JSON format as returned by the \fB::xjson::decode\fR and accepted
-by the \fB::xjson::encode\fR commands is a nested list of type-data pairs\&.
+by the \fB::xjson::encode\fR and \fB::xjson::recode\fR commands is a nested
+list of type-data pairs\&.
 .TP
 The following types are understood:
 .RS
@@ -2284,20 +2288,29 @@ that number\&.
 Represents a JSON literal\&. The \fIvalue\fR argument is one of the constants
 \fBtrue\fR, \fBfalse\fR, or \fBnull\fR\&.
 .sp
-\fINote:\fR Arbitrary Tcl boolean values are not accepted by \fB::xjson::encode\fR\&.
+\fINote:\fR Arbitrary Tcl boolean values are not accepted by
+\fB::xjson::encode\fR and \fB::xjson::recode\fR\&.
 The \fIvalue\fR must be one of the constants above\&. The builtin \fBboolean\fR
 method of the composer classes is aware of that\&.
 .TP
 \fBencoded \fIjson\fR\fR
 This type is meant for encoding in multiple steps\&.
-It is accepted by \fB::xjson::encode\fR, it is never returned by \fB::xjson::decode\fR\&.
-No checks are done on the \fIjson\fR argument, it must be valid JSON\&.
+It is accepted by \fB::xjson::encode\fR and \fB::xjson::recode\fR, it is
+never returned by \fB::xjson::decode\fR\&.
+\fB::xjson::encode\fR does no checks on the \fIjson\fR argument,
+it must be valid JSON\&.
+\fB::xjson::recode\fR however checks the \fIjson\fR argument for syntatic
+validity as it recodes it\&.
 .TP
 \fBdecoded \fIdecodedJson\fR\fR
 This type is meant for encoding in multiple steps\&.
-It is accepted by \fB::xjson::encode\fR, it is never returned by \fB::xjson::decode\fR\&.
-The \fIdecodedJson\fR is first encoded, then inserted in the output\&.
-This is sometimes useful if the type information in the input is dynamic as well\&.
+It is accepted by \fB::xjson::encode\fR and \fB::xjson::recode\fR, it is
+never returned by \fB::xjson::decode\fR\&.
+The \fIdecodedJson\fR is first encoded by \fB::xjson::encode\fR, then
+inserted in the output\&. This is sometimes useful if the type information in
+the input is dynamic as well\&.
+\fB::xjson::recode\fR checks the \fIdecodedJson\fR argument for syntatic
+validity as it recodes it\&.
 .RE
 .PP
 .SH "DECODING EXAMPLES"
@@ -2398,7 +2411,7 @@ object {foo {string {oof rab}} bar {number 42} quux {literal null}}
 
 
 .CE
-Encode with nested decoded data\&.
+Recode with nested decoded data\&.
 .CS
 
 

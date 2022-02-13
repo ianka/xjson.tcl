@@ -597,14 +597,14 @@ it is used inside the schema, unless otherwise noted\.
           + for collecting
 
             This method does not exist in collector objects as the
-            __::xjson::decode__ function never returns a __decoded__
-            type\.
+            __::xjson::decode__ and __::xjson::recode__ functions never
+            return a __decoded__ type\.
 
           + for composing
 
             Validates a decoded JSON input *value* as understood by
-            __::xjson::encode__\. See [DECODED JSON FORMAT](#section13)
-            for details\.
+            __::xjson::encode__ and __::xjson::recode__\. See [DECODED
+            JSON FORMAT](#section13) for details\.
 
             Returns __decoded *value*__\.
 
@@ -621,8 +621,8 @@ it is used inside the schema, unless otherwise noted\.
           + for collecting
 
             This method does not exist in collector objects as the
-            __::xjson::decode__ function never returns an __encoded__
-            type\.
+            __::xjson::decode__ and __::xjson::recode__ functions never
+            return an __encoded__ type\.
 
           + for composing
 
@@ -2069,14 +2069,15 @@ examples on how to write your own custom methods\.
 
 # <a name='section10'></a>NULL HANDLING
 
-The procedures __::xjson::encode__ and __::xjson::decode__ treat JSON
-*null* values literally\. As with the JSON boolean values *true* and
-*false* that are coded as __literal true__ resp\. __literal false__,
-JSON *null* values are decoded as __literal null__ by
-__::xjson::decode__ and the same literal needs to be specified to
-__::xjson::encode__ to produce a JSON *null* value\.
+The procedures __::xjson::encode__, __::xjson::recode__, and
+__::xjson::decode__ treat JSON *null* values literally\. As with the JSON
+boolean values *true* and *false* that are coded as __literal true__
+resp\. __literal false__, JSON *null* values are decoded as __literal
+null__ by __::xjson::decode__ and the same literal needs to be specified
+to __::xjson::encode__ to produce a JSON *null* value\.
 __::xjson::decode__ returns an empty list on empty JSON input, and
-__::xjson::encode__ throws an error on an attempt to encode an empty list\.
+__::xjson::encode__ and __::xjson::recode__ throw an error on an attempt
+to encode an empty list\.
 
 In contrast, the collector/composer objects constructed from the classes
 produced by __::xjson::makeCollectorClass__ and
@@ -2157,7 +2158,8 @@ for that method automatically\.
 # <a name='section13'></a>DECODED JSON FORMAT
 
 The decoded JSON format as returned by the __::xjson::decode__ and accepted
-by the __::xjson::encode__ commands is a nested list of type\-data pairs\.
+by the __::xjson::encode__ and __::xjson::recode__ commands is a nested
+list of type\-data pairs\.
 
   - The following types are understood:
 
@@ -2187,24 +2189,28 @@ by the __::xjson::encode__ commands is a nested list of type\-data pairs\.
         constants __true__, __false__, or __null__\.
 
         *Note:* Arbitrary Tcl boolean values are not accepted by
-        __::xjson::encode__\. The *value* must be one of the constants
-        above\. The builtin __boolean__ method of the composer classes is
-        aware of that\.
+        __::xjson::encode__ and __::xjson::recode__\. The *value* must
+        be one of the constants above\. The builtin __boolean__ method of the
+        composer classes is aware of that\.
 
       * __encoded *json*__
 
         This type is meant for encoding in multiple steps\. It is accepted by
-        __::xjson::encode__, it is never returned by
-        __::xjson::decode__\. No checks are done on the *json* argument, it
-        must be valid JSON\.
+        __::xjson::encode__ and __::xjson::recode__, it is never
+        returned by __::xjson::decode__\. __::xjson::encode__ does no
+        checks on the *json* argument, it must be valid JSON\.
+        __::xjson::recode__ however checks the *json* argument for
+        syntatic validity as it recodes it\.
 
       * __decoded *decodedJson*__
 
         This type is meant for encoding in multiple steps\. It is accepted by
-        __::xjson::encode__, it is never returned by
-        __::xjson::decode__\. The *decodedJson* is first encoded, then
-        inserted in the output\. This is sometimes useful if the type information
-        in the input is dynamic as well\.
+        __::xjson::encode__ and __::xjson::recode__, it is never
+        returned by __::xjson::decode__\. The *decodedJson* is first
+        encoded by __::xjson::encode__, then inserted in the output\. This is
+        sometimes useful if the type information in the input is dynamic as
+        well\. __::xjson::recode__ checks the *decodedJson* argument for
+        syntatic validity as it recodes it\.
 
 # <a name='section14'></a>DECODING EXAMPLES
 
@@ -2271,7 +2277,7 @@ Recode pre\-encoded data\.
     % ::xjson::recode [list object [list foo [list encoded $json] bar {number +42} quux {literal null}]]
     object {foo {string {oof rab}} bar {number 42} quux {literal null}}
 
-Encode with nested decoded data\.
+Recode with nested decoded data\.
 
     % set type decoded
     % set data {string "oof rab"}

@@ -488,11 +488,12 @@ set data {
 		[cmd_def decoded]
 			[list_begin definitions]
 			[def "for collecting"]
-				This method does not exist in collector objects as the [cmd "::xjson::decode"]
-				function never returns a [const "decoded"] type.
+				This method does not exist in collector objects as the [cmd "::xjson::decode"] and
+				[cmd "::xjson::recode"] functions never return a [const "decoded"] type.
 
 			[def "for composing"]
-				Validates a decoded JSON input [emph "value"] as understood by [cmd "::xjson::encode"].
+				Validates a decoded JSON input [emph "value"] as understood by [cmd "::xjson::encode"]
+				and [cmd "::xjson::recode"].
 				See [sectref "DECODED JSON FORMAT"] for details.
 				[para]
 				Returns [const "decoded [arg value]"].
@@ -511,8 +512,8 @@ set data {
 		[cmd_def encoded]
 			[list_begin definitions]
 			[def "for collecting"]
-				This method does not exist in collector objects as the [cmd "::xjson::decode"]
-				function never returns an [const "encoded"] type.
+				This method does not exist in collector objects as the [cmd "::xjson::decode"] and
+				[cmd "::xjson::recode"] functions never return an [const "encoded"] type.
 
 			[def "for composing"]
 				Validates a JSON input [emph "value"] as understood by [cmd "::xjson::decode"].
@@ -1852,14 +1853,16 @@ set data {
 	for examples on how to write your own custom methods.
 
 [section "NULL HANDLING"]
-	The procedures [cmd "::xjson::encode"] and [cmd "::xjson::decode"] treat JSON
+	The procedures [cmd "::xjson::encode"], [cmd "::xjson::recode"], and
+	[cmd "::xjson::decode"] treat JSON
 	[emph null] values literally. As with the JSON boolean values [emph true] and
 	[emph false] that are coded as [const "literal true"] resp.
 	[const "literal false"], JSON [emph null] values are decoded as
 	[const "literal null"] by [cmd "::xjson::decode"] and the same literal needs to
 	be specified to [cmd "::xjson::encode"] to produce a JSON [emph null] value.
 	[cmd "::xjson::decode"] returns an empty list on empty JSON input, and
-	[cmd "::xjson::encode"] throws an error on an attempt to encode an empty list.
+	[cmd "::xjson::encode"] and [cmd "::xjson::recode"] throw an error on an
+	attempt to encode an empty list.
 	[para]
 	In contrast, the collector/composer objects constructed from the classes
 	produced by
@@ -1942,7 +1945,8 @@ set data {
 
 [section "DECODED JSON FORMAT"]
 	The decoded JSON format as returned by the [cmd "::xjson::decode"] and accepted
-	by the [cmd "::xjson::encode"] commands is a nested list of type-data pairs.
+	by the [cmd "::xjson::encode"] and [cmd "::xjson::recode"] commands is a nested
+	list of type-data pairs.
 	[list_begin definitions]
 	[def "The following types are understood:"]
 		[list_begin commands]
@@ -1965,20 +1969,29 @@ set data {
 				Represents a JSON literal. The [arg value] argument is one of the constants
 				[const true], [const false], or [const null].
 				[para]
-				[emph "Note:"] Arbitrary Tcl boolean values are not accepted by [cmd "::xjson::encode"].
+				[emph "Note:"] Arbitrary Tcl boolean values are not accepted by
+				[cmd "::xjson::encode"] and [cmd "::xjson::recode"].
 				The [arg value] must be one of the constants above. The builtin [method boolean]
 				method of the composer classes is aware of that.
 
 			[cmd_def "encoded [arg json]"]
 				This type is meant for encoding in multiple steps.
-				It is accepted by [cmd "::xjson::encode"], it is never returned by [cmd "::xjson::decode"].
-				No checks are done on the [arg json] argument, it must be valid JSON.
+				It is accepted by [cmd "::xjson::encode"] and [cmd "::xjson::recode"], it is
+				never returned by [cmd "::xjson::decode"].
+				[cmd "::xjson::encode"] does no checks on the [arg json] argument,
+				it must be valid JSON.
+				[cmd "::xjson::recode"] however checks the [arg json] argument for syntatic
+				validity as it recodes it.
 
 			[cmd_def "decoded [arg decodedJson]"]
 				This type is meant for encoding in multiple steps.
-				It is accepted by [cmd "::xjson::encode"], it is never returned by [cmd "::xjson::decode"].
-				The [arg decodedJson] is first encoded, then inserted in the output.
-				This is sometimes useful if the type information in the input is dynamic as well.
+				It is accepted by [cmd "::xjson::encode"] and [cmd "::xjson::recode"], it is
+				never returned by [cmd "::xjson::decode"].
+				The [arg decodedJson] is first encoded by [cmd "::xjson::encode"], then
+				inserted in the output. This is sometimes useful if the type information in
+				the input is dynamic as well.
+				[cmd "::xjson::recode"] checks the [arg decodedJson] argument for syntatic
+				validity as it recodes it.
 
 		[list_end]
 	[list_end]
@@ -2072,7 +2085,7 @@ set data {
 
 	[example_end]
 
-	Encode with nested decoded data.
+	Recode with nested decoded data.
 
 	[example_begin]
 		% set type decoded

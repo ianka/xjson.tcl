@@ -67,7 +67,7 @@ proc ::xjson::recode {data} {
 		}
  		"decoded" {
 			## Recode decoded data.
-			if {[catch {decode [encode $data 0 {}]} result]} {
+			if {[catch {decode [encode $value 0 {}]} result]} {
 				## Escalate the error.
 				return -code error -errorcode [lreplace $::errorCode 1 1 RECODE] -errorinfo $::errorInfo $result
 			}

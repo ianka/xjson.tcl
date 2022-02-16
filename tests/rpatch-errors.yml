@@ -1,0 +1,95 @@
+overview: |-
+  Reverse patch a JSON structure. Error handling.
+operation: rpatch
+testerror: true
+testcode:  true
+tests:
+  - name: single element data
+    desc: Invalid data length must throw an error.
+    data: 'foo'
+    patch: ''
+    expected: 'XJSON RPATCH DATA_FORMAT'
+
+  - name: three element data
+    desc: Invalid data length must throw an error.
+    data: 'foo bar quux'
+    patch: ''
+    expected: 'XJSON RPATCH DATA_FORMAT'
+
+  - name: unknown type value
+    desc: Unknown types must throw an error.
+    data: 'foo 0'
+    patch: ''
+    expected: 'XJSON RPATCH UNKNOWN_TYPE'
+
+  - name: unknown patch action value
+    desc: Unknown actions must throw an error.
+    data: 'literal true'
+    patch: 'foo'
+    expected: 'XJSON RPATCH MALFORMED_PATCH'
+
+  - name: replace data mismatch
+    desc: Mismatching data in a replace operation must throw an error.
+    data: 'literal true'
+    patch: 'replace {number 123} {string abcde}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'
+
+  - name: keys data type mismatch
+    desc: Mismatching data type in a keys operation must throw an error.
+    data: 'literal true'
+    patch: 'keys {s {replace {number 123} {string abcde}}}'
+    expected: 'XJSON RPATCH TYPE_MISMATCH'
+
+  - name: missing add key
+    desc: Missing key in a keys add operation must throw an error.
+    data: 'object {n {number 123}}'
+    patch: 'keys {q {add {number 123}}}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'
+
+  - name: delete data mismatch
+    desc: Mismatching data in a keys delete operation must throw an error.
+    data: 'object {n {number 123}}'
+    patch: 'keys {n {delete {string abcde}}}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'
+
+  - name: present delete key
+    desc: Present key in a keys delete operation must throw an error.
+    data: 'object {n {number 123}}'
+    patch: 'keys {n {delete {number 123}}}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'
+
+  - name: missing replace key
+    desc: Missing key in a keys replace operation must throw an error.
+    data: 'object {n {number 123}}'
+    patch: 'keys {q {replace {number 123} {string abcde}}}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'
+
+  - name: indices data type mismatch
+    desc: Mismatching data type in an indices operation must throw an error.
+    data: 'literal true'
+    patch: 'indices {0 {replace {number 123} {string abcde}}}'
+    expected: 'XJSON RPATCH TYPE_MISMATCH'
+
+  - name: insert beyond array length
+    desc: Insert beyond the array length in an indices insert operation must throw an error.
+    data: 'array {{number 123}}'
+    patch: 'indices {1 {insert {{number 123}}}}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'
+
+  - name: insert data mismatch
+    desc: Mismatching data in an indices insert operation must throw an error.
+    data: 'array {{number 123}}'
+    patch: 'indices {0 {insert {{string abcde}}}}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'
+
+  - name: remove beyond array length
+    desc: Removing beyond the array length plus one in an indices remove operation must throw an error.
+    data: 'array {{number 123}}'
+    patch: 'indices {2 {remove {{string abcde}}}}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'
+
+  - name: replace beyond array length
+    desc: Replacing beyond the array length plus one in an indices operation must throw an error.
+    data: 'array {{number 123}}'
+    patch: 'indices {1 {replace {number 123} {string abcde}}}'
+    expected: 'XJSON RPATCH DATA_MISMATCH'

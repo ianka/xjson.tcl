@@ -18,5 +18,10 @@ package require Tcl 8.6-
 ## That's included in the Tcl 8.6 distribution.
 package require itcl 4.0-
 
+## :xjson::diff requires Tcllib's struct::set and struct::list.
+## That's included in the Tcl 8.6 distribution.
+package require struct::set
+package require struct::list
+
 ## Create a namespace for all xjson functions.
 namespace eval ::xjson {}

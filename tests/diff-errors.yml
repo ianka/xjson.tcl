@@ -1,0 +1,41 @@
+overview: |-
+  Create a diff between two decoded JSON structures. Error handling.
+operation: diff
+testerror: true
+testcode:  true
+tests:
+  - name: single element old data
+    desc: Invalid data length must throw an error.
+    odata: 'foo'
+    ndata: ''
+    expected: 'XJSON DIFF DATA_FORMAT'
+
+  - name: single element new data
+    desc: Invalid data length must throw an error.
+    odata: ''
+    ndata: 'foo'
+    expected: 'XJSON DIFF DATA_FORMAT'
+
+  - name: three element old data
+    desc: Invalid data length must throw an error.
+    odata: 'foo bar quux'
+    ndata: ''
+    expected: 'XJSON DIFF DATA_FORMAT'
+
+  - name: three element new data
+    desc: Invalid data length must throw an error.
+    odata: ''
+    ndata: 'foo bar quux'
+    expected: 'XJSON DIFF DATA_FORMAT'
+
+  - name: unknown old type value
+    desc: Unknown types must throw an error.
+    odata: 'foo 0'
+    ndata: ''
+    expected: 'XJSON DIFF UNKNOWN_TYPE'
+
+  - name: unknown new type value
+    desc: Unknown types must throw an error.
+    odata: ''
+    ndata: 'foo 0'
+    expected: 'XJSON DIFF UNKNOWN_TYPE'

@@ -1,0 +1,195 @@
+overview: |-
+  Create a diff between two decoded JSON structures.
+operation: diff
+tests:
+  - name: empty input data
+    desc: Empty input must result in an empty diff.
+    odata: ''
+    ndata: ''
+    expected: ''
+
+  - name: identical input data
+    desc: Identical input must result in an empty diff.
+    odata: 'literal null'
+    ndata: 'literal null'
+    expected: ''
+
+  - name: adding literal
+    desc: Adding a literal must result in a replace operation.
+    odata: ''
+    ndata: 'literal null'
+    expected: 'replace {} {literal null}'
+
+  - name: deleting literal
+    desc: Deleting a literal must result in a replace operation.
+    odata: 'literal null'
+    ndata: ''
+    expected: 'replace {literal null} {}'
+
+  - name: adding number
+    desc: Adding a number must result in a replace operation.
+    odata: ''
+    ndata: 'number 123'
+    expected: 'replace {} {number 123}'
+
+  - name: deleting number
+    desc: Deleting a number must result in a replace operation.
+    odata: 'number 123'
+    ndata: ''
+    expected: 'replace {number 123} {}'
+
+  - name: adding string
+    desc: Adding a string must result in a replace operation.
+    odata: ''
+    ndata: 'string abcde'
+    expected: 'replace {} {string abcde}'
+
+  - name: deleting string
+    desc: Deleting a string must result in an replace operation.
+    odata: 'string abcde'
+    ndata: ''
+    expected: 'replace {string abcde} {}'
+
+  - name: replacing simple type
+    desc: Replacing a simple type must result in a replace operation.
+    odata: 'number 123'
+    ndata: 'string abcde'
+    expected: 'replace {number 123} {string abcde}'
+
+  - name: adding empty object
+    desc: Adding an empty object must result in a replace operation.
+    odata: ''
+    ndata: 'object {}'
+    expected: 'replace {} {object {}}'
+
+  - name: deleting empty object
+    desc: Deleting an empty object must result in a replace operation.
+    odata: 'object {}'
+    ndata: ''
+    expected: 'replace {object {}} {}'
+
+  - name: adding object
+    desc: Adding a non-empty object must result in a replacet operation.
+    odata: ''
+    ndata: 'object {s {string abcde} t {string fghij}}'
+    expected: 'replace {} {object {s {string abcde} t {string fghij}}}'
+
+  - name: deleting object
+    desc: Deleting a non-empty object must result in a replace operation.
+    odata: 'object {s {string abcde} t {string fghij}}'
+    ndata: ''
+    expected: 'replace {object {s {string abcde} t {string fghij}}} {}'
+
+  - name: adding keys to empty object
+    desc: Adding multiple object keys to empty object must result in keys/add operations.
+    odata: 'object {}'
+    ndata: 'object {s {string abcde} t {string fghij}}'
+    expected: 'keys {s {add {string abcde}} t {add {string fghij}}}'
+
+  - name: adding keys to non-empty object
+    desc: Adding object keys to non-empty object must result in keys/add operations.
+    odata: 'object {s {string abcde}}'
+    ndata: 'object {s {string abcde} t {string fghij}}'
+    expected: 'keys {t {add {string fghij}}}'
+
+  - name: deleting keys from object
+    desc: Deleting multiple object keys must result in keys/delete operations.
+    odata: 'object {s {string abcde} t {string fghij} u {string klmno} v {string {pqrst}}}'
+    ndata: 'object {s {string abcde} u {string klmno}}'
+    expected: 'keys {t {delete {string fghij}} v {delete {string {pqrst}}}}'
+
+  - name: deleting last key from object
+    desc: Deleting last object key must result in a keys/delete operation.
+    odata: 'object {s {string abcde}}'
+    ndata: 'object {}'
+    expected: 'keys {s {delete {string abcde}}}'
+
+  - name: replacing object field
+    desc: Replacing an object field must result in a keys/replace operation.
+    odata: 'object {s {number 123}}'
+    ndata: 'object {s {string abcde}}'
+    expected: 'keys {s {replace {number 123} {string abcde}}}'
+
+  - name: mixed object key adding, replacing and deleting
+    desc: Mixed adding, replacing and deleting must result in keys/add,delete,replace operations.
+    odata: 'object {s {string abcde} t {number 12345}}'
+    ndata: 'object {t {string fghij} u {string vwxyz}}'
+    expected: 'keys {s {delete {string abcde}} u {add {string vwxyz}} t {replace {number 12345} {string fghij}}}'
+
+  - name: replacing nested object field
+    desc: Replacing a nested object field must result in a keys/keys/replace operation.
+    odata: 'object {s {object {n {number 123}}}}'
+    ndata: 'object {s {object {n {string abcde}}}}'
+    expected: 'keys {s {keys {n {replace {number 123} {string abcde}}}}}'
+
+  - name: adding empty array
+    desc: Adding an empty array must result in a set operation.
+    odata: ''
+    ndata: 'array {}'
+    expected: 'replace {} {array {}}'
+
+  - name: deleting empty array
+    desc: Deleting an empty array must result in a replace operation.
+    odata: 'array {}'
+    ndata: ''
+    expected: 'replace {array {}} {}'
+
+  - name: adding array
+    desc: Adding a non-empty array must result in a replace operation.
+    odata: ''
+    ndata: 'array {{string abcde} {string fghij}}'
+    expected: 'replace {} {array {{string abcde} {string fghij}}}'
+
+  - name: delete array
+    desc: Adding a non-empty array must result in a replace operation.
+    odata: 'array {{string abcde} {string fghij}}'
+    ndata: ''
+    expected: 'replace {array {{string abcde} {string fghij}}} {}'
+
+  - name: adding elements to empty array
+    desc: Adding multiple array elements to empty array must result in one indices/insert operation.
+    odata: 'array {}'
+    ndata: 'array {{number 123} {string abcde}}'
+    expected: 'indices {0 {insert {{number 123} {string abcde}}}}'
+
+  - name: adding elements to array
+    desc: Adding multiple array elements to array must result in indices/insert operations.
+    odata: 'array {{number 123}}'
+    ndata: 'array {{string vwxyz} {literal null} {number 123} {string abcde}}'
+    expected: 'indices {0 {insert {{string vwxyz} {literal null}}} 3 {insert {{string abcde}}}}'
+
+  - name: deleting elements from array
+    desc: Adding multiple array elements to array must result in indices/remove operations.
+    odata: 'array {{string vwxyz} {literal null} {number 123} {string abcde}}'
+    ndata: 'array {{number 123}}'
+    expected: 'indices {0 {remove {{string vwxyz} {literal null}}} 1 {remove {{string abcde}}}}'
+
+  - name: deleting last element from array
+    desc: Deleting last array element must result in one indices/delete operation.
+    odata: 'array {{number 123} {string abcde}}'
+    ndata: 'array {}'
+    expected: 'indices {0 {remove {{number 123} {string abcde}}}}'
+
+  - name: replacing array element
+    desc: Replacing an array element must result in one indices/replace operation.
+    odata: 'array {{number 123}}'
+    ndata: 'array {{string abcde}}'
+    expected: 'indices {0 {replace {number 123} {string abcde}}}'
+
+  - name: replacing array elements
+    desc: Replacing multiple array elements must result in multiple indices/replace operations.
+    odata: 'array {{string vwxyz} {number 12345} {literal false} {literal null} {string abcde}}'
+    ndata: 'array {{string vwxyz} {string abcde} {literal true} {literal null} {string abcde}}'
+    expected: 'indices {1 {replace {number 12345} {string abcde}} 2 {replace {literal false} {literal true}}}'
+
+  - name: mixed array key adding, replacing and deleting
+    desc: Mixed adding, replacing and deleting must result in keys/remove,insert operations.
+    odata: 'array {{string vwxyz} {number 12345} {literal null} {literal null} {string abcde}}'
+    ndata: 'array {{string vwxyz} {string abcde} {literal true} {literal null} {string abcde}}'
+    expected: 'indices {1 {remove {{number 12345}}} 1 {insert {{string abcde} {literal true}}} 4 {remove {{literal null}}}}'
+
+  - name: replacing nested array element
+    desc: Replacing a nested array element must result in a indices/indices/replace operation.
+    odata: 'array {{array {{number 123}}}}'
+    ndata: 'array {{array {{string abcde}}}}'
+    expected: 'indices {0 {indices {0 {replace {number 123} {string abcde}}}}}'

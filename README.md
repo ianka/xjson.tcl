@@ -2,12 +2,11 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.2  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.3  "xjson\.tcl")
 
 # NAME
 
-xjson \- extended JSON decoder, validator, data collector, composer, encoder,
-pretty printer
+xjson \- extended JSON functions for Tcl
 
 # <a name='toc'></a>Table Of Contents
 
@@ -23,35 +22,45 @@ pretty printer
 
   - [COLLECTOR AND COMPOSER CLASS USAGE](#section4)
 
-  - [COLLECTOR OBJECT USAGE](#section5)
+      - [COLLECTOR OBJECT USAGE](#subsection1)
 
-  - [COMPOSER OBJECT USAGE](#section6)
+      - [COMPOSER OBJECT USAGE](#subsection2)
 
-  - [COLLECTOR AND COMPOSER SCHEMAS](#section7)
+      - [COLLECTOR AND COMPOSER SCHEMAS](#subsection3)
 
-  - [BUILTIN METHODS](#section8)
+      - [BUILTIN METHODS](#subsection4)
 
-  - [CUSTOM METHODS](#section9)
+      - [CUSTOM METHODS](#subsection5)
 
-  - [NULL HANDLING](#section10)
+      - [NESTING](#subsection6)
 
-  - [NESTING](#section11)
+      - [SANDBOXING](#subsection7)
 
-  - [SANDBOXING](#section12)
+  - [NULL HANDLING](#section5)
 
-  - [DECODED JSON FORMAT](#section13)
+  - [DATA FORMATS](#section6)
 
-  - [DECODING EXAMPLES](#section14)
+      - [DECODED JSON FORMAT](#subsection8)
 
-  - [ENCODING EXAMPLES](#section15)
+      - [JSON PATCH FORMAT](#subsection9)
 
-  - [RECODING EXAMPLES](#section16)
+  - [EXAMPLES](#section7)
 
-  - [JSON VALIDATION AND DATA COLLECTING EXAMPLE](#section17)
+      - [DECODING EXAMPLES](#subsection10)
 
-  - [JSON COMPOSING EXAMPLE](#section18)
+      - [ENCODING EXAMPLES](#subsection11)
 
-  - [JSON RECOMPOSING EXAMPLE](#section19)
+      - [RECODING EXAMPLES](#subsection12)
+
+      - [DIFF EXAMPLES](#subsection13)
+
+      - [PATCH EXAMPLES](#subsection14)
+
+      - [JSON VALIDATION AND DATA COLLECTING EXAMPLE](#subsection15)
+
+      - [JSON COMPOSING EXAMPLE](#subsection16)
+
+      - [JSON RECOMPOSING EXAMPLE](#subsection17)
 
   - [Keywords](#keywords)
 
@@ -61,11 +70,16 @@ pretty printer
 
 package require Tcl 8\.6\-  
 package require itcl 4\.0\-  
-package require xjson ?1\.2?  
+package require struct::set  
+package require struct::list  
+package require xjson ?1\.3?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
 __::xjson::recode__ *decodedJson*  
+__::xjson::diff__ *oldDecodedJson* *newDecodedJson*  
+__::xjson::patch__ *decodedJson* *patch*  
+__::xjson::rpatch__ *decodedJson* *patch*  
 __::xjson::makeCollectorClass__ ?*options*? *collectorClassName* ?*methodName methodDefinition \.\.\.*?  
 *collectorClassName* *collectorObjName* ?*options*? ?*nestedCollectorName nestedCollectorObjName \.\.\.*? *schema*  
 *collectorObjName* __collect__ *decodedJson* ?*path*?  
@@ -80,7 +94,8 @@ __::xjson::makeComposerClass__ ?*options*? *composerClassName* ?*methodName meth
 This package is a set of extended JSON functions for Tcl\. It allows decoding,
 encoding, and pretty\-printing of JSON structures from Tcl structures and vice
 versa\. In addition, decoded JSON that was created by functions outside of this
-package may be recoded\.
+package may be recoded\. A set of diff and patch functions tailored to JSON
+allows to track changes in complicated JSON structures easily\.
 
 The main feature of this package however are two class factories that produce
 itcl classes that construct validator and data collector/composer objects\. Those
@@ -108,8 +123,8 @@ or administrator of an another software interfacing the software using xjson\.
 
 # <a name='section2'></a>BUGS
 
-This manpage is intimidating\. Please go right to the various __EXAMPLES__
-sections at the bottom for maintaining a slow pulse\.
+This manpage is intimidating\. Please go right to the various
+[EXAMPLES](#section7) sections at the bottom for maintaining a slow pulse\.
 
 # <a name='section3'></a>PROCEDURES
 
@@ -124,10 +139,10 @@ The package defines the following public procedures:
     the entire JSON input is decoded, and it is an error for it to be followed
     by any non\-whitespace characters\.
 
-    See the section [DECODED JSON FORMAT](#section13) for a description of
-    the data format returned by this procedure\.
+    See the section [DECODED JSON FORMAT](#subsection8) for a description
+    of the data format returned by this procedure\.
 
-    See the section [DECODING EXAMPLES](#section14) for examples\.
+    See the section [DECODING EXAMPLES](#subsection10) for examples\.
 
   - __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?
 
@@ -143,10 +158,10 @@ The package defines the following public procedures:
     the pretty printer is disabled completely and __::xjson::encode__
     returns condensed JSON\.
 
-    See the section [DECODED JSON FORMAT](#section13) for a description of
-    the data format accepted by this procedure\.
+    See the section [DECODED JSON FORMAT](#subsection8) for a description
+    of the data format accepted by this procedure\.
 
-    See the section [ENCODING EXAMPLES](#section15) for examples\.
+    See the section [ENCODING EXAMPLES](#subsection11) for examples\.
 
   - __::xjson::recode__ *decodedJson*
 
@@ -162,10 +177,57 @@ The package defines the following public procedures:
 
     > % ::xjson::decode \[::xjson::encode *decodedJson*\]
 
-    See the section [DECODED JSON FORMAT](#section13) for a description of
-    the data format accepted by this procedure\.
+    See the section [DECODED JSON FORMAT](#subsection8) for a description
+    of the data format accepted and produced by this procedure\.
 
-    See the section [RECODING EXAMPLES](#section16) for examples\.
+    See the section [RECODING EXAMPLES](#subsection12) for examples\.
+
+  - __::xjson::diff__ *oldDecodedJson* *newDecodedJson*
+
+    Compare the given Tcl *oldDecodedJson* and *newDecodedJson* data and
+    produce a *patch* suitable for the __::xjson::patch__ and
+    __::xjson::rpatch__ procedures\.
+
+    See the section [DECODED JSON FORMAT](#subsection8) for a description
+    of the data format accepted by this procedure\. See the section [JSON PATCH
+    FORMAT](#subsection9) for a description of the data format returned by
+    this procedure\.
+
+    See the section [DIFF EXAMPLES](#subsection13) for examples\.
+
+  - __::xjson::patch__ *decodedJson* *patch*
+
+    Apply the *patch* produced by a previous __::xjson::diff__ to the Tcl
+    *decodedJson* data\. The result of this function is put as Tcl decoded JSON
+    format as well\.
+
+    See the section [DECODED JSON FORMAT](#subsection8) for a description
+    of the data format accepted and returned by this procedure\. See the section
+    [JSON PATCH FORMAT](#subsection9) for a description of the patch format
+    accepted by this procedure\.
+
+    See the section [PATCH EXAMPLES](#subsection14) for examples\.
+
+  - __::xjson::rpatch__ *decodedJson* *patch*
+
+    Apply the *patch* produced by a previous __::xjson::diff__ to the Tcl
+    *decodedJson* data in reverse\. That means, the operations noted in the
+    patch are flipped in both their order and meaning so that the result of a
+    previous identical patch is reversed\. The result of this function is put as
+    Tcl decoded JSON format as well\.
+
+    *Note:* The result of this procedure is not literally but only
+    functionally identical to the original, unpatched data\. That is because the
+    patch format does not store information about the order of JSON object keys\.
+    If the forward patch had removed keys from an object, the re\-inserted keys
+    are simply appended to the forward\-patched object\.
+
+    See the section [DECODED JSON FORMAT](#subsection8) for a description
+    of the data format accepted and returned by this procedure\. See the section
+    [JSON PATCH FORMAT](#subsection9) for a description of the patch format
+    accepted by this procedure\.
+
+    See the section [PATCH EXAMPLES](#subsection14) for examples\.
 
   - __::xjson::makeCollectorClass__ ?*options*? *collectorClassName* ?*methodName methodDefinition \.\.\.*?
 
@@ -178,7 +240,7 @@ The package defines the following public procedures:
     Those procedures return the name of the produced class\.
 
     For definining your own methods, see the section [CUSTOM
-    METHODS](#section9)\.
+    METHODS](#subsection5)\.
 
       * The following options are understood:
 
@@ -257,7 +319,7 @@ constructors:
     construction\. Their collector/composer objects also only have to be
     available when the data is collected/composed\.
 
-    See the section [COLLECTOR AND COMPOSER SCHEMAS](#section7) for an
+    See the section [COLLECTOR AND COMPOSER SCHEMAS](#subsection3) for an
     explanation of the schema data structure\.
 
       * The following options are understood:
@@ -288,7 +350,7 @@ constructors:
             way you can construct partly dubious schemas on the fly without
             residing to nesting\.
 
-            See the section [NESTING](#section11) for details\.
+            See the section [NESTING](#subsection6) for details\.
 
           + __\-init__ *body*
 
@@ -315,21 +377,21 @@ constructors:
             Marks the end of options\. The argument following this one will be
             treated as an argument even if it starts with a __\-__\.
 
-Read the following section [COLLECTOR OBJECT USAGE](#section5) respective
-[COMPOSER OBJECT USAGE](#section6) on how to use the objects constructed by
-the class\.
+Read the following section [COLLECTOR OBJECT USAGE](#subsection1)
+respective [COMPOSER OBJECT USAGE](#subsection2) on how to use the objects
+constructed by the class\.
 
-# <a name='section5'></a>COLLECTOR OBJECT USAGE
+## <a name='subsection1'></a>COLLECTOR OBJECT USAGE
 
 The objects constructed by the collector class define the following methods:
 
   - *collectorObjName* __collect__ *decodedJson* ?*path*?
 
     Validate *decodedJson* data as described in section [DECODED JSON
-    FORMAT](#section13) and supplied by __::xjson::decode__ against the
-    schema loaded into the object on construction\. Also collect and transform
-    the JSON data to a Tcl data structure according to that schema\. The
-    collected data is returned\. An error is thrown instead if the validation
+    FORMAT](#subsection8) and supplied by __::xjson::decode__ against
+    the schema loaded into the object on construction\. Also collect and
+    transform the JSON data to a Tcl data structure according to that schema\.
+    The collected data is returned\. An error is thrown instead if the validation
     fails\.
 
     The optional *path* argument is used for printing the path of the
@@ -343,7 +405,7 @@ The objects constructed by the collector class define the following methods:
 
     Pretty\-print the schema stored in the object with the given base *indent*\.
 
-# <a name='section6'></a>COMPOSER OBJECT USAGE
+## <a name='subsection2'></a>COMPOSER OBJECT USAGE
 
 The objects constructed by the composer class define the following methods:
 
@@ -361,14 +423,14 @@ The objects constructed by the composer class define the following methods:
     done when nesting composers using the builtin __nest__ composing method\.
 
     The result is decoded JSON data as described in section [DECODED JSON
-    FORMAT](#section13)\. Feed it into __::xjson::encode__ to render JSON
-    data from it\.
+    FORMAT](#subsection8)\. Feed it into __::xjson::encode__ to render
+    JSON data from it\.
 
   - *composerObjName* __printSchema__ ?*indent*?
 
     Pretty\-print the schema stored in the object with the given base *indent*\.
 
-# <a name='section7'></a>COLLECTOR AND COMPOSER SCHEMAS
+## <a name='subsection3'></a>COLLECTOR AND COMPOSER SCHEMAS
 
 Collector and composer schemas are nested lists of collecting/composing
 functions and their arguments\.
@@ -421,10 +483,10 @@ valid simple JSON types\. Note that you will lose the JSON type information that
 way so you usually don't want to do such stunts without further type\-specific
 output formatting\.
 
-See the section [BUILTIN METHODS](#section8) and the various
-__EXAMPLES__ sections for more details\.
+See the section [BUILTIN METHODS](#subsection4) and the various
+[EXAMPLES](#section7) sections for more details\.
 
-# <a name='section8'></a>BUILTIN METHODS
+## <a name='subsection4'></a>BUILTIN METHODS
 
 The following methods are built into each collector/composer class \(and object\)
 unless the class was created specifying the __\-nobuiltins__ option when
@@ -465,7 +527,7 @@ it is used inside the schema, unless otherwise noted\.
       * *elseSchema*
 
         A schema as described in the section [COLLECTOR AND COMPOSER
-        SCHEMAS](#section7)\.
+        SCHEMAS](#subsection3)\.
 
       * *exp*
 
@@ -525,23 +587,23 @@ it is used inside the schema, unless otherwise noted\.
       * *schema*
 
         A schema as described in the section [COLLECTOR AND COMPOSER
-        SCHEMAS](#section7)\.
+        SCHEMAS](#subsection3)\.
 
       * *schemaList*
 
         A Tcl list of schemas as described in the section [COLLECTOR AND
-        COMPOSER SCHEMAS](#section7)\.
+        COMPOSER SCHEMAS](#subsection3)\.
 
       * *schemaDict*
 
         A Tcl dict of key\-schema pairs as described in the section [COLLECTOR
-        AND COMPOSER SCHEMAS](#section7)\. The keys may be arbitrary Tcl
+        AND COMPOSER SCHEMAS](#subsection3)\. The keys may be arbitrary Tcl
         string values\.
 
       * *schemaPairs*
 
         A Tcl dict of schema\-schema pairs as described in the section
-        [COLLECTOR AND COMPOSER SCHEMAS](#section7)\.
+        [COLLECTOR AND COMPOSER SCHEMAS](#subsection3)\.
 
       * *start*
 
@@ -554,12 +616,12 @@ it is used inside the schema, unless otherwise noted\.
       * *testSchema*
 
         A schema as described in the section [COLLECTOR AND COMPOSER
-        SCHEMAS](#section7)\.
+        SCHEMAS](#subsection3)\.
 
       * *thenSchema*
 
         A schema as described in the section [COLLECTOR AND COMPOSER
-        SCHEMAS](#section7)\.
+        SCHEMAS](#subsection3)\.
 
       * *value*
 
@@ -590,7 +652,7 @@ it is used inside the schema, unless otherwise noted\.
 
                     Specifies a Tcl input value that should be treated as
                     __null__\. See the section [NULL
-                    HANDLING](#section10) for additional information\.
+                    HANDLING](#section5) for additional information\.
 
       * __decoded__
 
@@ -604,7 +666,7 @@ it is used inside the schema, unless otherwise noted\.
 
             Validates a decoded JSON input *value* as understood by
             __::xjson::encode__ and __::xjson::recode__\. See [DECODED
-            JSON FORMAT](#section13) for details\.
+            JSON FORMAT](#subsection8) for details\.
 
             Returns __decoded *value*__\.
 
@@ -614,7 +676,7 @@ it is used inside the schema, unless otherwise noted\.
 
                     Specifies a Tcl input value that should be treated as
                     __null__\. See the section [NULL
-                    HANDLING](#section10) for additional information\.
+                    HANDLING](#section5) for additional information\.
 
       * __encoded__
 
@@ -637,7 +699,7 @@ it is used inside the schema, unless otherwise noted\.
 
                     Specifies a Tcl input value that should be treated as
                     __null__\. See the section [NULL
-                    HANDLING](#section10) for additional information\.
+                    HANDLING](#section5) for additional information\.
 
         *Note:* The *methodName* for this method as used by the
         __::xjson::makeComposerClass__ class factory procedures is
@@ -666,7 +728,7 @@ it is used inside the schema, unless otherwise noted\.
 
                     Specifies a Tcl input value that should be treated as
                     __null__\. See the section [NULL
-                    HANDLING](#section10) for additional information\.
+                    HANDLING](#section5) for additional information\.
 
           + The following general option may be specified:
 
@@ -712,7 +774,7 @@ it is used inside the schema, unless otherwise noted\.
           + for collecting
 
             Validates a __literal null__ in the decoded JSON input\. See the
-            section [NULL HANDLING](#section10) for additional information\.
+            section [NULL HANDLING](#section5) for additional information\.
 
           + for composing
 
@@ -724,7 +786,7 @@ it is used inside the schema, unless otherwise noted\.
 
                     Specifies a Tcl input value that should be treated as
                     __null__\. See the section [NULL
-                    HANDLING](#section10) for additional information\.
+                    HANDLING](#section5) for additional information\.
 
       * __number *?options?*__
 
@@ -748,7 +810,7 @@ it is used inside the schema, unless otherwise noted\.
 
                     Specifies a Tcl input value that should be treated as
                     __null__\. See the section [NULL
-                    HANDLING](#section10) for additional information\.
+                    HANDLING](#section5) for additional information\.
 
           + The following general option may be specified:
 
@@ -800,7 +862,7 @@ it is used inside the schema, unless otherwise noted\.
 
                     Specifies a Tcl input value that should be treated as
                     __null__\. See the section [NULL
-                    HANDLING](#section10) for additional information\.
+                    HANDLING](#section5) for additional information\.
 
         Further constraints may be specified\. They all work on a test string
         that is initially filled with the string *value*\. Some options aren't
@@ -809,7 +871,7 @@ it is used inside the schema, unless otherwise noted\.
         may appear multiple times\.
 
         *Note:* To manipulate the string output, see the methods in the
-        __Output Formatting Operators__ subsection\.
+        __Result Formatting Operators__ subsection\.
 
           + The following general options may be specified:
 
@@ -1036,12 +1098,12 @@ it is used inside the schema, unless otherwise noted\.
                     Specifies a Tcl input value that should be treated as
                     __null__\. This isn't about individual elements but about
                     whether the whole array should be considered __null__\.
-                    See the section [NULL HANDLING](#section10) for
+                    See the section [NULL HANDLING](#section5) for
                     additional information\.
 
         *Note:* Array elements that evaluate as __null__ are completely
         ignored \-as if they were not posted\-\. See the section [NULL
-        HANDLING](#section10) for additional information\.
+        HANDLING](#section5) for additional information\.
 
           + The following general option may be specified:
 
@@ -1128,12 +1190,12 @@ it is used inside the schema, unless otherwise noted\.
                     Specifies a Tcl input value that should be treated as
                     __null__\. This isn't about individual elements but about
                     whether the whole array should be considered __null__\.
-                    See the section [NULL HANDLING](#section10) for
+                    See the section [NULL HANDLING](#section5) for
                     additional information\.
 
         *Note:* Array elements that evaluate as __null__ are completely
         ignored \-as if they were not posted\-\. See the section [NULL
-        HANDLING](#section10) for additional information\.
+        HANDLING](#section5) for additional information\.
 
         *Note:* The *methodName* for this method as used by the
         __::xjson::makeCollectorClass__ and
@@ -1205,7 +1267,7 @@ it is used inside the schema, unless otherwise noted\.
                     string as its own __null__ value and report a
                     __null__ to uplevel, where a __default__ or
                     __optional__ method can override the validation failure\.
-                    See the section [NULL HANDLING](#section10) for
+                    See the section [NULL HANDLING](#section5) for
                     additional information\.
 
                   * __\-null__ *nullvalue*
@@ -1213,7 +1275,7 @@ it is used inside the schema, unless otherwise noted\.
                     Specifies a Tcl input value that should be treated as
                     __null__\. This isn't about individual elements but about
                     whether the whole object should be considered __null__\.
-                    See the section [NULL HANDLING](#section10) for
+                    See the section [NULL HANDLING](#section5) for
                     additional information\.
 
         *Note:* Missing keys are treated as a validation failure, and as are
@@ -1276,12 +1338,12 @@ it is used inside the schema, unless otherwise noted\.
                     Specifies a Tcl input value that should be treated as
                     __null__\. This isn't about individual elements but about
                     whether the whole array should be considered __null__\.
-                    See the section [NULL HANDLING](#section10) for
+                    See the section [NULL HANDLING](#section5) for
                     additional information\.
 
         *Note:* Array elements that evaluate as __null__ are completely
         ignored \-as if they were not posted\-\. See the section [NULL
-        HANDLING](#section10) for additional information\.
+        HANDLING](#section5) for additional information\.
 
         *Note:* The *methodName* for this method as used by the
         __::xjson::makeCollectorClass__ and
@@ -1392,7 +1454,7 @@ it is used inside the schema, unless otherwise noted\.
                     Changes the type of validation error reported so the uplevel
                     method will report a __literal null__ instead of a
                     missing field\. See the section [NULL
-                    HANDLING](#section10) for additional information\.
+                    HANDLING](#section5) for additional information\.
 
         *Note:* Be careful in conjunction with the __\-values__ option of
         the __object__ method though\. Optional fields must then be the last
@@ -1416,7 +1478,7 @@ it is used inside the schema, unless otherwise noted\.
         Returns the result of the first schema that had a result\. If no schema
         had a result \-they have all evaluated as __null__\-, this method
         returns __null__ as well\. See the section [NULL
-        HANDLING](#section10) for additional information\.
+        HANDLING](#section5) for additional information\.
 
       * __anyof *schemaList*__
 
@@ -1429,7 +1491,7 @@ it is used inside the schema, unless otherwise noted\.
         Returns the result of the first schema that had a result\. If no schema
         had a result \-they have all evaluated as __null__\-, this method
         returns __null__ as well\. See the section [NULL
-        HANDLING](#section10) for additional information\.
+        HANDLING](#section5) for additional information\.
 
         *Note:* The *methodName* for this method as used by the
         __::xjson::makeCollectorClass__ and
@@ -1466,7 +1528,7 @@ it is used inside the schema, unless otherwise noted\.
         may be marked as having a trusted schema, and may specify Tcl code or
         unsafe methods\.
 
-        See the section [NESTING](#section11) for details\.
+        See the section [NESTING](#subsection6) for details\.
 
       * __escalate__
 
@@ -1510,8 +1572,8 @@ it is used inside the schema, unless otherwise noted\.
         object so it may be marked as having a trusted schema, and may specify
         Tcl code or unsafe methods though the calling schema may not\.
 
-        See the sections [NESTING](#section11) and
-        [SANDBOXING](#section12) for details\.
+        See the sections [NESTING](#subsection6) and
+        [SANDBOXING](#subsection7) for details\.
 
       * __oneof *schemaList*__
 
@@ -1525,7 +1587,7 @@ it is used inside the schema, unless otherwise noted\.
         Returns the result of the first schema that had a result\. If no schema
         had a result \-they have all evaluated as __null__\-, this method
         returns __null__ as well\. See the section [NULL
-        HANDLING](#section10) for additional information\.
+        HANDLING](#section5) for additional information\.
 
         *Note:* The *methodName* for this method as used by the
         __::xjson::makeCollectorClass__ and
@@ -1873,7 +1935,7 @@ it is used inside the schema, unless otherwise noted\.
 
                 Use a local sandbox\.
 
-# <a name='section9'></a>CUSTOM METHODS
+## <a name='subsection5'></a>CUSTOM METHODS
 
 If neither the above collecting/composing methods nor sandboxed Tcl code from
 within the schema are sufficient to solve the particular validation and
@@ -2064,10 +2126,60 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.2/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.3/"\) for
 examples on how to write your own custom methods\.
 
-# <a name='section10'></a>NULL HANDLING
+## <a name='subsection6'></a>NESTING
+
+With each collector/composer object you construct from the classes produced by
+__::xjson::makeCollectorClass__ or __::xjson::makeComposerClass__, you
+may specify other collector/composer objects that should be accessible from
+within the registered schema by a *nestedCollectorName*/*nestedComposerName*
+alias\. The rationale of this is creating libraries of different
+collector/composer objects for often used JSON aggregates in your application,
+and calling them from an uplevel or the toplevel schema\.
+
+The __nest__ method makes use of this function\. It takes an alias name and
+calls the __collect__/__compose__ method of the nested object with the
+decoded JSON input data at that point, and the path\. The nested object takes
+care of the input data, validates it with its own schema, and returns the result
+to the calling object\.
+
+The specified nested objects do not have to exist when the calling object is
+constructed\. It is also not checked which class the nested object has\. You may
+specify any object that has a __collect__/__compose__ method with the
+same semantics as those produced by __::xjson::makeCollectorClass__ resp\.
+__::xjson::makeComposerClass__\.
+
+The dubious/trusted flag is local to each object\. This may be used to create
+collector/composer objects with application provided schemas and elevated rights
+that a object with user\-provided schem and restricted rights may call\.
+
+## <a name='subsection7'></a>SANDBOXING
+
+User supplied data is never evaluated as code by any builtin method\. All the
+considerations below are about configuration\-supplied rather than
+programmer\-supplied schemas\.
+
+On construction of the collector/composer object, you may specify the
+__\-trusted__ option to enable Tcl code evaluation from the schema\. If not
+specified, using those methods and options in the supplied schema will throw an
+error instead and the object won't be constructed at all\.
+
+Schemas may specify collecting/composing methods \(e\.g\. __apply__,
+__expr__, __lmap__\) or options \(e\.g\. __\-test__, __\-transform__\)
+that rely on Tcl code supplied from within the schema\. To use such schemas in a
+safe fashion, all that Tcl code is executed in a safe interpreter \(a sandbox\) as
+supplied by Tcl's __interp \-safe__ command\.
+
+Sandbox creation and destruction after use happens automatically whenever data
+is collected/composed\. That sandbox is shared by all methods in the schema and
+may also be used to pass values in global variables between methods\. As a
+shortcut, all of the methods that have arguments or options allowing to specify
+Tcl code also have an option __\-isolate__, that creates a local sandbox just
+for that method automatically\.
+
+# <a name='section5'></a>NULL HANDLING
 
 The procedures __::xjson::encode__, __::xjson::recode__, and
 __::xjson::decode__ treat JSON *null* values literally\. As with the JSON
@@ -2105,57 +2217,9 @@ To change that symbolic treatment of JSON *null*s at specific places, you can
 use the __default__ collecting method and tell a default value that should
 be used whenever a *null* is encountered in the JSON input at that place\.
 
-# <a name='section11'></a>NESTING
+# <a name='section6'></a>DATA FORMATS
 
-With each collector/composer object you construct from the classes produced by
-__::xjson::makeCollectorClass__ or __::xjson::makeComposerClass__, you
-may specify other collector/composer objects that should be accessible from
-within the registered schema by a *nestedCollectorName*/*nestedComposerName*
-alias\. The rationale of this is creating libraries of different
-collector/composer objects for often used JSON aggregates in your application,
-and calling them from an uplevel or the toplevel schema\.
-
-The __nest__ method makes use of this function\. It takes an alias name and
-calls the __collect__/__compose__ method of the nested object with the
-decoded JSON input data at that point, and the path\. The nested object takes
-care of the input data, validates it with its own schema, and returns the result
-to the calling object\.
-
-The specified nested objects do not have to exist when the calling object is
-constructed\. It is also not checked which class the nested object has\. You may
-specify any object that has a __collect__/__compose__ method with the
-same semantics as those produced by __::xjson::makeCollectorClass__ resp\.
-__::xjson::makeComposerClass__\.
-
-The dubious/trusted flag is local to each object\. This may be used to create
-collector/composer objects with application provided schemas and elevated rights
-that a object with user\-provided schem and restricted rights may call\.
-
-# <a name='section12'></a>SANDBOXING
-
-User supplied data is never evaluated as code by any builtin method\. All the
-considerations below are about configuration\-supplied rather than
-programmer\-supplied schemas\.
-
-On construction of the collector/composer object, you may specify the
-__\-trusted__ option to enable Tcl code evaluation from the schema\. If not
-specified, using those methods and options in the supplied schema will throw an
-error instead and the object won't be constructed at all\.
-
-Schemas may specify collecting/composing methods \(e\.g\. __apply__,
-__expr__, __lmap__\) or options \(e\.g\. __\-test__, __\-transform__\)
-that rely on Tcl code supplied from within the schema\. To use such schemas in a
-safe fashion, all that Tcl code is executed in a safe interpreter \(a sandbox\) as
-supplied by Tcl's __interp \-safe__ command\.
-
-Sandbox creation and destruction after use happens automatically whenever data
-is collected/composed\. That sandbox is shared by all methods in the schema and
-may also be used to pass values in global variables between methods\. As a
-shortcut, all of the methods that have arguments or options allowing to specify
-Tcl code also have an option __\-isolate__, that creates a local sandbox just
-for that method automatically\.
-
-# <a name='section13'></a>DECODED JSON FORMAT
+## <a name='subsection8'></a>DECODED JSON FORMAT
 
 The decoded JSON format as returned by the __::xjson::decode__ and accepted
 by the __::xjson::encode__ and __::xjson::recode__ commands is a nested
@@ -2212,7 +2276,52 @@ list of type\-data pairs\.
         well\. __::xjson::recode__ checks the *decodedJson* argument for
         syntatic validity as it recodes it\.
 
-# <a name='section14'></a>DECODING EXAMPLES
+## <a name='subsection9'></a>JSON PATCH FORMAT
+
+The JSON patch format as returned by the __::xjson::diff__ and accepted by
+the __::xjson::patch__ and __::xjson::rpatch__ commands is a nested list
+of diff operations\.
+
+  - The following operations are understood:
+
+      * __replace *oldDecodedJson* *newDecodedJson*__
+
+        Replace *oldDecodedJson* with *newDecodedJson*\. This operation works
+        on all decoded JSON types\.
+
+      * __keys *dictOfOperations*__
+
+        Apply the *dictOfOperations* to the noted keys of an __object__
+        decoded JSON type\.
+
+      * __add *decodedJson*__
+
+        Add the *decodedJson* to the __object__ under the noted key\. This
+        operation works only inside a __keys__ operation\.
+
+      * __delete *decodedJson*__
+
+        Delete the *decodedJson* from the __object__ under the noted key\.
+        This operation works only inside a __keys__ operation\.
+
+      * __indices *pairsOfOperations*__
+
+        Apply the *pairsOfOperations* to the noted indices of an __array__
+        decoded JSON type\.
+
+      * __insert *listOfDecodedJson*__
+
+        Insert the *listOfDecodedJson* into the __array__ at the noted
+        index\. This operation works only inside an __indices__ operation\.
+
+      * __remove *listOfDecodedJson*__
+
+        Remove the *listOfDecodedJson* from the __array__ at the noted
+        index\. This operation works only inside an __indices__ operation\.
+
+# <a name='section7'></a>EXAMPLES
+
+## <a name='subsection10'></a>DECODING EXAMPLES
 
 Decode an array of array of numbers\.
 
@@ -2235,7 +2344,7 @@ Same with arbitrary whitespace\.
     }
     object {foo {string hello} bar {number 42} quux {literal null}}
 
-# <a name='section15'></a>ENCODING EXAMPLES
+## <a name='subsection11'></a>ENCODING EXAMPLES
 
 Encode an array of array of numbers\.
 
@@ -2269,7 +2378,7 @@ Encode with nested decoded data\.
     % ::xjson::encode [list object [list foo [list $type $data] bar {number +42} quux {literal null}]] 0 {}
     {"foo":"hello","bar":42,"quux":null}
 
-# <a name='section16'></a>RECODING EXAMPLES
+## <a name='subsection12'></a>RECODING EXAMPLES
 
 Recode pre\-encoded data\.
 
@@ -2284,7 +2393,148 @@ Recode with nested decoded data\.
     % ::xjson::recode [list object [list foo [list $type $data] bar {number +42} quux {literal null}]]
     object {foo {string {oof rab}} bar {number 42} quux {literal null}}
 
-# <a name='section17'></a>JSON VALIDATION AND DATA COLLECTING EXAMPLE
+## <a name='subsection13'></a>DIFF EXAMPLES
+
+Feed two sets of slightly different JSON data into the decoder and remember the
+result\.
+
+    % set old [::xjson::decode {
+        {
+            "articles": [
+                {
+                    "id":    101,
+                    "name":  "Pizzapane bianca",
+                    "price": 4.95
+                },
+                {
+                    "id":    120,
+                    "name":  "Pizza Regina",
+                    "price": 9.8
+                },
+                {
+                    "id":    139,
+                    "name":  "Wunschpizza",
+                    "price": 12.70
+                },
+                {
+                    "id":    201,
+                    "name":  "Rucola",
+                    "extra": true,
+                    "price": 1
+                }
+            ]
+        }
+    }]
+
+    % set new [::xjson::decode {
+        {
+            "articles": [
+                {
+                    "id":    101,
+                    "name":  "Pizzapane bianca",
+                    "extra": true,
+                    "price": 4.95
+                },
+                {
+                    "id":    120,
+                    "name":  "Pizza Regina",
+                    "price": 9.80
+                },
+                {
+                    "id":    138,
+                    "name":  "Pizza Hawaii",
+                    "price": 12.00
+                },
+                {
+                    "id":    139,
+                    "name":  "Wunschpizza",
+                    "price": 13.50
+                },
+                {
+                    "id":    201,
+                    "name":  "Rucola",
+                    "price": 1
+                }
+            ]
+        }
+    }]
+
+Calculate the patch data\.
+
+    % ::xjson::diff $old $new
+    keys {articles {indices {0 {keys {extra {add {literal true}}}} 2 {remove {{object {id {number 139} name {string Wunschpizza} price {number 12.7}}} {object {id {number 201} name {string Rucola} extra {literal true} price {number 1}}}}} 2 {insert {{object {id {number 138} name {string {Pizza Hawaii}} price {number 12.0}}} {object {id {number 139} name {string Wunschpizza} price {number 13.5}}} {object {id {number 201} name {string Rucola} price {number 1}}}}}}}}
+
+## <a name='subsection14'></a>PATCH EXAMPLES
+
+Feed JSON data into the decoder and remember the result\.
+
+    % set old [::xjson::decode {
+        {
+            "articles": [
+                {
+                    "id":    101,
+                    "name":  "Pizzapane bianca",
+                    "price": 4.95
+                },
+                {
+                    "id":    120,
+                    "name":  "Pizza Regina",
+                    "price": 9.8
+                },
+                {
+                    "id":    139,
+                    "name":  "Wunschpizza",
+                    "price": 12.70
+                },
+                {
+                    "id":    201,
+                    "name":  "Rucola",
+                    "extra": true,
+                    "price": 1
+                }
+            ]
+        }
+    }]
+
+Dig out matching patch data\.
+
+    % set patch {keys {articles {indices {0 {keys {extra {add {literal true}}}} 2 {remove {{object {id {number 139} name {string Wunschpizza} price {number 12.7}}} {object {id {number 201} name {string Rucola} extra {literal true} price {number 1}}}}} 2 {insert {{object {id {number 138} name {string {Pizza Hawaii}} price {number 12.0}}} {object {id {number 139} name {string Wunschpizza} price {number 13.5}}} {object {id {number 201} name {string Rucola} price {number 1}}}}}}}}}
+
+Apply the patch and encode it\.
+
+    % ::xjson::encode [::xjson::patch $old $patch]
+    {
+        "articles": [
+            {
+                "id":    101,
+                "name":  "Pizzapane bianca",
+                "price": 4.95
+                        "extra": true
+            },
+            {
+                "id":    120,
+                "name":  "Pizza Regina",
+                "price": 9.8
+            },
+            {
+                "id":    138,
+                "name":  "Pizza Hawaii",
+                "price": 12.0
+            },
+            {
+                "id":    139,
+                "name":  "Wunschpizza",
+                "price": 13.5
+            },
+            {
+                "id":    201,
+                "name":  "Rucola",
+                "price": 1
+            }
+        ]
+    }
+
+## <a name='subsection15'></a>JSON VALIDATION AND DATA COLLECTING EXAMPLE
 
 Create a collector class with the class factory and the builtin methods\. Even
 for advanced usage, you only ever need to do this once\. More than once only if
@@ -2341,7 +2591,7 @@ object\.
     }]
     articles {101 {extra false name {Pizzapane bianca} price 4.95} 120 {extra false name {Pizza Regina} price 9.80} 139 {extra false name Wunschpizza price 12.70} 201 {extra true name Rucola price 1.00}}
 
-# <a name='section18'></a>JSON COMPOSING EXAMPLE
+## <a name='subsection16'></a>JSON COMPOSING EXAMPLE
 
 Create a composer class with the class factory and the builtin methods\. Even for
 advanced usage, you only ever need to do this once\. More than once only if you
@@ -2376,7 +2626,7 @@ Feed Tcl data into the composer object, and the result into the encoder\.
         }
     ]
 
-# <a name='section19'></a>JSON RECOMPOSING EXAMPLE
+## <a name='subsection17'></a>JSON RECOMPOSING EXAMPLE
 
 This toy example decodes and validates a JSON input, collects the data, then
 recomposes the data into JSON\.
@@ -2409,7 +2659,7 @@ recomposes the data into JSON\.
 
 # <a name='keywords'></a>KEYWORDS
 
-json, tcl, validation
+diff, json, patch, tcl, validation
 
 # <a name='copyright'></a>COPYRIGHT
 

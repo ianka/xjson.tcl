@@ -39,8 +39,8 @@ proc test {operation test} {
 		diff {
 			::xjson::$operation [dict get $test odata] [dict get $test ndata]
 		}
-		patch {
-			::xjson::$operation [dict get $test odata] [dict get $test patch]
+		patch - rpatch {
+			::xjson::$operation [dict get $test data] [dict get $test patch]
 		}
 		makeCollectorClass - makeComposerClass {
 			::xjson::$operation {*}[dict get $test fparams]
@@ -153,7 +153,7 @@ proc failedTest {test result} {
 		log "Patch: [dict get $test patch]"
 	}
 	log "Expected: \"[string map {" " "."} [dict get $test expected]]\""
-	log "Result: \"[string map {" " "."} $result]\""
+	log "Result:   \"[string map {" " "."} $result]\""
 }
 
 

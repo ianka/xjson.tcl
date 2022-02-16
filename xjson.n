@@ -2,7 +2,7 @@
 '\" Generated from file '' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
 '\"
-.TH "xjson" n 1\&.2  "xjson\&.tcl"
+.TH "xjson" n 1\&.3  "xjson\&.tcl"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -272,19 +272,29 @@ Database Class:	\\fB\\$3\\fR
 ..
 .BS
 .SH NAME
-xjson \- extended JSON decoder, validator, data collector, composer, encoder, pretty printer
+xjson \- extended JSON functions for Tcl
 .SH SYNOPSIS
 package require \fBTcl  8\&.6-\fR
 .sp
 package require \fBitcl  4\&.0-\fR
 .sp
-package require \fBxjson  ?1\&.2?\fR
+package require \fBstruct::set \fR
+.sp
+package require \fBstruct::list \fR
+.sp
+package require \fBxjson  ?1\&.3?\fR
 .sp
 \fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
 .sp
 \fB::xjson::encode\fR \fIdecodedJson\fR ?\fIindent\fR? ?\fItabulator\fR? ?\fInest\fR?
 .sp
 \fB::xjson::recode\fR \fIdecodedJson\fR
+.sp
+\fB::xjson::diff\fR \fIoldDecodedJson\fR \fInewDecodedJson\fR
+.sp
+\fB::xjson::patch\fR \fIdecodedJson\fR \fIpatch\fR
+.sp
+\fB::xjson::rpatch\fR \fIdecodedJson\fR \fIpatch\fR
 .sp
 \fB::xjson::makeCollectorClass\fR ?\fIoptions\fR? \fIcollectorClassName\fR ?\fImethodName methodDefinition \&.\&.\&.\fR?
 .sp
@@ -307,7 +317,8 @@ package require \fBxjson  ?1\&.2?\fR
 This package is a set of extended JSON functions for Tcl\&. It allows decoding,
 encoding, and pretty-printing of JSON structures from Tcl structures and vice
 versa\&. In addition, decoded JSON that was created by functions outside of this
-package may be recoded\&.
+package may be recoded\&. A set of diff and patch functions tailored to JSON
+allows to track changes in complicated JSON structures easily\&.
 .PP
 The main feature of this package however are two class factories that produce
 itcl classes that construct validator and data collector/composer objects\&.
@@ -386,9 +397,53 @@ for feeding it into a collector class\&.
 .CE
 .IP
 See the section \fBDECODED JSON FORMAT\fR for a description of the data
-format accepted by this procedure\&.
+format accepted and produced by this procedure\&.
 .sp
 See the section \fBRECODING EXAMPLES\fR for examples\&.
+.TP
+\fB::xjson::diff\fR \fIoldDecodedJson\fR \fInewDecodedJson\fR
+Compare the given Tcl \fIoldDecodedJson\fR and \fInewDecodedJson\fR data and
+produce a \fIpatch\fR suitable for the \fB::xjson::patch\fR and
+\fB::xjson::rpatch\fR procedures\&.
+.sp
+See the section \fBDECODED JSON FORMAT\fR for a description of the data
+format accepted by this procedure\&.
+See the section \fBJSON PATCH FORMAT\fR for a description of the data
+format returned by this procedure\&.
+.sp
+See the section \fBDIFF EXAMPLES\fR for examples\&.
+.TP
+\fB::xjson::patch\fR \fIdecodedJson\fR \fIpatch\fR
+Apply the \fIpatch\fR produced by a previous \fB::xjson::diff\fR to the
+Tcl \fIdecodedJson\fR data\&. The result of this function is put as Tcl decoded
+JSON format as well\&.
+.sp
+See the section \fBDECODED JSON FORMAT\fR for a description of the data
+format accepted and returned by this procedure\&.
+See the section \fBJSON PATCH FORMAT\fR for a description of the patch
+format accepted by this procedure\&.
+.sp
+See the section \fBPATCH EXAMPLES\fR for examples\&.
+.TP
+\fB::xjson::rpatch\fR \fIdecodedJson\fR \fIpatch\fR
+Apply the \fIpatch\fR produced by a previous \fB::xjson::diff\fR to the
+Tcl \fIdecodedJson\fR data in reverse\&. That means, the operations noted in
+the patch are flipped in both their order and meaning so that the result of
+a previous identical patch is reversed\&.
+The result of this function is put as Tcl decoded JSON format as well\&.
+.sp
+\fINote:\fR The result of this procedure is not literally but only
+functionally identical to the original, unpatched data\&. That is because the
+patch format does not store information about the order of JSON object keys\&.
+If the forward patch had removed keys from an object, the re-inserted keys
+are simply appended to the forward-patched object\&.
+.sp
+See the section \fBDECODED JSON FORMAT\fR for a description of the data
+format accepted and returned by this procedure\&.
+See the section \fBJSON PATCH FORMAT\fR for a description of the patch
+format accepted by this procedure\&.
+.sp
+See the section \fBPATCH EXAMPLES\fR for examples\&.
 .TP
 \fB::xjson::makeCollectorClass\fR ?\fIoptions\fR? \fIcollectorClassName\fR ?\fImethodName methodDefinition \&.\&.\&.\fR?
 .TP
@@ -525,7 +580,7 @@ an argument even if it starts with a \fB-\fR\&.
 .PP
 Read the following section \fBCOLLECTOR OBJECT USAGE\fR respective
 \fBCOMPOSER OBJECT USAGE\fR on how to use the objects constructed by the class\&.
-.SH "COLLECTOR OBJECT USAGE"
+.SS "COLLECTOR OBJECT USAGE"
 The objects constructed by the collector class define the following methods:
 .TP
 \fIcollectorObjName\fR \fBcollect\fR \fIdecodedJson\fR ?\fIpath\fR?
@@ -544,7 +599,7 @@ collectors using the builtin \fBnest\fR collecting method\&.
 \fIcollectorObjName\fR \fBprintSchema\fR ?\fIindent\fR?
 Pretty-print the schema stored in the object with the given base \fIindent\fR\&.
 .PP
-.SH "COMPOSER OBJECT USAGE"
+.SS "COMPOSER OBJECT USAGE"
 The objects constructed by the composer class define the following methods:
 .TP
 \fIcomposerObjName\fR \fBcompose\fR \fItclData\fR ?\fIpath\fR?
@@ -565,7 +620,7 @@ Feed it into \fB::xjson::encode\fR to render JSON data from it\&.
 \fIcomposerObjName\fR \fBprintSchema\fR ?\fIindent\fR?
 Pretty-print the schema stored in the object with the given base \fIindent\fR\&.
 .PP
-.SH "COLLECTOR AND COMPOSER SCHEMAS"
+.SS "COLLECTOR AND COMPOSER SCHEMAS"
 Collector and composer schemas are nested lists of collecting/composing
 functions and their arguments\&.
 .PP
@@ -622,7 +677,7 @@ stunts without further type-specific output formatting\&.
 .PP
 See the section \fBBUILTIN METHODS\fR and the various
 \fBEXAMPLES\fR sections for more details\&.
-.SH "BUILTIN METHODS"
+.SS "BUILTIN METHODS"
 The following methods are built into each collector/composer class
 (and object) unless the class was created specifying the \fB-nobuiltins\fR
 option when calling the
@@ -971,7 +1026,7 @@ in their order of appearance in the \fIoptions\fR\&. They may appear multiple
 times\&.
 .sp
 \fINote:\fR To manipulate the string output, see the methods in the
-\fBOutput Formatting Operators\fR subsection\&.
+\fBResult Formatting Operators\fR subsection\&.
 .RS
 .TP
 The following general options may be specified:
@@ -2018,7 +2073,7 @@ Use a local sandbox\&.
 .RE
 .RE
 .PP
-.SH "CUSTOM METHODS"
+.SS "CUSTOM METHODS"
 If neither the above collecting/composing methods nor sandboxed Tcl code from
 within the schema are sufficient to solve the particular validation and
 collecting/composing problem, you may want to create custom collecting methods\&.
@@ -2171,8 +2226,56 @@ The \fIbody\fR is the Tcl body of the method\&.
 .PP
 See the files
 "\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
-from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.2/\fR")
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.3/\fR")
 for examples on how to write your own custom methods\&.
+.SS NESTING
+With each collector/composer object you construct from the classes produced by
+\fB::xjson::makeCollectorClass\fR or \fB::xjson::makeComposerClass\fR, you
+may specify other collector/composer objects that should be accessible from
+within the registered schema by a
+\fInestedCollectorName\fR/\fInestedComposerName\fR alias\&.  The rationale of
+this is creating libraries of different collector/composer objects for often
+used JSON aggregates in your application, and calling them from an uplevel or
+the toplevel schema\&.
+.PP
+The \fBnest\fR method makes use of this function\&. It takes an alias name and
+calls the \fBcollect\fR/\fBcompose\fR method of the nested object with the
+decoded JSON input data at that point, and the path\&.
+The nested object takes care of the input data, validates it with
+its own schema, and returns the result to the calling object\&.
+.PP
+The specified nested objects do not have to exist when the calling object is
+constructed\&. It is also not checked which class the nested object has\&. You may
+specify any object that has a \fBcollect\fR/\fBcompose\fR method with the
+same semantics as those produced by
+\fB::xjson::makeCollectorClass\fR resp\&. \fB::xjson::makeComposerClass\fR\&.
+.PP
+The dubious/trusted flag is local to each object\&. This may
+be used to create collector/composer objects with application provided
+schemas and elevated rights that a object with user-provided schem
+and restricted rights may call\&.
+.SS SANDBOXING
+User supplied data is never evaluated as code by any builtin method\&.
+All the considerations below are about configuration-supplied rather than
+programmer-supplied schemas\&.
+.PP
+On construction of the collector/composer object, you may specify the
+\fB-trusted\fR option to enable Tcl code evaluation from the schema\&.
+If not specified, using those methods and options in the supplied schema
+will throw an error instead and the object won't be constructed at all\&.
+.PP
+Schemas may specify collecting/composing methods (e\&.g\&. \fBapply\fR, \fBexpr\fR,
+\fBlmap\fR) or options (e\&.g\&. \fB-test\fR, \fB-transform\fR) that
+rely on Tcl code supplied from within the schema\&. To use such schemas in a safe
+fashion, all that Tcl code is executed in a safe interpreter (a sandbox) as
+supplied by Tcl's \fBinterp -safe\fR command\&.
+.PP
+Sandbox creation and destruction after use happens automatically whenever
+data is collected/composed\&. That sandbox is shared by all methods in the schema
+and may also be used to pass values in global variables between methods\&.
+As a shortcut, all of the methods that have arguments or options allowing
+to specify Tcl code also have an option \fB-isolate\fR, that creates a
+local sandbox just for that method automatically\&.
 .SH "NULL HANDLING"
 The procedures \fB::xjson::encode\fR, \fB::xjson::recode\fR, and
 \fB::xjson::decode\fR treat JSON
@@ -2213,55 +2316,8 @@ To change that symbolic treatment of JSON \fInull\fRs at specific places, you
 can use the \fBdefault\fR collecting method and tell a default value that
 should be used whenever a \fInull\fR is encountered in the JSON input at that
 place\&.
-.SH NESTING
-With each collector/composer object you construct from the classes produced by
-\fB::xjson::makeCollectorClass\fR or \fB::xjson::makeComposerClass\fR, you
-may specify other collector/composer objects that should be accessible from
-within the registered schema by a
-\fInestedCollectorName\fR/\fInestedComposerName\fR alias\&.  The rationale of
-this is creating libraries of different collector/composer objects for often
-used JSON aggregates in your application, and calling them from an uplevel or
-the toplevel schema\&.
-.PP
-The \fBnest\fR method makes use of this function\&. It takes an alias name and
-calls the \fBcollect\fR/\fBcompose\fR method of the nested object with the
-decoded JSON input data at that point, and the path\&.
-The nested object takes care of the input data, validates it with
-its own schema, and returns the result to the calling object\&.
-.PP
-The specified nested objects do not have to exist when the calling object is
-constructed\&. It is also not checked which class the nested object has\&. You may
-specify any object that has a \fBcollect\fR/\fBcompose\fR method with the
-same semantics as those produced by
-\fB::xjson::makeCollectorClass\fR resp\&. \fB::xjson::makeComposerClass\fR\&.
-.PP
-The dubious/trusted flag is local to each object\&. This may
-be used to create collector/composer objects with application provided
-schemas and elevated rights that a object with user-provided schem
-and restricted rights may call\&.
-.SH SANDBOXING
-User supplied data is never evaluated as code by any builtin method\&.
-All the considerations below are about configuration-supplied rather than
-programmer-supplied schemas\&.
-.PP
-On construction of the collector/composer object, you may specify the
-\fB-trusted\fR option to enable Tcl code evaluation from the schema\&.
-If not specified, using those methods and options in the supplied schema
-will throw an error instead and the object won't be constructed at all\&.
-.PP
-Schemas may specify collecting/composing methods (e\&.g\&. \fBapply\fR, \fBexpr\fR,
-\fBlmap\fR) or options (e\&.g\&. \fB-test\fR, \fB-transform\fR) that
-rely on Tcl code supplied from within the schema\&. To use such schemas in a safe
-fashion, all that Tcl code is executed in a safe interpreter (a sandbox) as
-supplied by Tcl's \fBinterp -safe\fR command\&.
-.PP
-Sandbox creation and destruction after use happens automatically whenever
-data is collected/composed\&. That sandbox is shared by all methods in the schema
-and may also be used to pass values in global variables between methods\&.
-As a shortcut, all of the methods that have arguments or options allowing
-to specify Tcl code also have an option \fB-isolate\fR, that creates a
-local sandbox just for that method automatically\&.
-.SH "DECODED JSON FORMAT"
+.SH "DATA FORMATS"
+.SS "DECODED JSON FORMAT"
 The decoded JSON format as returned by the \fB::xjson::decode\fR and accepted
 by the \fB::xjson::encode\fR and \fB::xjson::recode\fR commands is a nested
 list of type-data pairs\&.
@@ -2313,7 +2369,45 @@ the input is dynamic as well\&.
 validity as it recodes it\&.
 .RE
 .PP
-.SH "DECODING EXAMPLES"
+.SS "JSON PATCH FORMAT"
+The JSON patch format as returned by the \fB::xjson::diff\fR and accepted
+by the \fB::xjson::patch\fR and \fB::xjson::rpatch\fR commands is a nested
+list of diff operations\&.
+.TP
+The following operations are understood:
+.RS
+.TP
+\fBreplace \fIoldDecodedJson\fR \fInewDecodedJson\fR\fR
+Replace \fIoldDecodedJson\fR with \fInewDecodedJson\fR\&.
+This operation works on all decoded JSON types\&.
+.TP
+\fBkeys \fIdictOfOperations\fR\fR
+Apply the \fIdictOfOperations\fR to the noted keys of an \fBobject\fR
+decoded JSON type\&.
+.TP
+\fBadd \fIdecodedJson\fR\fR
+Add the \fIdecodedJson\fR to the \fBobject\fR under the noted key\&.
+This operation works only inside a \fBkeys\fR operation\&.
+.TP
+\fBdelete \fIdecodedJson\fR\fR
+Delete the \fIdecodedJson\fR from the \fBobject\fR under the noted key\&.
+This operation works only inside a \fBkeys\fR operation\&.
+.TP
+\fBindices \fIpairsOfOperations\fR\fR
+Apply the \fIpairsOfOperations\fR to the noted indices of an \fBarray\fR
+decoded JSON type\&.
+.TP
+\fBinsert \fIlistOfDecodedJson\fR\fR
+Insert the \fIlistOfDecodedJson\fR into the \fBarray\fR at the noted index\&.
+This operation works only inside an \fBindices\fR operation\&.
+.TP
+\fBremove \fIlistOfDecodedJson\fR\fR
+Remove the \fIlistOfDecodedJson\fR from the \fBarray\fR at the noted index\&.
+This operation works only inside an \fBindices\fR operation\&.
+.RE
+.PP
+.SH EXAMPLES
+.SS "DECODING EXAMPLES"
 Decode an array of array of numbers\&.
 .CS
 
@@ -2347,7 +2441,7 @@ object {foo {string hello} bar {number 42} quux {literal null}}
 
 
 .CE
-.SH "ENCODING EXAMPLES"
+.SS "ENCODING EXAMPLES"
 Encode an array of array of numbers\&.
 .CS
 
@@ -2400,7 +2494,7 @@ Encode with nested decoded data\&.
 
 
 .CE
-.SH "RECODING EXAMPLES"
+.SS "RECODING EXAMPLES"
 Recode pre-encoded data\&.
 .CS
 
@@ -2422,7 +2516,165 @@ object {foo {string {oof rab}} bar {number 42} quux {literal null}}
 
 
 .CE
-.SH "JSON VALIDATION AND DATA COLLECTING EXAMPLE"
+.SS "DIFF EXAMPLES"
+Feed two sets of slightly different JSON data into the decoder and remember the result\&.
+.CS
+
+
+% set old [::xjson::decode {
+    {
+        "articles": [
+            {
+                "id":    101,
+                "name":  "Pizzapane bianca",
+                "price": 4\&.95
+            },
+            {
+                "id":    120,
+                "name":  "Pizza Regina",
+                "price": 9\&.8
+            },
+            {
+                "id":    139,
+                "name":  "Wunschpizza",
+                "price": 12\&.70
+            },
+            {
+                "id":    201,
+                "name":  "Rucola",
+                "extra": true,
+                "price": 1
+            }
+        ]
+    }
+}]
+
+% set new [::xjson::decode {
+    {
+        "articles": [
+            {
+                "id":    101,
+                "name":  "Pizzapane bianca",
+                "extra": true,
+                "price": 4\&.95
+            },
+            {
+                "id":    120,
+                "name":  "Pizza Regina",
+                "price": 9\&.80
+            },
+            {
+                "id":    138,
+                "name":  "Pizza Hawaii",
+                "price": 12\&.00
+            },
+            {
+                "id":    139,
+                "name":  "Wunschpizza",
+                "price": 13\&.50
+            },
+            {
+                "id":    201,
+                "name":  "Rucola",
+                "price": 1
+            }
+        ]
+    }
+}]
+
+
+.CE
+Calculate the patch data\&.
+.CS
+
+
+% ::xjson::diff $old $new
+keys {articles {indices {0 {keys {extra {add {literal true}}}} 2 {remove {{object {id {number 139} name {string Wunschpizza} price {number 12\&.7}}} {object {id {number 201} name {string Rucola} extra {literal true} price {number 1}}}}} 2 {insert {{object {id {number 138} name {string {Pizza Hawaii}} price {number 12\&.0}}} {object {id {number 139} name {string Wunschpizza} price {number 13\&.5}}} {object {id {number 201} name {string Rucola} price {number 1}}}}}}}}
+
+
+.CE
+.SS "PATCH EXAMPLES"
+Feed JSON data into the decoder and remember the result\&.
+.CS
+
+
+% set old [::xjson::decode {
+    {
+        "articles": [
+            {
+                "id":    101,
+                "name":  "Pizzapane bianca",
+                "price": 4\&.95
+            },
+            {
+                "id":    120,
+                "name":  "Pizza Regina",
+                "price": 9\&.8
+            },
+            {
+                "id":    139,
+                "name":  "Wunschpizza",
+                "price": 12\&.70
+            },
+            {
+                "id":    201,
+                "name":  "Rucola",
+                "extra": true,
+                "price": 1
+            }
+        ]
+    }
+}]
+
+
+.CE
+Dig out matching patch data\&.
+.CS
+
+
+% set patch {keys {articles {indices {0 {keys {extra {add {literal true}}}} 2 {remove {{object {id {number 139} name {string Wunschpizza} price {number 12\&.7}}} {object {id {number 201} name {string Rucola} extra {literal true} price {number 1}}}}} 2 {insert {{object {id {number 138} name {string {Pizza Hawaii}} price {number 12\&.0}}} {object {id {number 139} name {string Wunschpizza} price {number 13\&.5}}} {object {id {number 201} name {string Rucola} price {number 1}}}}}}}}}
+
+
+.CE
+Apply the patch and encode it\&.
+.CS
+
+
+% ::xjson::encode [::xjson::patch $old $patch]
+{
+    "articles": [
+        {
+            "id":    101,
+            "name":  "Pizzapane bianca",
+            "price": 4\&.95
+                    "extra": true
+        },
+        {
+            "id":    120,
+            "name":  "Pizza Regina",
+            "price": 9\&.8
+        },
+        {
+            "id":    138,
+            "name":  "Pizza Hawaii",
+            "price": 12\&.0
+        },
+        {
+            "id":    139,
+            "name":  "Wunschpizza",
+            "price": 13\&.5
+        },
+        {
+            "id":    201,
+            "name":  "Rucola",
+            "price": 1
+        }
+    ]
+}
+
+
+.CE
+.SS "JSON VALIDATION AND DATA COLLECTING EXAMPLE"
 Create a collector class with the class factory and the builtin methods\&. Even
 for advanced usage, you only ever need to do this once\&.  More than once only if
 you want to create multiple collector classes with a different set of builtin
@@ -2490,7 +2742,7 @@ articles {101 {extra false name {Pizzapane bianca} price 4\&.95} 120 {extra fals
 
 
 .CE
-.SH "JSON COMPOSING EXAMPLE"
+.SS "JSON COMPOSING EXAMPLE"
 Create a composer class with the class factory and the builtin methods\&. Even
 for advanced usage, you only ever need to do this once\&.  More than once only if
 you want to create multiple composer classes with a different set of builtin
@@ -2535,7 +2787,7 @@ Feed Tcl data into the composer object, and the result into the encoder\&.
 ]
 
 .CE
-.SH "JSON RECOMPOSING EXAMPLE"
+.SS "JSON RECOMPOSING EXAMPLE"
 This toy example decodes and validates a JSON input, collects the data, then recomposes the data into JSON\&.
 .CS
 
@@ -2569,7 +2821,7 @@ array {{object {id {number 1} name {string abc} comment {string foo}}} {object {
 
 .CE
 .SH KEYWORDS
-json, tcl, validation
+diff, json, patch, tcl, validation
 .SH COPYRIGHT
 .nf
 Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license

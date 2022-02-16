@@ -2,22 +2,30 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.2]
+[manpage_begin xjson n 1.3]
 [moddesc   {xjson.tcl}]
-[titledesc {extended JSON decoder, validator, data collector, composer, encoder, pretty printer}]
+[titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
-[keywords tcl json validation]
+[keywords tcl json validation diff patch]
 [require Tcl 8.6-]
 [require itcl 4.0-]
-[require xjson [opt 1.2]]
+[require struct::set]
+[require struct::list]
+[require xjson [opt 1.3]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
 [usage [cmd ::xjson::recode] [arg decodedJson]]
+
+[usage [cmd ::xjson::diff] [arg oldDecodedJson] [arg newDecodedJson]]
+[usage [cmd ::xjson::patch] [arg decodedJson] [arg patch]]
+[usage [cmd ::xjson::rpatch] [arg decodedJson] [arg patch]]
+
 [usage [cmd ::xjson::makeCollectorClass] [opt [arg options]] [arg collectorClassName] [opt [arg {methodName methodDefinition ...}]]]
 [usage [arg collectorClassName] [arg collectorObjName] [opt [arg options]] [opt [arg {nestedCollectorName nestedCollectorObjName ...}]] [arg schema]]
 [usage [arg collectorObjName] [method collect] [arg decodedJson] [opt [arg path]]]
 [usage [arg collectorObjName] [method printSchema] [opt [arg indent]]]
+
 [usage [cmd ::xjson::makeComposerClass] [opt [arg options]] [arg composerClassName] [opt [arg {methodName methodDefinition ...}]]]
 [usage [arg composerClassName] [arg composerObjName] [opt [arg options]] [opt [arg {nestedComposerName nestedComposerObjName ...}]] [arg schema]]
 [usage [arg composerObjName] [method compose] [arg tclData] [opt [arg path]]]
@@ -27,7 +35,8 @@ set data {
 	This package is a set of extended JSON functions for Tcl. It allows decoding,
 	encoding, and pretty-printing of JSON structures from Tcl structures and vice
 	versa. In addition, decoded JSON that was created by functions outside of this
-	package may be recoded.
+	package may be recoded. A set of diff and patch functions tailored to JSON
+	allows to track changes in complicated JSON structures easily.
 	[para]
 	The main feature of this package however are two class factories that produce
 	itcl classes that construct validator and data collector/composer objects.
@@ -105,9 +114,54 @@ set data {
 		% ::xjson::decode [lb]::xjson::encode [arg decodedJson][rb]
 		[example_end]
 		See the section [sectref "DECODED JSON FORMAT"] for a description of the data
-		format accepted by this procedure.
+		format accepted and produced by this procedure.
 		[para]
 		See the section [sectref "RECODING EXAMPLES"] for examples.
+
+
+	[def "[cmd ::xjson::diff] [arg oldDecodedJson] [arg newDecodedJson]"]
+		Compare the given Tcl [arg oldDecodedJson] and [arg newDecodedJson] data and
+		produce a [arg patch] suitable for the [cmd ::xjson::patch] and
+		[cmd ::xjson::rpatch] procedures.
+		[para]
+		See the section [sectref "DECODED JSON FORMAT"] for a description of the data
+		format accepted by this procedure.
+		See the section [sectref "JSON PATCH FORMAT"] for a description of the data
+		format returned by this procedure.
+		[para]
+		See the section [sectref "DIFF EXAMPLES"] for examples.
+
+	[def "[cmd ::xjson::patch] [arg decodedJson] [arg patch]"]
+		Apply the [arg patch] produced by a previous [cmd ::xjson::diff] to the
+		Tcl [arg decodedJson] data. The result of this function is put as Tcl decoded
+		JSON format as well.
+		[para]
+		See the section [sectref "DECODED JSON FORMAT"] for a description of the data
+		format accepted and returned by this procedure.
+		See the section [sectref "JSON PATCH FORMAT"] for a description of the patch
+		format accepted by this procedure.
+		[para]
+		See the section [sectref "PATCH EXAMPLES"] for examples.
+
+	[def "[cmd ::xjson::rpatch] [arg decodedJson] [arg patch]"]
+		Apply the [arg patch] produced by a previous [cmd ::xjson::diff] to the
+		Tcl [arg decodedJson] data in reverse. That means, the operations noted in
+		the patch are flipped in both their order and meaning so that the result of
+		a previous identical patch is reversed.
+		The result of this function is put as Tcl decoded JSON format as well.
+		[para]
+		[emph "Note:"] The result of this procedure is not literally but only
+		functionally identical to the original, unpatched data. That is because the
+		patch format does not store information about the order of JSON object keys.
+		If the forward patch had removed keys from an object, the re-inserted keys
+		are simply appended to the forward-patched object.
+		[para]
+		See the section [sectref "DECODED JSON FORMAT"] for a description of the data
+		format accepted and returned by this procedure.
+		See the section [sectref "JSON PATCH FORMAT"] for a description of the patch
+		format accepted by this procedure.
+		[para]
+		See the section [sectref "PATCH EXAMPLES"] for examples.
 
 	[def "[cmd ::xjson::makeCollectorClass] [opt [arg options]] [arg collectorClassName] [opt [arg {methodName methodDefinition ...}]]"]
 
@@ -249,7 +303,7 @@ set data {
 	Read the following section [sectref "COLLECTOR OBJECT USAGE"] respective
 	[sectref "COMPOSER OBJECT USAGE"] on how to use the objects constructed by the class.
 
-[section "COLLECTOR OBJECT USAGE"]
+[subsection "COLLECTOR OBJECT USAGE"]
 	The objects constructed by the collector class define the following methods:
 
 	[list_begin definitions]
@@ -271,7 +325,7 @@ set data {
 
 	[list_end]
 
-[section "COMPOSER OBJECT USAGE"]
+[subsection "COMPOSER OBJECT USAGE"]
 	The objects constructed by the composer class define the following methods:
 
 	[list_begin definitions]
@@ -295,7 +349,7 @@ set data {
 
 	[list_end]
 
-[section "COLLECTOR AND COMPOSER SCHEMAS"]
+[subsection "COLLECTOR AND COMPOSER SCHEMAS"]
 	Collector and composer schemas are nested lists of collecting/composing
 	functions and their arguments.
 	[para]
@@ -353,7 +407,7 @@ set data {
 	See the section [sectref "BUILTIN METHODS"] and the various
 	[sectref "EXAMPLES"] sections for more details.
 
-[section "BUILTIN METHODS"]
+[subsection "BUILTIN METHODS"]
 	The following methods are built into each collector/composer class
 	(and object) unless the class was created specifying the [option -nobuiltins]
 	option when calling the
@@ -695,7 +749,7 @@ set data {
 			times.
 			[para]
 			[emph "Note:"] To manipulate the string output, see the methods in the
-			[sectref "Output Formatting Operators"] subsection.
+			[sectref "Result Formatting Operators"] subsection.
 
 			[list_begin definitions]
 			[def "The following general options may be specified:"]
@@ -1691,7 +1745,7 @@ set data {
 		[list_end]
 	[list_end]
 
-[section "CUSTOM METHODS"]
+[subsection "CUSTOM METHODS"]
 	If neither the above collecting/composing methods nor sandboxed Tcl code from
 	within the schema are sufficient to solve the particular validation and
 	collecting/composing problem, you may want to create custom collecting methods.
@@ -1849,8 +1903,58 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.2/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.3/])
 	for examples on how to write your own custom methods.
+
+[subsection "NESTING"]
+	With each collector/composer object you construct from the classes produced by
+	[cmd "::xjson::makeCollectorClass"] or [cmd "::xjson::makeComposerClass"], you
+	may specify other collector/composer objects that should be accessible from
+	within the registered schema by a
+	[arg nestedCollectorName]/[arg nestedComposerName] alias.  The rationale of
+	this is creating libraries of different collector/composer objects for often
+	used JSON aggregates in your application, and calling them from an uplevel or
+	the toplevel schema.
+	[para]
+	The [cmd nest] method makes use of this function. It takes an alias name and
+	calls the [method collect]/[method compose] method of the nested object with the
+	decoded JSON input data at that point, and the path.
+	The nested object takes care of the input data, validates it with
+	its own schema, and returns the result to the calling object.
+	[para]
+	The specified nested objects do not have to exist when the calling object is
+	constructed. It is also not checked which class the nested object has. You may
+	specify any object that has a [method collect]/[method compose] method with the
+	same semantics as those produced by
+	[cmd "::xjson::makeCollectorClass"] resp. [cmd "::xjson::makeComposerClass"].
+	[para]
+	The dubious/trusted flag is local to each object. This may
+	be used to create collector/composer objects with application provided
+	schemas and elevated rights that a object with user-provided schem
+	and restricted rights may call.
+
+[subsection "SANDBOXING"]
+	User supplied data is never evaluated as code by any builtin method.
+	All the considerations below are about configuration-supplied rather than
+	programmer-supplied schemas.
+	[para]
+	On construction of the collector/composer object, you may specify the
+	[option "-trusted"]	option to enable Tcl code evaluation from the schema.
+	If not specified, using those methods and options in the supplied schema
+	will throw an error instead and the object won't be constructed at all.
+	[para]
+	Schemas may specify collecting/composing methods (e.g. [cmd "apply"], [cmd "expr"],
+	[cmd "lmap"]) or options (e.g. [option "-test"], [option "-transform"]) that
+	rely on Tcl code supplied from within the schema. To use such schemas in a safe
+	fashion, all that Tcl code is executed in a safe interpreter (a sandbox) as
+	supplied by Tcl's [cmd "interp -safe"] command.
+	[para]
+	Sandbox creation and destruction after use happens automatically whenever
+	data is collected/composed. That sandbox is shared by all methods in the schema
+	and may also be used to pass values in global variables between methods.
+	As a shortcut, all of the methods that have	arguments or options allowing
+	to specify Tcl code also have an option [option "-isolate"], that creates a
+	local sandbox just for that method automatically.
 
 [section "NULL HANDLING"]
 	The procedures [cmd "::xjson::encode"], [cmd "::xjson::recode"], and
@@ -1893,60 +1997,13 @@ set data {
 	should be used whenever a [emph null] is encountered in the JSON input at that
 	place.
 
-[section "NESTING"]
-	With each collector/composer object you construct from the classes produced by
-	[cmd "::xjson::makeCollectorClass"] or [cmd "::xjson::makeComposerClass"], you
-	may specify other collector/composer objects that should be accessible from
-	within the registered schema by a
-	[arg nestedCollectorName]/[arg nestedComposerName] alias.  The rationale of
-	this is creating libraries of different collector/composer objects for often
-	used JSON aggregates in your application, and calling them from an uplevel or
-	the toplevel schema.
-	[para]
-	The [cmd nest] method makes use of this function. It takes an alias name and
-	calls the [method collect]/[method compose] method of the nested object with the
-	decoded JSON input data at that point, and the path.
-	The nested object takes care of the input data, validates it with
-	its own schema, and returns the result to the calling object.
-	[para]
-	The specified nested objects do not have to exist when the calling object is
-	constructed. It is also not checked which class the nested object has. You may
-	specify any object that has a [method collect]/[method compose] method with the
-	same semantics as those produced by
-	[cmd "::xjson::makeCollectorClass"] resp. [cmd "::xjson::makeComposerClass"].
-	[para]
-	The dubious/trusted flag is local to each object. This may
-	be used to create collector/composer objects with application provided
-	schemas and elevated rights that a object with user-provided schem
-	and restricted rights may call.
+[section "DATA FORMATS"]
 
-[section "SANDBOXING"]
-	User supplied data is never evaluated as code by any builtin method.
-	All the considerations below are about configuration-supplied rather than
-	programmer-supplied schemas.
-	[para]
-	On construction of the collector/composer object, you may specify the
-	[option "-trusted"]	option to enable Tcl code evaluation from the schema.
-	If not specified, using those methods and options in the supplied schema
-	will throw an error instead and the object won't be constructed at all.
-	[para]
-	Schemas may specify collecting/composing methods (e.g. [cmd "apply"], [cmd "expr"],
-	[cmd "lmap"]) or options (e.g. [option "-test"], [option "-transform"]) that
-	rely on Tcl code supplied from within the schema. To use such schemas in a safe
-	fashion, all that Tcl code is executed in a safe interpreter (a sandbox) as
-	supplied by Tcl's [cmd "interp -safe"] command.
-	[para]
-	Sandbox creation and destruction after use happens automatically whenever
-	data is collected/composed. That sandbox is shared by all methods in the schema
-	and may also be used to pass values in global variables between methods.
-	As a shortcut, all of the methods that have	arguments or options allowing
-	to specify Tcl code also have an option [option "-isolate"], that creates a
-	local sandbox just for that method automatically.
-
-[section "DECODED JSON FORMAT"]
+[subsection "DECODED JSON FORMAT"]
 	The decoded JSON format as returned by the [cmd "::xjson::decode"] and accepted
 	by the [cmd "::xjson::encode"] and [cmd "::xjson::recode"] commands is a nested
 	list of type-data pairs.
+
 	[list_begin definitions]
 	[def "The following types are understood:"]
 		[list_begin commands]
@@ -1996,7 +2053,49 @@ set data {
 		[list_end]
 	[list_end]
 
-[section "DECODING EXAMPLES"]
+[subsection "JSON PATCH FORMAT"]
+
+	The JSON patch format as returned by the [cmd "::xjson::diff"] and accepted
+	by the [cmd "::xjson::patch"] and [cmd "::xjson::rpatch"] commands is a nested
+	list of diff operations.
+
+	[list_begin definitions]
+	[def "The following operations are understood:"]
+		[list_begin commands]
+			[cmd_def "replace [arg oldDecodedJson] [arg newDecodedJson]"]
+				Replace [arg oldDecodedJson] with [arg newDecodedJson].
+				This operation works on all decoded JSON types.
+
+			[cmd_def "keys [arg dictOfOperations]"]
+				Apply the [arg dictOfOperations] to the noted keys of an [const object]
+				decoded JSON type.
+
+			[cmd_def "add [arg decodedJson]"]
+				Add the [arg decodedJson] to the [const object] under the noted key.
+				This operation works only inside a [const keys] operation.
+
+			[cmd_def "delete [arg decodedJson]"]
+				Delete the [arg decodedJson] from the [const object] under the noted key.
+				This operation works only inside a [const keys] operation.
+
+			[cmd_def "indices [arg pairsOfOperations]"]
+				Apply the [arg pairsOfOperations] to the noted indices of an [const array]
+				decoded JSON type.
+
+			[cmd_def "insert [arg listOfDecodedJson]"]
+				Insert the [arg listOfDecodedJson] into the [const array] at the noted index.
+				This operation works only inside an [const indices] operation.
+
+			[cmd_def "remove [arg listOfDecodedJson]"]
+				Remove the [arg listOfDecodedJson] from the [const array] at the noted index.
+				This operation works only inside an [const indices] operation.
+
+		[list_end]
+	[list_end]
+
+[section "EXAMPLES"]
+
+[subsection "DECODING EXAMPLES"]
 	Decode an array of array of numbers.
 
 	[example_begin]
@@ -2027,7 +2126,7 @@ set data {
 
 	[example_end]
 
-[section "ENCODING EXAMPLES"]
+[subsection "ENCODING EXAMPLES"]
 	Encode an array of array of numbers.
 
 	[example_begin]
@@ -2075,7 +2174,7 @@ set data {
 
 	[example_end]
 
-[section "RECODING EXAMPLES"]
+[subsection "RECODING EXAMPLES"]
 	Recode pre-encoded data.
 
 	[example_begin]
@@ -2095,7 +2194,160 @@ set data {
 
 	[example_end]
 
-[section "JSON VALIDATION AND DATA COLLECTING EXAMPLE"]
+[subsection "DIFF EXAMPLES"]
+	Feed two sets of slightly different JSON data into the decoder and remember the result.
+
+	[example_begin]
+		% set old [lb]::xjson::decode {
+		    {
+		        "articles": [lb]
+		            {
+		                "id":    101,
+		                "name":  "Pizzapane bianca",
+		                "price": 4.95
+		            },
+		            {
+		                "id":    120,
+		                "name":  "Pizza Regina",
+		                "price": 9.8
+		            },
+		            {
+		                "id":    139,
+		                "name":  "Wunschpizza",
+		                "price": 12.70
+		            },
+		            {
+		                "id":    201,
+		                "name":  "Rucola",
+		                "extra": true,
+		                "price": 1
+		            }
+		        [rb]
+		    }
+		}[rb]
+
+		% set new [lb]::xjson::decode {
+		    {
+		        "articles": [lb]
+		            {
+		                "id":    101,
+		                "name":  "Pizzapane bianca",
+		                "extra": true,
+		                "price": 4.95
+		            },
+		            {
+		                "id":    120,
+		                "name":  "Pizza Regina",
+		                "price": 9.80
+		            },
+		            {
+		                "id":    138,
+		                "name":  "Pizza Hawaii",
+		                "price": 12.00
+		            },
+		            {
+		                "id":    139,
+		                "name":  "Wunschpizza",
+		                "price": 13.50
+		            },
+		            {
+		                "id":    201,
+		                "name":  "Rucola",
+		                "price": 1
+		            }
+		        [rb]
+		    }
+		}[rb]
+
+	[example_end]
+
+	Calculate the patch data.
+
+	[example_begin]
+		% ::xjson::diff $old $new
+		keys {articles {indices {0 {keys {extra {add {literal true}}}} 2 {remove {{object {id {number 139} name {string Wunschpizza} price {number 12.7}}} {object {id {number 201} name {string Rucola} extra {literal true} price {number 1}}}}} 2 {insert {{object {id {number 138} name {string {Pizza Hawaii}} price {number 12.0}}} {object {id {number 139} name {string Wunschpizza} price {number 13.5}}} {object {id {number 201} name {string Rucola} price {number 1}}}}}}}}
+
+	[example_end]
+
+[subsection "PATCH EXAMPLES"]
+	Feed JSON data into the decoder and remember the result.
+
+	[example_begin]
+		% set old [lb]::xjson::decode {
+		    {
+		        "articles": [lb]
+		            {
+		                "id":    101,
+		                "name":  "Pizzapane bianca",
+		                "price": 4.95
+		            },
+		            {
+		                "id":    120,
+		                "name":  "Pizza Regina",
+		                "price": 9.8
+		            },
+		            {
+		                "id":    139,
+		                "name":  "Wunschpizza",
+		                "price": 12.70
+		            },
+		            {
+		                "id":    201,
+		                "name":  "Rucola",
+		                "extra": true,
+		                "price": 1
+		            }
+		        [rb]
+		    }
+		}[rb]
+
+	[example_end]
+
+	Dig out matching patch data.
+
+	[example_begin]
+		% set patch {keys {articles {indices {0 {keys {extra {add {literal true}}}} 2 {remove {{object {id {number 139} name {string Wunschpizza} price {number 12.7}}} {object {id {number 201} name {string Rucola} extra {literal true} price {number 1}}}}} 2 {insert {{object {id {number 138} name {string {Pizza Hawaii}} price {number 12.0}}} {object {id {number 139} name {string Wunschpizza} price {number 13.5}}} {object {id {number 201} name {string Rucola} price {number 1}}}}}}}}}
+
+	[example_end]
+
+	Apply the patch and encode it.
+
+	[example_begin]
+		% ::xjson::encode [lb]::xjson::patch $old $patch[rb]
+		{
+		    "articles": [lb]
+		        {
+		            "id":    101,
+		            "name":  "Pizzapane bianca",
+		            "price": 4.95
+                    "extra": true
+		        },
+		        {
+		            "id":    120,
+		            "name":  "Pizza Regina",
+		            "price": 9.8
+		        },
+		        {
+		            "id":    138,
+		            "name":  "Pizza Hawaii",
+		            "price": 12.0
+		        },
+		        {
+		            "id":    139,
+		            "name":  "Wunschpizza",
+		            "price": 13.5
+		        },
+		        {
+		            "id":    201,
+		            "name":  "Rucola",
+		            "price": 1
+		        }
+		    [rb]
+		}
+
+	[example_end]
+
+[subsection "JSON VALIDATION AND DATA COLLECTING EXAMPLE"]
 	Create a collector class with the class factory and the builtin methods. Even
 	for advanced usage, you only ever need to do this once.  More than once only if
 	you want to create multiple collector classes with a different set of builtin
@@ -2160,7 +2412,7 @@ set data {
 
 	[example_end]
 
-[section "JSON COMPOSING EXAMPLE"]
+[subsection "JSON COMPOSING EXAMPLE"]
 	Create a composer class with the class factory and the builtin methods. Even
 	for advanced usage, you only ever need to do this once.  More than once only if
 	you want to create multiple composer classes with a different set of builtin
@@ -2202,7 +2454,7 @@ set data {
 		[rb]
 	[example_end]
 
-[section "JSON RECOMPOSING EXAMPLE"]
+[subsection "JSON RECOMPOSING EXAMPLE"]
 	This toy example decodes and validates a JSON input, collects the data, then recomposes the data into JSON.
 
 	[example_begin]

@@ -1,0 +1,189 @@
+overview: |-
+  Reverse patch a JSON structure.
+operation: rpatch
+tests:
+  - name: empty patch
+    desc: Empty patch must return original data.
+    data: 'literal null'
+    patch: ''
+    expected: 'literal null'
+
+  - name: adding literal
+    desc: Adding a literal is done with a replace operation.
+    data: 'literal null'
+    patch: 'replace {} {literal null}'
+    expected: ''
+
+  - name: deleting literal
+    desc: Deleting a literal is done with a replace operation.
+    data: ''
+    patch: 'replace {literal null} {}'
+    expected: 'literal null'
+
+  - name: adding number
+    desc: Adding a number is done with a replace operation.
+    data: 'number 123'
+    patch: 'replace {} {number 123}'
+    expected: ''
+
+  - name: deleting number
+    desc: Deleting a number is done with a replace operation.
+    data: ''
+    patch: 'replace {number 123} {}'
+    expected: 'number 123'
+
+  - name: adding string
+    desc: Adding a string is done with a replace operation.
+    data: 'string abcde'
+    patch: 'replace {} {string abcde}'
+    expected: ''
+
+  - name: deleting string
+    desc: Deleting a string is done with an replace operation.
+    data: ''
+    patch: 'replace {string abcde} {}'
+    expected: 'string abcde'
+
+  - name: replacing simple type
+    desc: Replacing a simple type is done with a replace operation.
+    data: 'string abcde'
+    patch: 'replace {number 123} {string abcde}'
+    expected: 'number 123'
+
+  - name: adding empty object
+    desc: Adding an empty object is done with a replace operation.
+    data: 'object {}'
+    patch: 'replace {} {object {}}'
+    expected: ''
+
+  - name: deleting empty object
+    desc: Deleting an empty object is done with a replace operation.
+    data: ''
+    patch: 'replace {object {}} {}'
+    expected: 'object {}'
+
+  - name: adding object
+    desc: Adding a non-empty object is done with a replacet operation.
+    data: 'object {s {string abcde} t {string fghij}}'
+    patch: 'replace {} {object {s {string abcde} t {string fghij}}}'
+    expected: ''
+
+  - name: deleting object
+    desc: Deleting a non-empty object is done with a replace operation.
+    data: ''
+    patch: 'replace {object {s {string abcde} t {string fghij}}} {}'
+    expected: 'object {s {string abcde} t {string fghij}}'
+
+  - name: adding keys to empty object
+    desc: Adding multiple object keys to empty object is done with keys/add operations.
+    data: 'object {s {string abcde} t {string fghij}}'
+    patch: 'keys {s {add {string abcde}} t {add {string fghij}}}'
+    expected: 'object {}'
+
+  - name: adding keys to non-empty object
+    desc: Adding object keys to non-empty object is done with keys/add operations.
+    data: 'object {s {string abcde} t {string fghij}}'
+    patch: 'keys {t {add {string fghij}}}'
+    expected: 'object {s {string abcde}}'
+
+  - name: deleting keys from object
+    desc: Deleting multiple object keys is done with keys/delete operations.
+    data: 'object {s {string abcde} u {string klmno}}'
+    patch: 'keys {t {delete {string fghij}} v {delete {string {pqrst}}}}'
+    expected: 'object {s {string abcde} u {string klmno} t {string fghij} v {string {pqrst}}}'
+
+  - name: deleting last key from object
+    desc: Deleting last object key is done with a keys/delete operation.
+    data: 'object {}'
+    patch: 'keys {s {delete {string abcde}}}'
+    expected: 'object {s {string abcde}}'
+
+  - name: replacing object field
+    desc: Replacing an object field is done with a keys/replace operation.
+    data: 'object {s {string abcde}}'
+    patch: 'keys {s {replace {number 123} {string abcde}}}'
+    expected: 'object {s {number 123}}'
+
+  - name: mixed object key adding, replacing and deleting
+    desc: Mixed adding, replacing and deleting is done with keys/add,delete,replace operations.
+    data: 'object {t {string fghij} u {string vwxyz}}'
+    patch: 'keys {s {delete {string abcde}} u {add {string vwxyz}} t {replace {number 12345} {string fghij}}}'
+    expected: 'object {t {number 12345} s {string abcde}}'
+
+  - name: replacing nested object field
+    desc: Replacing a nested object field is done with a keys/keys/replace operation.
+    data: 'object {s {object {n {string abcde}}}}'
+    patch: 'keys {s {keys {n {replace {number 123} {string abcde}}}}}'
+    expected: 'object {s {object {n {number 123}}}}'
+
+  - name: adding empty array
+    desc: Adding an empty array is done with a set operation.
+    data: 'array {}'
+    patch: 'replace {} {array {}}'
+    expected: ''
+
+  - name: deleting empty array
+    desc: Deleting an empty array is done with a replace operation.
+    data: ''
+    patch: 'replace {array {}} {}'
+    expected: 'array {}'
+
+  - name: adding array
+    desc: Adding a non-empty array is done with a replace operation.
+    data: 'array {{string abcde} {string fghij}}'
+    patch: 'replace {} {array {{string abcde} {string fghij}}}'
+    expected: ''
+
+  - name: delete array
+    desc: Adding a non-empty array is done with a replace operation.
+    data: ''
+    patch: 'replace {array {{string abcde} {string fghij}}} {}'
+    expected: 'array {{string abcde} {string fghij}}'
+
+  - name: adding elements to empty array
+    desc: Adding multiple array elements to empty array is done with one indices/insert operation.
+    data: 'array {{number 123} {string abcde}}'
+    patch: 'indices {0 {insert {{number 123} {string abcde}}}}'
+    expected: 'array {}'
+
+  - name: adding elements to array
+    desc: Adding multiple array elements to array is done with indices/insert operations.
+    data: 'array {{string vwxyz} {literal null} {number 123} {string abcde}}'
+    patch: 'indices {0 {insert {{string vwxyz} {literal null}}} 3 {insert {{string abcde}}}}'
+    expected: 'array {{number 123}}'
+
+  - name: deleting elements from array
+    desc: Adding multiple array elements to array is done with indices/remove operations.
+    data: 'array {{number 123}}'
+    patch: 'indices {0 {remove {{string vwxyz} {literal null}}} 1 {remove {{string abcde}}}}'
+    expected: 'array {{string vwxyz} {literal null} {number 123} {string abcde}}'
+
+  - name: deleting last element from array
+    desc: Deleting last array element is done with one indices/delete operation.
+    data: 'array {}'
+    patch: 'indices {0 {remove {{number 123} {string abcde}}}}'
+    expected: 'array {{number 123} {string abcde}}'
+
+  - name: replacing array element
+    desc: Replacing an array element is done with one indices/replace operation.
+    data: 'array {{string abcde}}'
+    patch: 'indices {0 {replace {number 123} {string abcde}}}'
+    expected: 'array {{number 123}}'
+
+  - name: replacing array elements
+    desc: Replacing multiple array elements is done with multiple indices/replace operations.
+    data: 'array {{string vwxyz} {string abcde} {literal true} {literal null} {string abcde}}'
+    patch: 'indices {1 {replace {number 12345} {string abcde}} 2 {replace {literal false} {literal true}}}'
+    expected: 'array {{string vwxyz} {number 12345} {literal false} {literal null} {string abcde}}'
+
+  - name: mixed array key adding, replacing and deleting
+    desc: Mixed adding, replacing and deleting is done with keys/remove,insert operations.
+    data: 'array {{string vwxyz} {string abcde} {literal true} {literal null} {string abcde}}'
+    patch: 'indices {1 {remove {{number 12345}}} 1 {insert {{string abcde} {literal true}}} 4 {remove {{literal null}}}}'
+    expected: 'array {{string vwxyz} {number 12345} {literal null} {literal null} {string abcde}}'
+
+  - name: replacing nested array element
+    desc: Replacing a nested array element is done with a indices/indices/replace operation.
+    data: 'array {{array {{string abcde}}}}'
+    patch: 'indices {0 {indices {0 {replace {number 123} {string abcde}}}}}'
+    expected: 'array {{array {{number 123}}}}'

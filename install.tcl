@@ -51,22 +51,24 @@ if {$argc != 2} {
 
 
 ## Create library directory.
-file mkdir [file join [lindex $argv 0] "xjson1.2"]
+file mkdir [file join [lindex $argv 0] "xjson1.3"]
 
 ## Copy library files.
 foreach fname {
 	builtinCollectingMethods.tcl
 	builtinComposingMethods.tcl
 	decode.tcl
+	diff.tcl
 	encode.tcl
 	makeCollectorClass.tcl
 	makeComposerClass.tcl
+	patch.tcl
 	pkgIndex.tcl
 	recode.tcl
 	utilities.tcl
 	xjson.tcl
 } {
-	file copy -force $fname [file join [lindex $argv 0] "xjson1.2"]
+	file copy -force $fname [file join [lindex $argv 0] "xjson1.3"]
 }
 
 ## Copy manpage.

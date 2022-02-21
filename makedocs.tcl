@@ -2,7 +2,7 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.3]
+[manpage_begin xjson n 1.4]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
@@ -11,7 +11,7 @@ set data {
 [require itcl 4.0-]
 [require struct::set]
 [require struct::list]
-[require xjson [opt 1.3]]
+[require xjson [opt 1.4]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -1541,11 +1541,29 @@ set data {
 				and operators.
 				[para]
 				The operator returns the result of Tcl's [cmd "format"] command.
+
 			[def "for composing"]
 				Expands the Tcl input data and passes it into Tcl's [cmd "format"] command
 				along the [arg format] argument as individual list items.
 				[para]
  				The result of that is then validated with the [arg schema].
+				The operator returns the result of the schema.
+
+			[list_end]
+
+		[cmd_def "mark [arg mark] [arg schema]"]
+			[list_begin definitions]
+			[def "for collecting"]
+				Validates the decoded JSON input with the [arg schema].
+				[para]
+				The operator returns a Tcl list with the [arg mark] argument as the first
+				list element and the result of the validation as the second list element.
+
+			[def "for composing"]
+				Treats the Tcl input data as a list and fail validation if the first list
+				element isn't the same as the [arg mark] argument.
+				[para]
+ 				If it passes, the second list element is then validated with the [arg schema].
 				The operator returns the result of the schema.
 
 			[list_end]
@@ -1903,7 +1921,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.3/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.4/])
 	for examples on how to write your own custom methods.
 
 [subsection "NESTING"]

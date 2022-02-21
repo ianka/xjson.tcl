@@ -506,6 +506,13 @@ dict set ::xjson::builtinCollectingMethods if {{test{} then{} else{} null{}} {
 }}
 
 
+## Mark operator collecting method.
+dict set ::xjson::builtinCollectingMethods mark {{mark schema{}} {
+	## Return a list of mark and value from data according to schema.
+	list [dict get $schema arguments mark] [_collect $data [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}]
+}}
+
+
 ## Nest operator collecting method.
 dict set ::xjson::builtinCollectingMethods nest {collector {
 	## Fail if the nested collector name is unknown.

@@ -2,7 +2,7 @@
 '\" Generated from file '' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
 '\"
-.TH "xjson" n 1\&.3  "xjson\&.tcl"
+.TH "xjson" n 1\&.4  "xjson\&.tcl"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -282,7 +282,7 @@ package require \fBstruct::set \fR
 .sp
 package require \fBstruct::list \fR
 .sp
-package require \fBxjson  ?1\&.3?\fR
+package require \fBxjson  ?1\&.4?\fR
 .sp
 \fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
 .sp
@@ -1841,6 +1841,23 @@ The result of that is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
 .RE
 .TP
+\fBmark \fImark\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&.
+.sp
+The operator returns a Tcl list with the \fImark\fR argument the first
+list element and the result of the validation the second list element\&.
+.TP
+for composing
+Treats the Tcl input data as a list and fail validation if the first list
+element isn't the same as the \fImark\fR argument\&.
+.sp
+If it passes, the second list element is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RE
+.TP
 \fBregsub \fI?options?\fR \fIexp\fR \fIreplacement\fR \fIschema\fR\fR
 .RS
 .TP
@@ -2226,7 +2243,7 @@ The \fIbody\fR is the Tcl body of the method\&.
 .PP
 See the files
 "\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
-from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.3/\fR")
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.4/\fR")
 for examples on how to write your own custom methods\&.
 .SS NESTING
 With each collector/composer object you construct from the classes produced by

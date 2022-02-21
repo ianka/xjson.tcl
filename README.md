@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.3  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.4  "xjson\.tcl")
 
 # NAME
 
@@ -72,7 +72,7 @@ package require Tcl 8\.6\-
 package require itcl 4\.0\-  
 package require struct::set  
 package require struct::list  
-package require xjson ?1\.3?  
+package require xjson ?1\.4?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
@@ -1719,6 +1719,24 @@ it is used inside the schema, unless otherwise noted\.
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
 
+      * __mark *mark* *schema*__
+
+          + for collecting
+
+            Validates the decoded JSON input with the *schema*\.
+
+            The operator returns a Tcl list with the *mark* argument the first
+            list element and the result of the validation the second list
+            element\.
+
+          + for composing
+
+            Treats the Tcl input data as a list and fail validation if the first
+            list element isn't the same as the *mark* argument\.
+
+            If it passes, the second list element is then validated with the
+            *schema*\. The operator returns the result of the schema\.
+
       * __regsub *?options?* *exp* *replacement* *schema*__
 
           + for collecting
@@ -2126,7 +2144,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.3/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.4/"\) for
 examples on how to write your own custom methods\.
 
 ## <a name='subsection6'></a>NESTING

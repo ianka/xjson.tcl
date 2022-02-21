@@ -1,0 +1,41 @@
+overview: |-
+  Compose data with "mark" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'mark -foobar {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'mark'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'mark {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'mark {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: mark mismatch
+    desc: A non-matching mark must throw an error.
+    schema: 'mark quux number'
+    data: 'zarf 1'
+    expected: 'XJSON COMPOSER OBJECT MARK_MISMATCH'
+
+  - name: failed validation
+    desc: Validation errors must be passed through.
+    schema: 'mark quux {number -max 5}'
+    data: 'quux 6'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'

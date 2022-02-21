@@ -1,0 +1,15 @@
+overview: |-
+  Compose data with "mark" schema.
+operation: compose
+tests:
+  - name: marked data
+    desc: Data that validates against the mark must be passed through.
+    schema: 'mark quux string'
+    data: 'quux {foo bar}'
+    expected: 'string {foo bar}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'mark -- quux string'
+    data: 'quux {foo bar}'
+    expected: 'string {foo bar}'

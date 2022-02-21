@@ -1,0 +1,15 @@
+overview: |-
+  Collect data with "mark" schema.
+operation: collect
+tests:
+  - name: mark data
+    desc: Data that validates against the schema must be put as a list of mark and data.
+    schema: 'mark quux string'
+    data: 'string {foo bar}'
+    expected: 'quux {foo bar}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'mark -- quux string'
+    data: 'string {foo bar}'
+    expected: 'quux {foo bar}'

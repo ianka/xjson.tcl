@@ -515,6 +515,20 @@ dict set ::xjson::builtinComposingMethods if {{test{} then{} else{} null{}} {
 }}
 
 
+## Mark operator composing method.
+dict set ::xjson::builtinComposingMethods mark {{mark schema{}} {
+	## Fail if the mark does not match.
+	if {[lindex $data 0] ne [dict get $schema arguments mark]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT MARK_MISMATCH} \
+			[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+				"It is not marked properly."]
+	}
+
+	## Compose value from data according to schema.
+	_compose [lindex $data 1] [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}
+}}
+
+
 ## Nest operator composing method.
 dict set ::xjson::builtinComposingMethods nest {composer {
 	## Fail if the nested composer name is unknown.

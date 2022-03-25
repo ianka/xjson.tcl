@@ -783,7 +783,7 @@ dict set ::xjson::builtinCollectingMethods regsub {{regexp~ replacement schema{}
 ## String type collecting method.
 dict set ::xjson::builtinCollectingMethods string {{
 		-and
-		-is=alnum|alpha|ascii|boolean|control|digit|double|entier|false|graph|integer|list|lower|print|punct|space|true|upper|wideinteger|wordchar|xdigit
+		-is=alnum|alpha|ascii|boolean|control|digit|double|entier|false|graph|integer|list|lower|print|punct|space|true|upper|uuid|wideinteger|wordchar|xdigit
 		-nocase -case
 		-range- -tolower- -totitle- -toupper-
 		-trim= -trimleft= -trimright=
@@ -873,7 +873,7 @@ dict set ::xjson::builtinCollectingMethods string {{
 			}
 			-is {
 				## Fail if the result does not match.
-				if {![string is $optionvalue -strict $teststring]} {
+				if {![::xjson::_stringis $optionvalue $teststring]} {
 					return -code error -errorcode {XJSON COLLECTOR OBJECT TYPE_MISMATCH} \
 						[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
 							"The test string " [_printValue $teststring] " " \

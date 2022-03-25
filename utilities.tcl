@@ -863,3 +863,16 @@ proc ::xjson::_compileMethods {what definitions} {
 	## Return the results.
 	list $methodScripts $methodConsts
 }
+
+
+## "String is" helper proc that can also test for uuids.
+proc ::xjson::_stringis {is value} {
+	switch -- $is {
+		uuid {
+			regexp -- {^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$} $value
+		}
+		default {
+			string is $is -strict $value
+		}
+	}
+}

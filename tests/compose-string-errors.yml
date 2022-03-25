@@ -484,6 +484,12 @@ tests:
     data: 'ABCDeÄÖÜ'
     expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
 
+  - name: is uuid option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is uuid'
+    data: 'abcde'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
   - name: is wideinteger option
     desc: Value that fails "-is" option must throw an error.
     schema: 'string -is wideinteger'

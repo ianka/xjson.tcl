@@ -116,6 +116,12 @@ tests:
     data: 'ABCDEÄÖÜ'
     expected: 'string ABCDEÄÖÜ'
 
+  - name: is uuid option
+    desc: Value has to pass matching "-is" option.
+    schema: 'string -is uuid'
+    data: '01234567-0123-5678-9012-abcdefABCDEF'
+    expected: 'string 01234567-0123-5678-9012-abcdefABCDEF'
+
   - name: is wideinteger option
     desc: Value has to pass matching "-is" option.
     schema: 'string -is wideinteger'

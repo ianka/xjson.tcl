@@ -818,7 +818,7 @@ dict set ::xjson::builtinComposingMethods regsub {{regexp~ replacement schema{} 
 dict set ::xjson::builtinComposingMethods string {-- {
 		-null=
 		-and
-		-is=alnum|alpha|ascii|boolean|control|digit|double|entier|false|graph|integer|list|lower|print|punct|space|true|upper|wideinteger|wordchar|xdigit
+		-is=alnum|alpha|ascii|boolean|control|digit|double|entier|false|graph|integer|list|lower|print|punct|space|true|upper|uuid|wideinteger|wordchar|xdigit
 		-nocase -case
 		-range- -tolower- -totitle- -toupper-
 		-trim= -trimleft= -trimright=
@@ -901,7 +901,7 @@ dict set ::xjson::builtinComposingMethods string {-- {
 			}
 			-is {
 				## Fail if the result does not match.
-				if {![string is $optionvalue -strict $teststring]} {
+				if {![::xjson::_stringis $optionvalue $teststring]} {
 					return -code error -errorcode {XJSON COMPOSER OBJECT TYPE_MISMATCH} \
 						[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
 							"The test string " [_printValue $teststring] " " \

@@ -502,6 +502,12 @@ tests:
     data: 'string ABCDeÄÖÜ'
     expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
 
+  - name: is uuid option
+    desc: Value that fails "-is" option must throw an error.
+    schema: 'string -is uuid'
+    data: 'string abcde'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
   - name: is wideinteger option
     desc: Value that fails "-is" option must throw an error.
     schema: 'string -is wideinteger'

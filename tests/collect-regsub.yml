@@ -34,6 +34,6 @@ tests:
 
   - name: end of options
     desc: End of options marker at the end must be ignored.
-    schema: 'regsub {^[ef]o.} bar string'
+    schema: 'regsub -- {^[ef]o.} bar string'
     data: 'string foo'
     expected: 'bar'

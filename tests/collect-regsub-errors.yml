@@ -40,6 +40,12 @@ tests:
     data: 'string foofoo'
     expected: 'XJSON SCHEMA WRONGARGS'
 
+  - name: invalid start option value
+    desc: Invalid option value to the "-start" option must throw an error.
+    schema: 'regsub -start foobar {[feo.} bar string'
+    data: 'string foofoo'
+    expected: 'XJSON SCHEMA OPTION INDEX_MISMATCH'
+
   - name: invalid regexp
     desc: Invalid regular expressions must throw an error.
     schema: 'regsub {[feo.} bar string'

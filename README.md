@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.4  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.5  "xjson\.tcl")
 
 # NAME
 
@@ -72,7 +72,7 @@ package require Tcl 8\.6\-
 package require itcl 4\.0\-  
 package require struct::set  
 package require struct::list  
-package require xjson ?1\.4?  
+package require xjson ?1\.5?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
@@ -1050,7 +1050,9 @@ it is used inside the schema, unless otherwise noted\.
               - __\-is__ *class*
 
                 Validates a test string *class* as by Tcl's __string is__
-                command\.
+                command\. In addition, *class* may also be put as __uuid__,
+                which validates a UUID/GUID\. Both lowercase and uppercase hex
+                digits are considered valid\.
 
               - __\-match__ *pattern*
 
@@ -1663,6 +1665,41 @@ it is used inside the schema, unless otherwise noted\.
 
                 Use a local sandbox\.
 
+      * __datetime *?options?* *schema*__
+
+          + for collecting
+
+            Validates the decoded JSON input with the *schema*\. That result is
+            then passed into Tcl's __clock scan__ command along the supplied
+            *options* arguments\.
+
+            The operator returns the result of Tcl's __clock scan__ command\.
+
+          + for composing
+
+            Passes the Tcl input data into Tcl's __clock format__ command
+            along the supplied *options* arguments\.
+
+            The result of that is then validated with the *schema*\. The
+            operator returns the result of the schema\.
+
+          + The following options may be specified:
+
+              - __\-format__ *format*
+
+                A format string as understood by Tcl's __clock \-format__
+                option\.
+
+              - __\-timezone__ *zoneName*
+
+                A timezone name as understood by Tcl's __clock \-timezone__
+                option\.
+
+              - __\-locale__ *localeName*
+
+                A locale name as understood by Tcl's __clock \-locale__
+                option\.
+
       * __expr *?options?* *varList* *expr* *schema*__
 
           + for collecting
@@ -1725,9 +1762,9 @@ it is used inside the schema, unless otherwise noted\.
 
             Validates the decoded JSON input with the *schema*\.
 
-            The operator returns a Tcl list with the *mark* argument the first
-            list element and the result of the validation the second list
-            element\.
+            The operator returns a Tcl list with the *mark* argument as the
+            first list element and the result of the validation as the second
+            list element\.
 
           + for composing
 
@@ -2103,6 +2140,11 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
 
             A format string as understood by Tcl's __format__ command\.
 
+          + __'__
+
+            A timezone name as understood by Tcl's __clock \-timezone__
+            command option\.
+
           + __\.__
 
             A string index as understood by Tcl's __string index__ command\.
@@ -2144,7 +2186,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.4/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.5/"\) for
 examples on how to write your own custom methods\.
 
 ## <a name='subsection6'></a>NESTING

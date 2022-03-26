@@ -2,7 +2,7 @@
 '\" Generated from file '' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
 '\"
-.TH "xjson" n 1\&.4  "xjson\&.tcl"
+.TH "xjson" n 1\&.5  "xjson\&.tcl"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -282,7 +282,7 @@ package require \fBstruct::set \fR
 .sp
 package require \fBstruct::list \fR
 .sp
-package require \fBxjson  ?1\&.4?\fR
+package require \fBxjson  ?1\&.5?\fR
 .sp
 \fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
 .sp
@@ -1179,6 +1179,8 @@ The following further constraints on the test string may be specified:
 .TP
 \fB-is\fR \fIclass\fR
 Validates a test string \fIclass\fR as by Tcl's \fBstring is\fR command\&.
+In addition, \fIclass\fR may also be put as \fBuuid\fR, which validates
+a UUID/GUID\&. Both lowercase and uppercase hex digits are considered valid\&.
 .TP
 \fB-match\fR \fIpattern\fR
 Validates a test string that matches the \fIpattern\fR as by Tcl's
@@ -1782,6 +1784,37 @@ Use a local sandbox\&.
 .RE
 .RE
 .TP
+\fBdatetime \fI?options?\fR \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is then
+passed into Tcl's \fBclock scan\fR command along the supplied
+\fIoptions\fR arguments\&.
+.sp
+The operator returns the result of Tcl's \fBclock scan\fR command\&.
+.TP
+for composing
+Passes the Tcl input data into Tcl's \fBclock format\fR command
+along the supplied \fIoptions\fR arguments\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-format\fR \fIformat\fR
+A format string as understood by Tcl's \fBclock -format\fR option\&.
+.TP
+\fB-timezone\fR \fIzoneName\fR
+A timezone name as understood by Tcl's \fBclock -timezone\fR option\&.
+.TP
+\fB-locale\fR \fIlocaleName\fR
+A locale name as understood by Tcl's \fBclock -locale\fR option\&.
+.RE
+.RE
+.TP
 \fBexpr \fI?options?\fR \fIvarList\fR \fIexpr\fR \fIschema\fR\fR
 .RS
 .TP
@@ -1847,8 +1880,8 @@ The operator returns the result of the schema\&.
 for collecting
 Validates the decoded JSON input with the \fIschema\fR\&.
 .sp
-The operator returns a Tcl list with the \fImark\fR argument the first
-list element and the result of the validation the second list element\&.
+The operator returns a Tcl list with the \fImark\fR argument as the first
+list element and the result of the validation as the second list element\&.
 .TP
 for composing
 Treats the Tcl input data as a list and fail validation if the first list
@@ -2209,6 +2242,9 @@ A regular expression as understood by Tcl's \fBregexp\fR command\&.
 \fB%\fR
 A format string as understood by Tcl's \fBformat\fR command\&.
 .TP
+\fB'\fR
+A timezone name as understood by Tcl's \fBclock -timezone\fR command option\&.
+.TP
 \fB\&.\fR
 A string index as understood by Tcl's \fBstring index\fR command\&.
 .TP
@@ -2243,7 +2279,7 @@ The \fIbody\fR is the Tcl body of the method\&.
 .PP
 See the files
 "\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
-from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.4/\fR")
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.5/\fR")
 for examples on how to write your own custom methods\&.
 .SS NESTING
 With each collector/composer object you construct from the classes produced by

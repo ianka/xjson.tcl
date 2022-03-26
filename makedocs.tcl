@@ -2,7 +2,7 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.4]
+[manpage_begin xjson n 1.5]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
@@ -11,7 +11,7 @@ set data {
 [require itcl 4.0-]
 [require struct::set]
 [require struct::list]
-[require xjson [opt 1.4]]
+[require xjson [opt 1.5]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -896,6 +896,8 @@ set data {
 				[list_begin options]
 				[opt_def -is [arg class]]
 					Validates a test string [arg class] as by Tcl's [cmd "string is"] command.
+					In addition, [arg class] may also be put as [const "uuid"], which validates
+					a UUID/GUID. Both lowercase and uppercase hex digits are considered valid.
 
 				[opt_def -match [arg pattern]]
 					Validates a test string that matches the [arg pattern] as by Tcl's
@@ -1492,6 +1494,36 @@ set data {
 				[list_end]
 			[list_end]
 
+		[cmd_def "datetime [arg [opt options]] [arg schema]"]
+			[list_begin definitions]
+			[def "for collecting"]
+				Validates the decoded JSON input with the [arg schema]. That result is then
+				passed into Tcl's [cmd "clock scan"] command along the supplied
+				[arg options] arguments.
+				[para]
+				The operator returns the result of Tcl's [cmd "clock scan"] command.
+
+			[def "for composing"]
+				Passes the Tcl input data into Tcl's [cmd "clock format"] command
+				along the supplied [arg options] arguments.
+				[para]
+ 				The result of that is then validated with the [arg schema].
+				The operator returns the result of the schema.
+
+			[def "The following options may be specified:"]
+				[list_begin options]
+				[opt_def -format [arg format]]
+					A format string as understood by Tcl's [cmd "clock -format"] option.
+
+				[opt_def -timezone [arg zoneName]]
+					A timezone name as understood by Tcl's [cmd "clock -timezone"] option.
+
+				[opt_def -locale [arg localeName]]
+					A locale name as understood by Tcl's [cmd "clock -locale"] option.
+
+				[list_end]
+			[list_end]
+
 		[cmd_def "expr [arg [opt options]] [arg varList] [arg expr] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
@@ -1885,6 +1917,9 @@ set data {
 			[def [const "%"]]
 				A format string as understood by Tcl's [cmd "format"] command.
 
+			[def [const "'"]]
+				A timezone name as understood by Tcl's [cmd "clock -timezone"] command option.
+
 			[def [const "."]]
 				A string index as understood by Tcl's [cmd "string index"] command.
 
@@ -1921,7 +1956,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.4/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.5/])
 	for examples on how to write your own custom methods.
 
 [subsection "NESTING"]

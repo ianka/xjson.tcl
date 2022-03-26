@@ -363,6 +363,20 @@ dict set ::xjson::builtinComposingMethods const {{type value} {
 }}
 
 
+## Datetime operator composing method.
+dict set ::xjson::builtinComposingMethods datetime {{schema{} -format= -timezone' -locale=} {
+	## Feed the data into clock format.
+	if {[catch {clock format $data {*}[dict get $schema options]} value]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT CLOCK_VALUE} \
+			[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+				"It is not a Tcl timeVal."]
+	}
+
+	## Compose value from values according to schema.
+	_compose $value [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}
+}}
+
+
 ## Decoded/encoded type composing method.
 dict set ::xjson::builtinComposingMethods decoded {
 	decoded -null=

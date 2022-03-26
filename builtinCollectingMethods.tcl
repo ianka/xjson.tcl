@@ -331,6 +331,23 @@ dict set ::xjson::builtinCollectingMethods const {value {
 }}
 
 
+## Datetime operator collecting method.
+dict set ::xjson::builtinCollectingMethods datetime {{schema{} -format= -timezone' -locale=} {
+	## Collect value from data according to schema.
+	set collected [_collect $data [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}]
+
+	## Feed it into clock scan.
+	if {[catch {clock scan $collected {*}[dict get $schema options]} result]} {
+		return -code error -errorcode {XJSON COLLECTOR OBJECT CLOCK_VALUE} \
+			[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+				"It is not a parseable time."]
+	}
+
+	## Return the result.
+	return $result
+}}
+
+
 ## Default operator collecting method.
 dict set ::xjson::builtinCollectingMethods default {{value schema{}} {
 	## Collect value from data according to schema.

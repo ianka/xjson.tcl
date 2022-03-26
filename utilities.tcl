@@ -342,6 +342,13 @@ proc ::xjson::_checkMethodConstraints {method schema path dubious type name valu
 		::xjson::_failedMethodConstraint $schema $path $type $name $value $tabulator \
 			CODE_FORBIDDEN "specifies Tcl code, which is forbidden in this object"
 	}
+
+	## Check for timezone constraint if there was one given.
+	if {$name in [dict get $methods $method timezone[string toupper $type 0]s]
+		&& [catch {clock format 0 -timezone $value}]} {
+			::xjson::_failedMethodConstraint $schema $path $type $name $value $tabulator \
+				TIMEZONE_MISMATCH "is not a valid timezone"
+	}
 }
 
 
@@ -721,7 +728,7 @@ proc ::xjson::_sandbox {data schema path interpreter script isolate tabulator re
 ## Compile class methods from definitions.
 proc ::xjson::_compileMethods {what definitions} {
 	## Run through all definitions.
-	set namelists {simple parameter integer integerList number regexp format compare index range pair dict regexpTest code schema schemaList schemaPair schemaDict}
+	set namelists {simple parameter integer integerList number regexp format compare index range pair dict regexpTest code timezone schema schemaList schemaPair schemaDict}
 	set methodConsts [dict create]
 	set methodScripts [dict create]
 
@@ -797,6 +804,7 @@ proc ::xjson::_compileMethods {what definitions} {
 					{^(-[[:alpha:]]+)\|$}    {lappend pairOptions        [lindex $match 1]}
 					{^(-[[:alpha:]]+):$}     {lappend dictOptions        [lindex $match 1]}
 					{^(-[[:alpha:]]+)!$}     {lappend codeOptions        [lindex $match 1]}
+					{^(-[[:alpha:]]+)'$}     {lappend timezoneOptions    [lindex $match 1]}
 					{^(-[[:alpha:]]+){}$}    {lappend schemaOptions      [lindex $match 1]}
 					{^(-[[:alpha:]]+){_}$}   {lappend schemaListOptions  [lindex $match 1]}
 					{^(-[[:alpha:]]+){\|}$}  {lappend schemaPairOptions  [lindex $match 1]}
@@ -822,6 +830,7 @@ proc ::xjson::_compileMethods {what definitions} {
 					{^([[:alpha:]]+)\|$}    {lappend pairArguments        [lindex $match 1]}
 					{^([[:alpha:]]+):$}     {lappend dictArguments        [lindex $match 1]}
 					{^([[:alpha:]]+)!$}     {lappend codeArguments        [lindex $match 1]}
+					{^([[:alpha:]]+)'$}     {lappend timezoneArguments    [lindex $match 1]}
 					{^([[:alpha:]]+){}$}    {lappend schemaArguments      [lindex $match 1]}
 					{^([[:alpha:]]+){_}$}   {lappend schemaListArguments  [lindex $match 1]}
 					{^([[:alpha:]]+){\|}$}  {lappend schemaPairArguments  [lindex $match 1]}

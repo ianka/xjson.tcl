@@ -1,0 +1,33 @@
+overview: |-
+  Collect data with "datetime" schema.
+operation: collect
+tests:
+  - name: defaults
+    desc: Without options, the default time format must be used.
+    schema: 'datetime string'
+    data: 'string {Thu Jan 01 00:00:00 UTC 1970}'
+    expected: '0'
+
+  - name: format option
+    desc: The "-format" option must change the time format.
+    schema: 'datetime -format "%Y-%m-%dT%T%z" string'
+    data: 'string 1970-01-01T00:00:00+0000'
+    expected: '0'
+
+  - name: timezone option
+    desc: The "-timezone" option must change the timezone.
+    schema: 'datetime -timezone ":CET" string'
+    data: 'string {Thu Jan 01 01:00:00 CET 1970}'
+    expected: '0'
+
+  - name: locale option
+    desc: The "-locale" option must change the locale.
+    schema: 'datetime -format "%+" -locale "de_de" string'
+    data: 'string {Do Jan 01 00:00:00 UTC 1970}'
+    expected: '0'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'datetime -- string'
+    data: 'string {Thu Jan 01 00:00:00 UTC 1970}'
+    expected: '0'

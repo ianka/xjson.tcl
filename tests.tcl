@@ -8,6 +8,8 @@ set auto_path [linsert $auto_path 0 .]
 package require xjson
 package require yaml
 
+## Set default timezone.
+set env(TZ) ":UTC"
 
 ## Helper procs.
 proc underline {string char} {

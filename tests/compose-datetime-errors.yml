@@ -1,0 +1,59 @@
+overview: |-
+  Compose data with "datatime" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'datetime -foobar string'
+    data: '0'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'datetime'
+    data: '0'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'datetime {} string'
+    data: '0'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing format option value
+    desc: Missing option value to the "-format" option must throw an error.
+    schema: 'datetime -format'
+    data: '0'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing timezone option value
+    desc: Missing option value to the "-timezone" option must throw an error.
+    schema: 'datetime -timezone'
+    data: '0'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid timezone option value
+    desc: Invalid option value to the "-timezone" option must throw an error.
+    schema: 'datetime -timezone foobar string'
+    data: '0'
+    expected: 'XJSON SCHEMA OPTION TIMEZONE_MISMATCH'
+
+  - name: missing locale option value
+    desc: Missing option value to the "-locale" option must throw an error.
+    schema: 'datetime -locale'
+    data: '0'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'datetime -- -timezone ":CET" string'
+    data: '0'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid timeval
+    desc: Invalid time value must throw an error.
+    schema: 'datetime string'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT CLOCK_VALUE'

@@ -1811,7 +1811,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array boolean const decoded default expr dictby dictbyindex discard dubious escalate format if nest not null number object oneof optional otherwise pass regsub string stringop switch"]
+		[cmd "allof anyof apply array boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -1834,7 +1834,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array boolean const decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples"]
+		[cmd "allof anyof apply array boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]

@@ -168,7 +168,6 @@ proc checkTestResult {test result} {
 	} else {
 		## Failed test due to unexpected result.
 		failedTest $test $result
-		puts stderr $::errorInfo
 	}
 }
 

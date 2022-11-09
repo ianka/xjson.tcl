@@ -2,7 +2,7 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.5]
+[manpage_begin xjson n 1.6]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
@@ -11,7 +11,7 @@ set data {
 [require itcl 4.0-]
 [require struct::set]
 [require struct::list]
-[require xjson [opt 1.5]]
+[require xjson [opt 1.6]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -544,6 +544,9 @@ set data {
 			[def "for collecting"]
 				This method does not exist in collector objects as the [cmd "::xjson::decode"] and
 				[cmd "::xjson::recode"] functions never return a [const "decoded"] type.
+				[para]
+				[emph "Note:"] The [cmd verbatim] method may be used to pass through the decoded
+				JSON input in verbatim.
 
 			[def "for composing"]
 				Validates a decoded JSON input [emph "value"] as understood by [cmd "::xjson::encode"]
@@ -1454,6 +1457,10 @@ set data {
 			[arg thenSchema], the [arg elseSchema], or the [arg nullSchema].
 			It returns a [const null].
 
+		[cmd_def verbatim]
+			Returns the input [const [arg value]] in verbatim without doing any validation
+			on it. It should be decoded JSON data but this isn't checked.
+			This method is intended for doing collecting/composing in multiple steps.
 		[list_end]
 
 	[def "Result Formatting Operators"]
@@ -1956,7 +1963,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.5/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.6/])
 	for examples on how to write your own custom methods.
 
 [subsection "NESTING"]

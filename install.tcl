@@ -51,7 +51,7 @@ if {$argc != 2} {
 
 
 ## Create library directory.
-file mkdir [file join [lindex $argv 0] "xjson1.5"]
+file mkdir [file join [lindex $argv 0] "xjson1.6"]
 
 ## Copy library files.
 foreach fname {
@@ -68,7 +68,7 @@ foreach fname {
 	utilities.tcl
 	xjson.tcl
 } {
-	file copy -force $fname [file join [lindex $argv 0] "xjson1.5"]
+	file copy -force $fname [file join [lindex $argv 0] "xjson1.6"]
 }
 
 ## Copy manpage.

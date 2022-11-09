@@ -1,0 +1,33 @@
+overview: |-
+  Compose data with verbatim schema.
+operation: compose
+tests:
+  - name: decoded JSON data
+    desc: Decoded JSON data of any kind has to pass in verbatim.
+    schema: 'verbatim'
+    data: 'object {foo {literal true} bar {number 23}}'
+    expected: 'object {foo {literal true} bar {number 23}}'
+
+  - name: empty data
+    desc: Empty data must has to pass without an error.
+    schema: 'verbatim'
+    data: ''
+    expected: ''
+
+  - name: null data
+    desc: Literal null data has to pass without an error.
+    schema: 'verbatim'
+    data: 'literal null'
+    expected: 'literal null'
+
+  - name: arbitary data
+    desc: Arbitrary data has to pass in verbatim.
+    schema: 'verbatim'
+    data: 'foobar'
+    expected: 'foobar'
+
+  - name: end of options
+    desc: End of options marker must be ignored.
+    schema: 'verbatim --'
+    data: 'foobar'
+    expected: 'foobar'

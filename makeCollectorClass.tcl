@@ -254,11 +254,6 @@ proc ::xjson::makeCollectorClass {args} {
 
 		## Validate and collect data from JSON data to Tcl data.
 		protected method _collect {data schema path interpreter previous} {
-			## Assume empty data to be a literal null.
-			if {$data eq {}} {
-				set data {literal null}
-			}
-
 			## Assume an empty schema to be a null schema.
 			if {$schema eq {}} {
 				set schema [dict create method null depth 1 ldepth 1 weight 1 options {} arguments {}]

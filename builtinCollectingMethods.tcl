@@ -137,8 +137,8 @@ dict set ::xjson::builtinCollectingMethods array {
 	## Save schema for error messages.
 	set sschema $schema
 
-	## Sort out null.
-	if {$data eq {literal null}} {
+	## Sort out empty data and literal null.
+	if {$data eq {} || $data eq {literal null}} {
 		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
 			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $sschema] " at " $path "\n" \
 				"But it is null and reported as such."]
@@ -305,8 +305,8 @@ dict set ::xjson::builtinCollectingMethods array {
 
 ## Boolean type collecting method.
 dict set ::xjson::builtinCollectingMethods boolean {{} {
-	## Sort out null.
-	if {$data eq {literal null}} {
+	## Sort out empty data and literal null.
+	if {$data eq {} || $data eq {literal null}} {
 		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
 			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
 				"But it is null and reported as such."]
@@ -562,8 +562,8 @@ dict set ::xjson::builtinCollectingMethods nest {collector {
 
 ## Null type collecting method.
 dict set ::xjson::builtinCollectingMethods null {{} {
-	## Check for null.
-	if {$data eq {literal null}} {
+	## Sort out empty data and literal null.
+	if {$data eq {} || $data eq {literal null}} {
 		## Return null.
 		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
 			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
@@ -582,8 +582,8 @@ dict set ::xjson::builtinCollectingMethods number {
 	integer {-isolate -test! -max# -xmax# -min# -xmin# -multipleof>0}
 	number  {-isolate -test! -max/ -xmax/ -min/ -xmin/}
 {
-	## Sort out null.
-	if {$data eq {literal null}} {
+	## Sort out empty data and literal null.
+	if {$data eq {} || $data eq {literal null}} {
 		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
 			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
 				"But it is null and reported as such."]
@@ -642,8 +642,8 @@ dict set ::xjson::builtinCollectingMethods number {
 
 ## Object type collecting method.
 dict set ::xjson::builtinCollectingMethods object {{schemaDict{:} -values} {
-	## Sort out null.
-	if {$data eq {literal null}} {
+	## Sort out empty data and literal null.
+	if {$data eq {} || $data eq {literal null}} {
 		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
 			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
 				"But it is null and reported as such."]
@@ -813,8 +813,8 @@ dict set ::xjson::builtinCollectingMethods string {{
 		-map|
 		-isolate -test! -transform!
 	} {
-	## Sort out null.
-	if {$data eq {literal null}} {
+	## Sort out empty data and literal null.
+	if {$data eq {} || $data eq {literal null}} {
 		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
 			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
 				"But it is null and reported as such."]
@@ -1098,4 +1098,11 @@ dict set ::xjson::builtinCollectingMethods switch {{schemas{|} else{} null{}} {
 				[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
 					"It does not match any of the listed subschemas:" [_printErrors $errors]]]
 	}
+}}
+
+
+## Verbatim type collecting method.
+dict set ::xjson::builtinCollectingMethods verbatim {{} {
+	## Return verbatim data.
+	return $data
 }}

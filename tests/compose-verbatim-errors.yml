@@ -1,0 +1,17 @@
+overview: |-
+  Compose data with verbatim schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'verbatim -foobar'
+    data: 'foobar'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'verbatim {}'
+    data: 'foobar'
+    expected: 'XJSON SCHEMA WRONGARGS'

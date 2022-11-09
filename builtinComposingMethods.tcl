@@ -1124,3 +1124,10 @@ dict set ::xjson::builtinComposingMethods switch {{schemas{|} else{} null{}} {
 					"It does not match any of the listed subschemas:" [_printErrors $errors]]]
 	}
 }}
+
+
+## Verbatim type composing method.
+dict set ::xjson::builtinComposingMethods verbatim {{} {
+	## Return verbatim data.
+	return $data
+}}

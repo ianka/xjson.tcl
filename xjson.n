@@ -2,7 +2,7 @@
 '\" Generated from file '' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
 '\"
-.TH "xjson" n 1\&.5  "xjson\&.tcl"
+.TH "xjson" n 1\&.6  "xjson\&.tcl"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -282,7 +282,7 @@ package require \fBstruct::set \fR
 .sp
 package require \fBstruct::list \fR
 .sp
-package require \fBxjson  ?1\&.5?\fR
+package require \fBxjson  ?1\&.6?\fR
 .sp
 \fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
 .sp
@@ -816,6 +816,9 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 for collecting
 This method does not exist in collector objects as the \fB::xjson::decode\fR and
 \fB::xjson::recode\fR functions never return a \fBdecoded\fR type\&.
+.sp
+\fINote:\fR The \fBverbatim\fR method may be used to pass through the decoded
+JSON input in verbatim\&.
 .TP
 for composing
 Validates a decoded JSON input \fIvalue\fR as understood by \fB::xjson::encode\fR
@@ -1744,6 +1747,11 @@ escalate the validation error of the switch method instead\&.
 \fINote:\fR The \fBdiscard\fR method is also useful as either a
 \fIthenSchema\fR, the \fIelseSchema\fR, or the \fInullSchema\fR\&.
 It returns a \fBnull\fR\&.
+.TP
+\fBverbatim\fR
+Returns the input \fB\fIvalue\fR\fR in verbatim without doing any validation
+on it\&. It should be decoded JSON data but this isn't checked\&.
+This method is intended for doing collecting/composing in multiple steps\&.
 .RE
 .TP
 Result Formatting Operators
@@ -2138,7 +2146,7 @@ parameters and options\&. They are sorted out from within their Tcl body by the
 actual method name used in the schema then\&.
 The following \fImethodName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array boolean const decoded default expr dictby dictbyindex discard dubious escalate format if nest not null number object oneof optional otherwise pass regsub string stringop switch\fR
+\fBallof anyof apply array boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch\fR
 .sp
 You may of course overwrite those as well but it will break compatibility with
 existing schemas\&. For forward compatibility with new versions of
@@ -2160,7 +2168,7 @@ or (simplified)
 In the simplified variant, the method has only one name and one set of parameters\&.
 The following \fIaliasName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array boolean const decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples\fR
+\fBallof anyof apply array boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples\fR
 .RS
 .TP
 The following \fImethodOptions\fR may be specified:
@@ -2279,7 +2287,7 @@ The \fIbody\fR is the Tcl body of the method\&.
 .PP
 See the files
 "\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
-from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.5/\fR")
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.6/\fR")
 for examples on how to write your own custom methods\&.
 .SS NESTING
 With each collector/composer object you construct from the classes produced by

@@ -1,0 +1,29 @@
+overview: |-
+  Collect data with "json" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'json -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'json'
+    data: 'string {{"foo":"bar"}}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'json {} {}'
+    data: 'string {{"foo":"bar"}}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: non-json input
+    desc: Non-json input must throw an error.
+    schema: 'json string'
+    data: 'string foobar'
+    expected: 'XJSON COLLECTOR OBJECT JSON_VALUE'

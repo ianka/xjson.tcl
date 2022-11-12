@@ -1,0 +1,21 @@
+overview: |-
+  Collect data with "json" schema.
+operation: collect
+tests:
+  - name: empty value
+    desc: Empty JSON is decoded as an empty string.
+    schema: 'json string'
+    data: 'string {}'
+    expected: ''
+
+  - name: json value
+    desc: A JSON encoded string is decoded into xjson's decoded JSON format.
+    schema: 'json string'
+    data: 'string {{"foo":"bar"}}'
+    expected: 'object {foo {string bar}}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'json -- string'
+    data: 'string {{"foo":"bar"}}'
+    expected: 'object {foo {string bar}}'

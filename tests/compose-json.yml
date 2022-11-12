@@ -1,0 +1,15 @@
+overview: |-
+  Compose data with "json" schema.
+operation: compose
+tests:
+  - name: decoded json value
+    desc: A xdecoded JSON value is encoded into JSON.
+    schema: 'json string'
+    data: 'object {foo {string bar}}'
+    expected: 'string {{"foo":"bar"}}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'json -- string'
+    data: 'object {foo {string bar}}'
+    expected: 'string {{"foo":"bar"}}'

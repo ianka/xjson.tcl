@@ -549,6 +549,21 @@ dict set ::xjson::builtinComposingMethods if {{test{} then{} else{} null{}} {
 }}
 
 
+## Json operator composing method.
+dict set ::xjson::builtinComposingMethods json {schema{} {
+	## Feed the data into json encoder.
+	if {[catch {::xjson::encode $data 0 {}} values]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT DECODED_JSON_VALUE} \
+			[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+				"It is not decoded JSON: " $values "."]
+	}
+
+
+	## Compose value from values according to schema.
+	_compose $values [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}
+}}
+
+
 ## Mark operator composing method.
 dict set ::xjson::builtinComposingMethods mark {{mark schema{}} {
 	## Fail if the mark does not match.

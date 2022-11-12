@@ -557,6 +557,23 @@ dict set ::xjson::builtinCollectingMethods if {{test{} then{} else{} null{}} {
 }}
 
 
+## Json operator collecting method.
+dict set ::xjson::builtinCollectingMethods json {schema{} {
+	## Collect value from data according to schema.
+	set collected [_collect $data [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}]
+
+	## Feed it into xjsons JSON decoder.
+	if {[catch {::xjson::decode $collected} result]} {
+		return -code error -errorcode {XJSON COLLECTOR OBJECT JSON_VALUE} \
+			[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+				"It is not JSON encoded: " $result "."]
+	}
+
+	## Return the result.
+	return $result
+}}
+
+
 ## Mark operator collecting method.
 dict set ::xjson::builtinCollectingMethods mark {{mark schema{}} {
 	## Return a list of mark and value from data according to schema.

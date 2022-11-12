@@ -1810,6 +1810,25 @@ it is used inside the schema, unless otherwise noted\.
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
 
+      * __json *schema*__
+
+          + for collecting
+
+            Validates the decoded JSON input with the *schema*\. That result is
+            then expanded and passed into xjson's __::xjson::decode__
+            command\.
+
+            The operator returns the result of xjson's __::xjson::decode__
+            command\.
+
+          + for composing
+
+            Passes the Tcl input data into xjson's __::xjson::encode__
+            command\.
+
+            The result of that is then validated with the *schema*\. The
+            operator returns the result of the schema\.
+
       * __mark *mark* *schema*__
 
           + for collecting
@@ -2084,9 +2103,9 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     *methodName*s are reserved for the builtin methods:
 
     __allof anyof apply array base32 base64 boolean const datetime decoded
-    default expr dictby dictbyindex discard dubious escalate format if mark nest
-    not null number object oneof optional otherwise pass regsub string stringop
-    switch uu verbatim__
+    default expr dictby dictbyindex discard dubious escalate format if json mark
+    nest not null number object oneof optional otherwise pass regsub string
+    stringop switch uu verbatim__
 
     You may of course overwrite those as well but it will break compatibility
     with existing schemas\. For forward compatibility with new versions of
@@ -2112,7 +2131,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
 
     __allof anyof apply array base32 base64 boolean const datetime decoded
     default duple duples encoded expr dictby dictbyindex discard dubious
-    escalate format if integer lmap mark nest not null number object oneof
+    escalate format if integer json lmap mark nest not null number object oneof
     optional otherwise pass regsub string stringop switch tuple tuples uu
     verbatim__
 

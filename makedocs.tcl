@@ -1627,6 +1627,22 @@ set data {
 
 			[list_end]
 
+		[cmd_def "json [arg schema]"]
+			[list_begin definitions]
+			[def "for collecting"]
+				Validates the decoded JSON input with the [arg schema]. That result is then
+				expanded and passed into xjson's [cmd "::xjson::decode"] command.
+				[para]
+				The operator returns the result of xjson's [cmd "::xjson::decode"] command.
+
+			[def "for composing"]
+				Passes the Tcl input data into xjson's [cmd "::xjson::encode"] command.
+				[para]
+ 				The result of that is then validated with the [arg schema].
+				The operator returns the result of the schema.
+
+			[list_end]
+
 		[cmd_def "mark [arg mark] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
@@ -1874,7 +1890,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -1897,7 +1913,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]

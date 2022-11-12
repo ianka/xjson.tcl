@@ -1921,6 +1921,22 @@ The result of that is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
 .RE
 .TP
+\fBjson \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is then
+expanded and passed into xjson's \fB::xjson::decode\fR command\&.
+.sp
+The operator returns the result of xjson's \fB::xjson::decode\fR command\&.
+.TP
+for composing
+Passes the Tcl input data into xjson's \fB::xjson::encode\fR command\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RE
+.TP
 \fBmark \fImark\fR \fIschema\fR\fR
 .RS
 .TP
@@ -2204,7 +2220,7 @@ parameters and options\&. They are sorted out from within their Tcl body by the
 actual method name used in the schema then\&.
 The following \fImethodName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim\fR
 .sp
 You may of course overwrite those as well but it will break compatibility with
 existing schemas\&. For forward compatibility with new versions of
@@ -2226,7 +2242,7 @@ or (simplified)
 In the simplified variant, the method has only one name and one set of parameters\&.
 The following \fIaliasName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim\fR
 .RS
 .TP
 The following \fImethodOptions\fR may be specified:

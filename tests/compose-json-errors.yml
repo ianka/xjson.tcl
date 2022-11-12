@@ -1,0 +1,29 @@
+overview: |-
+  Compose data with "json" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'json -foobar {}'
+    data: 'object {foo {string bar}}'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'json'
+    data: 'object {foo {string bar}}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'json {} {}'
+    data: 'object {foo {string bar}}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: empty value
+    desc: Empty strings must thow an error.
+    schema: 'json string'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT DECODED_JSON_VALUE'

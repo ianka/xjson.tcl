@@ -1,0 +1,29 @@
+overview: |-
+  Collect data with "uu" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'uu -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'uu'
+    data: 'string 9F\]O8F%R'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'uu {} {}'
+    data: 'string 9F\]O8F%R'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: non-uu input
+    desc: Non-uu input must throw an error.
+    schema: 'uu string'
+    data: 'string x'
+    expected: 'XJSON COLLECTOR OBJECT UU_VALUE'

@@ -1146,6 +1146,16 @@ dict set ::xjson::builtinComposingMethods switch {{schemas{|} else{} null{}} {
 }}
 
 
+## Uu operator composing method.
+dict set ::xjson::builtinComposingMethods uu {schema{} {
+	## Feed the data into uu.
+	set values [::uuencode::encode $data]
+
+	## Compose value from values according to schema.
+	_compose $values [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}
+}}
+
+
 ## Verbatim type composing method.
 dict set ::xjson::builtinComposingMethods verbatim {{} {
 	## Return verbatim data.

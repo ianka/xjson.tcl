@@ -2039,6 +2039,25 @@ That's a slight difference to Tcl's \fBstring trim\fR, \fBstring trimleft\fR,
 \fBstring trimright\fR commands\&.
 .RE
 .RE
+.TP
+\fBuu \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is then
+expanded and passed into Tcllib's \fB::uuencode::decode\fR command along\&.
+.sp
+The operator returns the result of Tcllib's \fB::uuencode::decode\fR command\&.
+.TP
+for composing
+Passes the Tcl input data into Tcllib's \fB::uuencode::encode\fR command\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RE
+.IP
+\fINote:\fR Tcllib's \fBuuencode\fR package must be loaded before
+collecting/composing with any schema using this method\&.
 .RE
 .TP
 Aggregate Result Formatting Operators
@@ -2185,7 +2204,7 @@ parameters and options\&. They are sorted out from within their Tcl body by the
 actual method name used in the schema then\&.
 The following \fImethodName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch verbatim\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim\fR
 .sp
 You may of course overwrite those as well but it will break compatibility with
 existing schemas\&. For forward compatibility with new versions of
@@ -2207,7 +2226,7 @@ or (simplified)
 In the simplified variant, the method has only one name and one set of parameters\&.
 The following \fIaliasName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples verbatim\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim\fR
 .RS
 .TP
 The following \fImethodOptions\fR may be specified:

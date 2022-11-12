@@ -1,0 +1,27 @@
+overview: |-
+  Collect data with "uu" schema.
+operation: collect
+tests:
+  - name: empty value
+    desc: Empty uu is decoded as an empty string.
+    schema: 'uu string'
+    data: 'string {}'
+    expected: ''
+
+  - name: uu string value
+    desc: A uu encoded string is decoded into plaintext.
+    schema: 'uu string'
+    data: 'string 9F\]O8F%R'
+    expected: 'foobar'
+
+  - name: uu binary value
+    desc: A uu encoded binary value is decoded into plain binary.
+    schema: 'uu string'
+    data: 'string ``~~'
+    expected: !!binary 'AA=='
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'uu -- string'
+    data: 'string 9F\]O8F%R'
+    expected: 'foobar'

@@ -1,0 +1,27 @@
+overview: |-
+  Compose data with "uu" schema.
+operation: compose
+tests:
+  - name: empty value
+    desc: Empty strings are encoded as empty uu.
+    schema: 'uu string'
+    data: ''
+    expected: 'string {}'
+
+  - name: string value
+    desc: Any string value is encoded into uu.
+    schema: 'uu string'
+    data: 'foobar'
+    expected: 'string 9F\]O8F%R'
+
+  - name: binary value
+    desc: Any binary value is encoded into uu.
+    schema: 'uu string'
+    data: !!binary 'AA=='
+    expected: 'string ``~~'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'uu -- string'
+    data: 'foobar'
+    expected: 'string 9F\]O8F%R'

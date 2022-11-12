@@ -1,0 +1,23 @@
+overview: |-
+  Compose data with "uu" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'uu -foobar {}'
+    data: 'quux'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'uu'
+    data: 'quux'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'uu {} {}'
+    data: 'quux'
+    expected: 'XJSON SCHEMA WRONGARGS'

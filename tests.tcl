@@ -7,6 +7,7 @@ set auto_path [linsert $auto_path 0 .]
 
 package require base32
 package require base64
+package require uuencode
 package require xjson
 package require yaml
 

@@ -1935,6 +1935,28 @@ it is used inside the schema, unless otherwise noted\.
                 difference to Tcl's __string trim__, __string
                 trimleft__, __string trimright__ commands\.
 
+      * __uu *schema*__
+
+          + for collecting
+
+            Validates the decoded JSON input with the *schema*\. That result is
+            then expanded and passed into Tcllib's __::uuencode::decode__
+            command along\.
+
+            The operator returns the result of Tcllib's
+            __::uuencode::decode__ command\.
+
+          + for composing
+
+            Passes the Tcl input data into Tcllib's __::uuencode::encode__
+            command\.
+
+            The result of that is then validated with the *schema*\. The
+            operator returns the result of the schema\.
+
+        *Note:* Tcllib's __uuencode__ package must be loaded before
+        collecting/composing with any schema using this method\.
+
   - Aggregate Result Formatting Operators
 
       * __dictby *by* *schema*__
@@ -2064,7 +2086,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     __allof anyof apply array base32 base64 boolean const datetime decoded
     default expr dictby dictbyindex discard dubious escalate format if mark nest
     not null number object oneof optional otherwise pass regsub string stringop
-    switch verbatim__
+    switch uu verbatim__
 
     You may of course overwrite those as well but it will break compatibility
     with existing schemas\. For forward compatibility with new versions of
@@ -2091,7 +2113,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     __allof anyof apply array base32 base64 boolean const datetime decoded
     default duple duples encoded expr dictby dictbyindex discard dubious
     escalate format if integer lmap mark nest not null number object oneof
-    optional otherwise pass regsub string stringop switch tuple tuples
+    optional otherwise pass regsub string stringop switch tuple tuples uu
     verbatim__
 
       * The following *methodOptions* may be specified:

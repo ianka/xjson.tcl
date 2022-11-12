@@ -1675,6 +1675,28 @@ it is used inside the schema, unless otherwise noted\.
 
                 Use a local sandbox\.
 
+      * __base32 *schema*__
+
+          + for collecting
+
+            Validates the decoded JSON input with the *schema*\. That result is
+            then expanded and passed into Tcllib's __::base32::decode__
+            command along\.
+
+            The operator returns the result of Tcllib's __::base32::decode__
+            command\.
+
+          + for composing
+
+            Passes the Tcl input data into Tcllib's __::base32::encode__
+            command\.
+
+            The result of that is then validated with the *schema*\. The
+            operator returns the result of the schema\.
+
+        *Note:* Tcllib's __base32__ package must be loaded before
+        collecting/composing with any schema using this method\.
+
       * __base64 *schema*__
 
           + for collecting
@@ -1683,7 +1705,7 @@ it is used inside the schema, unless otherwise noted\.
             then expanded and passed into Tcllib's __::base64::decode__
             command along\.
 
-            The operator returns the result of Tcl's __::base64::decode__
+            The operator returns the result of Tcllib's __::base64::decode__
             command\.
 
           + for composing
@@ -2039,9 +2061,9 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     the actual method name used in the schema then\. The following
     *methodName*s are reserved for the builtin methods:
 
-    __allof anyof apply array base64 boolean const datetime decoded default
-    expr dictby dictbyindex discard dubious escalate format if mark nest not
-    null number object oneof optional otherwise pass regsub string stringop
+    __allof anyof apply array base32 base64 boolean const datetime decoded
+    default expr dictby dictbyindex discard dubious escalate format if mark nest
+    not null number object oneof optional otherwise pass regsub string stringop
     switch verbatim__
 
     You may of course overwrite those as well but it will break compatibility
@@ -2066,10 +2088,11 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     parameters\. The following *aliasName*s are reserved for the builtin
     methods:
 
-    __allof anyof apply array base64 boolean const datetime decoded default
-    duple duples encoded expr dictby dictbyindex discard dubious escalate format
-    if integer lmap mark nest not null number object oneof optional otherwise
-    pass regsub string stringop switch tuple tuples verbatim__
+    __allof anyof apply array base32 base64 boolean const datetime decoded
+    default duple duples encoded expr dictby dictbyindex discard dubious
+    escalate format if integer lmap mark nest not null number object oneof
+    optional otherwise pass regsub string stringop switch tuple tuples
+    verbatim__
 
       * The following *methodOptions* may be specified:
 

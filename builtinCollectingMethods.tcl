@@ -303,6 +303,23 @@ dict set ::xjson::builtinCollectingMethods array {
 }}
 
 
+## Base32 operator collecting method.
+dict set ::xjson::builtinCollectingMethods base32 {schema{} {
+	## Collect value from data according to schema.
+	set collected [_collect $data [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}]
+
+	## Feed it into tcllib's base32 decoder.
+	if {[catch {::base32::decode $collected} result]} {
+		return -code error -errorcode {XJSON COLLECTOR OBJECT BASE32_VALUE} \
+			[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+				"It is not base32 encoded: " $result "."]
+	}
+
+	## Return the result.
+	return $result
+}}
+
+
 ## Base64 operator collecting method.
 dict set ::xjson::builtinCollectingMethods base64 {schema{} {
 	## Collect value from data according to schema.

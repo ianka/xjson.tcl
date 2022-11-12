@@ -1501,13 +1501,31 @@ set data {
 				[list_end]
 			[list_end]
 
+		[cmd_def "base32 [arg schema]"]
+			[list_begin definitions]
+			[def "for collecting"]
+				Validates the decoded JSON input with the [arg schema]. That result is then
+				expanded and passed into Tcllib's [cmd "::base32::decode"] command along.
+				[para]
+				The operator returns the result of Tcllib's [cmd "::base32::decode"] command.
+
+			[def "for composing"]
+				Passes the Tcl input data into Tcllib's [cmd "::base32::encode"] command.
+				[para]
+ 				The result of that is then validated with the [arg schema].
+				The operator returns the result of the schema.
+			[list_end]
+
+			[emph "Note:"] Tcllib's [const "base32"] package must be loaded before
+			collecting/composing with any schema using this method.
+
 		[cmd_def "base64 [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema]. That result is then
 				expanded and passed into Tcllib's [cmd "::base64::decode"] command along.
 				[para]
-				The operator returns the result of Tcl's [cmd "::base64::decode"] command.
+				The operator returns the result of Tcllib's [cmd "::base64::decode"] command.
 
 			[def "for composing"]
 				Passes the Tcl input data into Tcllib's [cmd "::base64::encode"] command.
@@ -1837,7 +1855,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch verbatim"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch verbatim"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -1860,7 +1878,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples verbatim"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples verbatim"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]

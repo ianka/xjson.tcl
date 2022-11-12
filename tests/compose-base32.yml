@@ -1,0 +1,27 @@
+overview: |-
+  Compose data with "base32" schema.
+operation: compose
+tests:
+  - name: empty value
+    desc: Empty strings are encoded as empty base32.
+    schema: 'base32 string'
+    data: ''
+    expected: 'string {}'
+
+  - name: string value
+    desc: Any string value is encoded into base32.
+    schema: 'base32 string'
+    data: 'foobar'
+    expected: 'string MZXW6YTBOI======'
+
+  - name: binary value
+    desc: Any binary value is encoded into base32.
+    schema: 'base32 string'
+    data: !!binary 'AA=='
+    expected: 'string AA======'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'base32 -- string'
+    data: 'foobar'
+    expected: 'string MZXW6YTBOI======'

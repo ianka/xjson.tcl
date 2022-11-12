@@ -1792,6 +1792,25 @@ Use a local sandbox\&.
 .RE
 .RE
 .TP
+\fBbase32 \fIschema\fR\fR
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIschema\fR\&. That result is then
+expanded and passed into Tcllib's \fB::base32::decode\fR command along\&.
+.sp
+The operator returns the result of Tcllib's \fB::base32::decode\fR command\&.
+.TP
+for composing
+Passes the Tcl input data into Tcllib's \fB::base32::encode\fR command\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RE
+.IP
+\fINote:\fR Tcllib's \fBbase32\fR package must be loaded before
+collecting/composing with any schema using this method\&.
+.TP
 \fBbase64 \fIschema\fR\fR
 .RS
 .TP
@@ -1799,7 +1818,7 @@ for collecting
 Validates the decoded JSON input with the \fIschema\fR\&. That result is then
 expanded and passed into Tcllib's \fB::base64::decode\fR command along\&.
 .sp
-The operator returns the result of Tcl's \fB::base64::decode\fR command\&.
+The operator returns the result of Tcllib's \fB::base64::decode\fR command\&.
 .TP
 for composing
 Passes the Tcl input data into Tcllib's \fB::base64::encode\fR command\&.
@@ -2166,7 +2185,7 @@ parameters and options\&. They are sorted out from within their Tcl body by the
 actual method name used in the schema then\&.
 The following \fImethodName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch verbatim\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch verbatim\fR
 .sp
 You may of course overwrite those as well but it will break compatibility with
 existing schemas\&. For forward compatibility with new versions of
@@ -2188,7 +2207,7 @@ or (simplified)
 In the simplified variant, the method has only one name and one set of parameters\&.
 The following \fIaliasName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples verbatim\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples verbatim\fR
 .RS
 .TP
 The following \fImethodOptions\fR may be specified:

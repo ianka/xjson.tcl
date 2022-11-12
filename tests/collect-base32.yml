@@ -1,0 +1,27 @@
+overview: |-
+  Collect data with "base32" schema.
+operation: collect
+tests:
+  - name: empty value
+    desc: Empty base32 is decoded as an empty string.
+    schema: 'base32 string'
+    data: 'string {}'
+    expected: ''
+
+  - name: base32 string value
+    desc: A base32 encoded string is decoded into plaintext.
+    schema: 'base32 string'
+    data: 'string MZXW6YTBOI======'
+    expected: 'foobar'
+
+  - name: base32 binary value
+    desc: A base32 encoded binary value is decoded into plain binary.
+    schema: 'base32 string'
+    data: 'string AA======'
+    expected: !!binary 'AA=='
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'base32 -- string'
+    data: 'string MZXW6YTBOI======'
+    expected: 'foobar'

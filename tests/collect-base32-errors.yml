@@ -1,0 +1,29 @@
+overview: |-
+  Collect data with "base32" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'base32 -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'base32'
+    data: 'string MZXW6YTBOI======'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'base32 {} {}'
+    data: 'string MZXW6YTBOI======'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: non-base32 input
+    desc: Non-base32 input must throw an error.
+    schema: 'base32 string'
+    data: 'string x'
+    expected: 'XJSON COLLECTOR OBJECT BASE32_VALUE'

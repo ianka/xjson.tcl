@@ -335,6 +335,16 @@ dict set ::xjson::builtinComposingMethods array {
 }}
 
 
+## Base32 operator composing method.
+dict set ::xjson::builtinComposingMethods base32 {schema{} {
+	## Feed the data into base32.
+	set values [::base32::encode $data]
+
+	## Compose value from values according to schema.
+	_compose $values [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}
+}}
+
+
 ## Base64 operator composing method.
 dict set ::xjson::builtinComposingMethods base64 {schema{} {
 	## Feed the data into base64.

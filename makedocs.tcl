@@ -2,7 +2,7 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.6]
+[manpage_begin xjson n 1.7]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
@@ -11,7 +11,7 @@ set data {
 [require itcl 4.0-]
 [require struct::set]
 [require struct::list]
-[require xjson [opt 1.6]]
+[require xjson [opt 1.7]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -1501,6 +1501,25 @@ set data {
 				[list_end]
 			[list_end]
 
+		[cmd_def "base64 [arg schema]"]
+			[list_begin definitions]
+			[def "for collecting"]
+				Validates the decoded JSON input with the [arg schema]. That result is then
+				expanded and passed into Tcllib's [cmd "::base64::decode"] command along.
+				[para]
+				The operator returns the result of Tcl's [cmd "::base64::decode"] command.
+
+			[def "for composing"]
+				Passes the Tcl input data into Tcllib's [cmd "::base64::encode"] command.
+				The base64 result isn't wrapped.
+				[para]
+ 				The result of that is then validated with the [arg schema].
+				The operator returns the result of the schema.
+			[list_end]
+
+			[emph "Note:"] Tcllib's [const "base64"] package must be loaded before
+			collecting/composing with any schema using this method.
+
 		[cmd_def "datetime [arg [opt options]] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
@@ -1818,7 +1837,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch verbatim"]
+		[cmd "allof anyof apply array base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if mark nest not null number object oneof optional otherwise pass regsub string stringop switch verbatim"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -1841,7 +1860,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples verbatim"]
+		[cmd "allof anyof apply array base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples verbatim"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]
@@ -1963,7 +1982,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.6/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.7/])
 	for examples on how to write your own custom methods.
 
 [subsection "NESTING"]

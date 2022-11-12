@@ -1,0 +1,27 @@
+overview: |-
+  Collect data with "base64" schema.
+operation: collect
+tests:
+  - name: empty value
+    desc: Empty base64 is decoded as an empty string.
+    schema: 'base64 string'
+    data: 'string {}'
+    expected: ''
+
+  - name: base64 string value
+    desc: A base64 encoded string is decoded into plaintext.
+    schema: 'base64 string'
+    data: 'string Zm9vYmFy'
+    expected: 'foobar'
+
+  - name: base64 binary value
+    desc: A base64 encoded binary value is decoded into plain binary.
+    schema: 'base64 string'
+    data: 'string AA=='
+    expected: !!binary 'AA=='
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'base64 -- string'
+    data: 'string Zm9vYmFy'
+    expected: 'foobar'

@@ -335,6 +335,16 @@ dict set ::xjson::builtinComposingMethods array {
 }}
 
 
+## Base64 operator composing method.
+dict set ::xjson::builtinComposingMethods base64 {schema{} {
+	## Feed the data into base64.
+	set values [::base64::encode -maxlen 0 $data]
+
+	## Compose value from values according to schema.
+	_compose $values [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}
+}}
+
+
 ## Boolean type composing method.
 dict set ::xjson::builtinComposingMethods boolean {-- -null= {
 	## Sort out null.

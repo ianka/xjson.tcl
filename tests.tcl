@@ -7,6 +7,7 @@ set auto_path [linsert $auto_path 0 .]
 
 package require xjson
 package require yaml
+package require base64
 
 ## Set default timezone.
 set env(TZ) ":UTC"

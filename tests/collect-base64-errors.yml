@@ -1,0 +1,29 @@
+overview: |-
+  Collect data with "base64" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'base64 -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'base64'
+    data: 'string Zm9vYmFy'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'base64 {} {}'
+    data: 'string Zm9vYmFy'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: non-base64 input
+    desc: Non-base64 input must throw an error.
+    schema: 'base64 string'
+    data: 'string x'
+    expected: 'XJSON COLLECTOR OBJECT BASE64_VALUE'

@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.6  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.7  "xjson\.tcl")
 
 # NAME
 
@@ -72,7 +72,7 @@ package require Tcl 8\.6\-
 package require itcl 4\.0\-  
 package require struct::set  
 package require struct::list  
-package require xjson ?1\.6?  
+package require xjson ?1\.7?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
@@ -1675,6 +1675,28 @@ it is used inside the schema, unless otherwise noted\.
 
                 Use a local sandbox\.
 
+      * __base64 *schema*__
+
+          + for collecting
+
+            Validates the decoded JSON input with the *schema*\. That result is
+            then expanded and passed into Tcllib's __::base64::decode__
+            command along\.
+
+            The operator returns the result of Tcl's __::base64::decode__
+            command\.
+
+          + for composing
+
+            Passes the Tcl input data into Tcllib's __::base64::encode__
+            command\. The base64 result isn't wrapped\.
+
+            The result of that is then validated with the *schema*\. The
+            operator returns the result of the schema\.
+
+        *Note:* Tcllib's __base64__ package must be loaded before
+        collecting/composing with any schema using this method\.
+
       * __datetime *?options?* *schema*__
 
           + for collecting
@@ -2017,10 +2039,10 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     the actual method name used in the schema then\. The following
     *methodName*s are reserved for the builtin methods:
 
-    __allof anyof apply array boolean const datetime decoded default expr
-    dictby dictbyindex discard dubious escalate format if mark nest not null
-    number object oneof optional otherwise pass regsub string stringop switch
-    verbatim__
+    __allof anyof apply array base64 boolean const datetime decoded default
+    expr dictby dictbyindex discard dubious escalate format if mark nest not
+    null number object oneof optional otherwise pass regsub string stringop
+    switch verbatim__
 
     You may of course overwrite those as well but it will break compatibility
     with existing schemas\. For forward compatibility with new versions of
@@ -2044,10 +2066,10 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     parameters\. The following *aliasName*s are reserved for the builtin
     methods:
 
-    __allof anyof apply array boolean const datetime decoded default duple
-    duples encoded expr dictby dictbyindex discard dubious escalate format if
-    integer lmap mark nest not null number object oneof optional otherwise pass
-    regsub string stringop switch tuple tuples verbatim__
+    __allof anyof apply array base64 boolean const datetime decoded default
+    duple duples encoded expr dictby dictbyindex discard dubious escalate format
+    if integer lmap mark nest not null number object oneof optional otherwise
+    pass regsub string stringop switch tuple tuples verbatim__
 
       * The following *methodOptions* may be specified:
 
@@ -2197,7 +2219,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.6/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.7/"\) for
 examples on how to write your own custom methods\.
 
 ## <a name='subsection6'></a>NESTING

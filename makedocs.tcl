@@ -1505,7 +1505,7 @@ set data {
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema]. That result is then
-				expanded and passed into Tcllib's [cmd "::base32::decode"] command along.
+				expanded and passed into Tcllib's [cmd "::base32::decode"] command.
 				[para]
 				The operator returns the result of Tcllib's [cmd "::base32::decode"] command.
 
@@ -1523,7 +1523,7 @@ set data {
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema]. That result is then
-				expanded and passed into Tcllib's [cmd "::base64::decode"] command along.
+				expanded and passed into Tcllib's [cmd "::base64::decode"] command.
 				[para]
 				The operator returns the result of Tcllib's [cmd "::base64::decode"] command.
 
@@ -1760,7 +1760,7 @@ set data {
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema]. That result is then
-				expanded and passed into Tcllib's [cmd "::uuencode::decode"] command along.
+				expanded and passed into Tcllib's [cmd "::uuencode::decode"] command.
 				[para]
 				The operator returns the result of Tcllib's [cmd "::uuencode::decode"] command.
 

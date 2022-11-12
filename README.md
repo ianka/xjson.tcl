@@ -1681,7 +1681,7 @@ it is used inside the schema, unless otherwise noted\.
 
             Validates the decoded JSON input with the *schema*\. That result is
             then expanded and passed into Tcllib's __::base32::decode__
-            command along\.
+            command\.
 
             The operator returns the result of Tcllib's __::base32::decode__
             command\.
@@ -1703,7 +1703,7 @@ it is used inside the schema, unless otherwise noted\.
 
             Validates the decoded JSON input with the *schema*\. That result is
             then expanded and passed into Tcllib's __::base64::decode__
-            command along\.
+            command\.
 
             The operator returns the result of Tcllib's __::base64::decode__
             command\.
@@ -1960,7 +1960,7 @@ it is used inside the schema, unless otherwise noted\.
 
             Validates the decoded JSON input with the *schema*\. That result is
             then expanded and passed into Tcllib's __::uuencode::decode__
-            command along\.
+            command\.
 
             The operator returns the result of Tcllib's
             __::uuencode::decode__ command\.

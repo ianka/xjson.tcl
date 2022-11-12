@@ -1797,7 +1797,7 @@ Use a local sandbox\&.
 .TP
 for collecting
 Validates the decoded JSON input with the \fIschema\fR\&. That result is then
-expanded and passed into Tcllib's \fB::base32::decode\fR command along\&.
+expanded and passed into Tcllib's \fB::base32::decode\fR command\&.
 .sp
 The operator returns the result of Tcllib's \fB::base32::decode\fR command\&.
 .TP
@@ -1816,7 +1816,7 @@ collecting/composing with any schema using this method\&.
 .TP
 for collecting
 Validates the decoded JSON input with the \fIschema\fR\&. That result is then
-expanded and passed into Tcllib's \fB::base64::decode\fR command along\&.
+expanded and passed into Tcllib's \fB::base64::decode\fR command\&.
 .sp
 The operator returns the result of Tcllib's \fB::base64::decode\fR command\&.
 .TP
@@ -2061,7 +2061,7 @@ That's a slight difference to Tcl's \fBstring trim\fR, \fBstring trimleft\fR,
 .TP
 for collecting
 Validates the decoded JSON input with the \fIschema\fR\&. That result is then
-expanded and passed into Tcllib's \fB::uuencode::decode\fR command along\&.
+expanded and passed into Tcllib's \fB::uuencode::decode\fR command\&.
 .sp
 The operator returns the result of Tcllib's \fB::uuencode::decode\fR command\&.
 .TP

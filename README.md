@@ -2019,8 +2019,8 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
 
     __allof anyof apply array boolean const datetime decoded default expr
     dictby dictbyindex discard dubious escalate format if mark nest not null
-    number object oneof optional otherwise pass regsub string stringop
-    switch__
+    number object oneof optional otherwise pass regsub string stringop switch
+    verbatim__
 
     You may of course overwrite those as well but it will break compatibility
     with existing schemas\. For forward compatibility with new versions of
@@ -2047,7 +2047,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     __allof anyof apply array boolean const datetime decoded default duple
     duples encoded expr dictby dictbyindex discard dubious escalate format if
     integer lmap mark nest not null number object oneof optional otherwise pass
-    regsub string stringop switch tuple tuples__
+    regsub string stringop switch tuple tuples verbatim__
 
       * The following *methodOptions* may be specified:
 

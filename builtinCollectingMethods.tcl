@@ -1174,3 +1174,13 @@ dict set ::xjson::builtinCollectingMethods verbatim {{} {
 	## Return verbatim data.
 	return $data
 }}
+
+
+## View operator collecting method.
+dict set ::xjson::builtinCollectingMethods view {{is{} as{}} {
+	## Collect value from data according to the "is" schema.
+	set collected [_collect $data [dict get $schema arguments is] [string cat $path [dict get $schema method] ":is/"] $interpreter {}]
+
+	## Understand that collected value as decoded JSON and collect from it again according to the "as" schema.
+	_collect $collected [dict get $schema arguments as] [string cat $path [dict get $schema method] ":as/"] $interpreter {}
+}}

@@ -1461,6 +1461,27 @@ set data {
 			Returns the input [const [arg value]] in verbatim without doing any validation
 			on it. It should be decoded JSON data but this isn't checked.
 			This method is intended for doing collecting/composing in multiple steps.
+
+		[cmd_def "view [arg isSchema] [arg asSchema]"]
+			This method is meant to validate and evaluate data twice, so that e.g. JSON data
+			embedded in a base64 encoded string may be treated as if it was part of the
+			original data set.
+
+			[list_begin definitions]
+			[def "for collecting"]
+				Validates the decoded JSON input with the [arg isSchema]. That result is then
+				passed into another validation and collecting round with the [arg asSchema].
+				[para]
+				The operator returns the result of that second collecting.
+
+			[def "for composing"]
+				Composes the Tcl input with the [arg asSchema], and validates it. That result
+				is then passed into another composing round with the [arg isSchema] and
+				validated.
+				[para]
+				The operator returns the result of that second composing.
+			[list_end]
+
 		[list_end]
 
 	[def "Result Formatting Operators"]
@@ -1890,7 +1911,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -1913,7 +1934,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]

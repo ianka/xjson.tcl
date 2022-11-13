@@ -1752,6 +1752,26 @@ It returns a \fBnull\fR\&.
 Returns the input \fB\fIvalue\fR\fR in verbatim without doing any validation
 on it\&. It should be decoded JSON data but this isn't checked\&.
 This method is intended for doing collecting/composing in multiple steps\&.
+.TP
+\fBview \fIisSchema\fR \fIasSchema\fR\fR
+This method is meant to validate and evaluate data twice, so that e\&.g\&. JSON data
+embedded in a base64 encoded string may be treated as if it was part of the
+original data set\&.
+.RS
+.TP
+for collecting
+Validates the decoded JSON input with the \fIisSchema\fR\&. That result is then
+passed into another validation and collecting round with the \fIasSchema\fR\&.
+.sp
+The operator returns the result of that second collecting\&.
+.TP
+for composing
+Composes the Tcl input with the \fIasSchema\fR, and validates it\&. That result
+is then passed into another composing round with the \fIisSchema\fR and
+validated\&.
+.sp
+The operator returns the result of that second composing\&.
+.RE
 .RE
 .TP
 Result Formatting Operators
@@ -2220,7 +2240,7 @@ parameters and options\&. They are sorted out from within their Tcl body by the
 actual method name used in the schema then\&.
 The following \fImethodName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view\fR
 .sp
 You may of course overwrite those as well but it will break compatibility with
 existing schemas\&. For forward compatibility with new versions of
@@ -2242,7 +2262,7 @@ or (simplified)
 In the simplified variant, the method has only one name and one set of parameters\&.
 The following \fIaliasName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view\fR
 .RS
 .TP
 The following \fImethodOptions\fR may be specified:

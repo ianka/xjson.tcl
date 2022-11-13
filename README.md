@@ -1643,6 +1643,28 @@ it is used inside the schema, unless otherwise noted\.
         This method is intended for doing collecting/composing in multiple
         steps\.
 
+      * __view *isSchema* *asSchema*__
+
+        This method is meant to validate and evaluate data twice, so that e\.g\.
+        JSON data embedded in a base64 encoded string may be treated as if it
+        was part of the original data set\.
+
+          + for collecting
+
+            Validates the decoded JSON input with the *isSchema*\. That result
+            is then passed into another validation and collecting round with the
+            *asSchema*\.
+
+            The operator returns the result of that second collecting\.
+
+          + for composing
+
+            Composes the Tcl input with the *asSchema*, and validates it\. That
+            result is then passed into another composing round with the
+            *isSchema* and validated\.
+
+            The operator returns the result of that second composing\.
+
   - Result Formatting Operators
 
       * __apply *?options?* *varList* *body* *schema*__
@@ -2105,7 +2127,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     __allof anyof apply array base32 base64 boolean const datetime decoded
     default expr dictby dictbyindex discard dubious escalate format if json mark
     nest not null number object oneof optional otherwise pass regsub string
-    stringop switch uu verbatim__
+    stringop switch uu verbatim view__
 
     You may of course overwrite those as well but it will break compatibility
     with existing schemas\. For forward compatibility with new versions of
@@ -2133,7 +2155,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     default duple duples encoded expr dictby dictbyindex discard dubious
     escalate format if integer json lmap mark nest not null number object oneof
     optional otherwise pass regsub string stringop switch tuple tuples uu
-    verbatim__
+    verbatim view__
 
       * The following *methodOptions* may be specified:
 

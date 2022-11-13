@@ -1176,3 +1176,13 @@ dict set ::xjson::builtinComposingMethods verbatim {{} {
 	## Return verbatim data.
 	return $data
 }}
+
+
+## View operator composing method.
+dict set ::xjson::builtinComposingMethods view {{is{} as{}} {
+	## Compose the data according to the "as" schema.
+	set composed [_compose $data [dict get $schema arguments as] [string cat $path [dict get $schema method] "as:/"] $interpreter {}]
+
+	## Understand that composed value as decoded JSON and compose from it again according to the "is" schema.
+	_compose $composed [dict get $schema arguments is] [string cat $path [dict get $schema method] "is:/"] $interpreter {}
+}}

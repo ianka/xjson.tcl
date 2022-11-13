@@ -1,0 +1,21 @@
+overview: |-
+  Collect data with "view" schema.
+operation: collect
+tests:
+  - name: string value
+    desc: A string value may be viewed as a number, then checked again.
+    schema: 'view {mark number string} {number -min 9}'
+    data: 'string 9'
+    expected: '9'
+
+  - name: json value
+    desc: A JSON value may be decoded and viewed as the given schema.
+    schema: 'view {json string} {object {foo string bar number}}'
+    data: 'string {{"foo":"quux","bar":1.23}}'
+    expected: 'foo quux bar 1.23'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'view -- {mark number string} {number -min 9}'
+    data: 'string 9'
+    expected: '9'

@@ -1,0 +1,53 @@
+overview: |-
+  Compose data with "view" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'view -foobar {} {}'
+    data: '123'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'view'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'view {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'view {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: first argument value
+    desc: First argument isn't a valid schema.
+    schema: 'view quux string'
+    data: 'foobar'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: second argument value
+    desc: Second argument isn't a valid schema.
+    schema: 'view string quux'
+    data: 'foobar'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: non-matching original data
+    desc: Non-matching original data must throw an error.
+    schema: 'view number string'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: non-matching view data
+    desc: Non-matching view data must throw an error.
+    schema: 'view string number'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'

@@ -1,0 +1,53 @@
+overview: |-
+  Collect data with "view" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'view -foobar {} {}'
+    data: 'string foobar'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'view'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: Just one argument must throw an error.
+    schema: 'view {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'view {} {} {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: first argument value
+    desc: First argument isn't a valid schema.
+    schema: 'view quux string'
+    data: 'string foobar'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: second argument value
+    desc: Second argument isn't a valid schema.
+    schema: 'view string quux'
+    data: 'string foobar'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: non-matching original data
+    desc: Non-matching original data must throw an error.
+    schema: 'view string number'
+    data: 'number 1.23'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'
+
+  - name: non-matching view data
+    desc: Non-matching view data must throw an error.
+    schema: 'view string number'
+    data: 'string foobar'
+    expected: 'XJSON COLLECTOR OBJECT TYPE_MISMATCH'

@@ -1,0 +1,221 @@
+overview: |-
+  Compose data with map schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'map -foobar string {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing null option value
+    desc: Missing option value to the "-null" option must throw an error.
+    schema: 'map -null'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing test option value
+    desc: Missing option value to the "-test" option must throw an error.
+    schema: 'map -test'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing max option value
+    desc: Missing option value to the "-max" option must throw an error.
+    schema: 'map -max'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmax option value
+    desc: Missing option value to the "-xmax" option must throw an error.
+    schema: 'map -xmax'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing min option value
+    desc: Missing option value to the "-min" option must throw an error.
+    schema: 'map -min'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing xmin option value
+    desc: Missing option value to the "-xmin" option must throw an error.
+    schema: 'map -xmin'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing multipleof option value
+    desc: Missing option value to the "-multipleof" option must throw an error.
+    schema: 'map -multipleof'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: non-integer max option value
+    desc: Non-integer option value to the "-max" option must throw an error.
+    schema: 'map -max 123.0 string {}'
+    data: ''
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmax option value
+    desc: Non-integer option value to the "-xmax" option must throw an error.
+    schema: 'map -xmax 123.0 string {}'
+    data: ''
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer min option value
+    desc: Non-integer option value to the "-min" option must throw an error.
+    schema: 'map -min 123.0 string {}'
+    data: ''
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-integer xmin option value
+    desc: Non-integer option value to the "-xmin" option must throw an error.
+    schema: 'map -xmin 123.0 string {}'
+    data: ''
+    expected: 'XJSON SCHEMA OPTION TYPE_MISMATCH'
+
+  - name: non-positive integer multipleof option value
+    desc: Non-positive integer option value to the "-multipleof" option must throw an error.
+    schema: 'map -multipleof 0 string {}'
+    data: ''
+    expected: 'XJSON SCHEMA OPTION BOUNDARY_MISMATCH'
+
+  - name: invalid test option value
+    desc: Invalid option value to the "-test" option must throw an error.
+    schema: 'map -test foobar string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'TCL PARSE EXPR BAREWORD'
+
+  - name: sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    schema: 'map -test {[puts bar]} string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'TCL LOOKUP CHANNEL stdout'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'map -- -max 0 string {}'
+    data: ''
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: missing arguments
+    desc: Missing arguments must throw an error.
+    schema: 'map'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: one argument
+    desc: One argument must throw an error.
+    schema: 'map string'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'map {} {} {}'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid key schema argument
+    desc: invalid key schema argument must throw an error.
+    schema: 'map foobar {}'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: invalid value schema argument
+    desc: invalid value schema argument must throw an error.
+    schema: 'map string foobar'
+    data: 'object {}'
+    expected: 'XJSON SCHEMA UNKNOWN_METHOD'
+
+  - name: unmatching data
+    desc: unmatching data must throw an error.
+    schema: 'map string number'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: map empty schema null data
+    desc: Null elements have to be emitted.
+    schema: 'map -null {} string {}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: map null schema null data
+    desc: Null elements have to be emitted.
+    schema: 'map -null {} string null'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: test option
+    desc: Value that fails "-test" option must throw an error.
+    schema: 'map -test {$x < 0} string {}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT TEST_FAILED'
+
+  - name: max option
+    desc: Value that fails "-max" option must throw an error.
+    schema: 'map -max 5 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xmax option
+    desc: Value that fails "-xmax" option must throw an error.
+    schema: 'map -xmax 6 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: min option
+    desc: Value that fails "-min" option must throw an error.
+    schema: 'map -min 7 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: min option null data
+    desc: Null elements have to be ignored.
+    schema: 'map -min 7 string {number -null {}}'
+    data: 'a 0 b 1 c {} d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: min option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'map -min 7 string {optional -emitnull {number -null {}}}'
+    data: 'a 0 b 1 c {} d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xmin option
+    desc: Value that fails "-xmin" option must throw an error.
+    schema: 'map -xmin 6 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xmin option null data
+    desc: Null elements have to be ignored.
+    schema: 'map -xmin 6 string {number -null {}}'
+    data: 'a 0 b 1 c {} d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: xmin option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'map -xmin 6 string {optional -emitnull {number -null {}}}'
+    data: 'a 0 b 1 c {} d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: multipleof option
+    desc: Value that fails "-multipleof" option must throw an error.
+    schema: 'map -multipleof 4 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'XJSON COMPOSER OBJECT NOT_A_MULTIPLE'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'map -null {1 2 3} string number'
+    data: '1 2 3'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'
+
+  - name: non-matching keys
+    desc: Non-matching keys have to throw an error.
+    schema: 'map number string'
+    data: '0 a 1 ab 2 abc 3 abcd'
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'

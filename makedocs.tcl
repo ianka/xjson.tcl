@@ -1084,6 +1084,73 @@ set data {
 				[list_end]
 			[list_end]
 
+		[cmd_def "map [arg [opt options]] [arg keySchema] [arg valueSchema]"]
+			[list_begin definitions]
+			[def "for collecting"]
+				Validates an [const "object {...}"] in the decoded JSON input with
+				elements according to the given [arg keySchema] and [arg valueSchema].
+				The [arg keySchema] has to validate a [const string] as JSON object keys are
+				always strings.
+				[para]
+				Returns a Tcl dict of key-value pairs in the order of appearance.
+
+			[def "for composing"]
+				Validates a Tcl dict with elements according to the given [arg keySchema]
+				and [arg valueSchema]. The [arg keySchema] has to validate a [const string]
+				as JSON object keys are	always strings.
+				[para]
+				Returns an [const "object {...}"] of key-value pairs in the order of appearance.
+
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						This isn't about individual elements but about whether the whole object
+						should be considered [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+				[list_end]
+			[list_end]
+
+			[emph "Note:"] Object keys or values that evaluate as [const null] are completely
+			ignored -as if they were not posted-.
+			See the section [sectref "NULL HANDLING"] for additional information.
+
+			[list_begin definitions]
+			[def "The following general option may be specified:"]
+				[list_begin options]
+				[opt_def -isolate]
+					Use a local sandbox.
+
+				[list_end]
+
+			[def "The following further constraints on the number of key-value pairs may be specified:"]
+				[list_begin options]
+				[opt_def -max [arg integer]]
+					Validates a number of pairs <= [arg integer] elements.
+
+				[opt_def -xmax [arg integer]]
+					Validates a number of pairs < [arg integer] elements.
+
+				[opt_def -min [arg integer]]
+					Validates a number of pairs >= [arg integer] elements.
+
+				[opt_def -xmin [arg integer]]
+					Validates a number of pairs > [arg integer] elements.
+
+				[opt_def -multipleof [arg integer]]
+					Validates a number of pairs that is a multiple of [arg integer] elements.
+
+				[opt_def -test [arg expr]]
+					Validates a number of pairs by passing it to the Tcl [arg expr] as
+					the local variable [emph x]. If the expression results in a boolean false,
+					the	validation fails.
+
+				[list_end]
+			[list_end]
+
 		[cmd_def "object [arg [opt options]] [arg schemaDict]"]
 			[list_begin definitions]
 			[def "for collecting"]
@@ -1911,7 +1978,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json map mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -1934,7 +2001,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap map mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]

@@ -564,6 +564,114 @@ dict set ::xjson::builtinComposingMethods json {schema{} {
 }}
 
 
+## Map type composing method.
+dict set ::xjson::builtinComposingMethods map {{kschema{} vschema{} -null= -isolate -test! -max>=0 -xmax>=0 -min>=0 -xmin>=0 -multipleof>0} {
+	## Save schema for error messages.
+	set sschema $schema
+
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $sschema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
+	## Run through the object.
+	set result {}
+	set resultSize 0
+	foreach {key value} $data {
+		## Compose field name from data according to key schema.
+		if {[catch {_compose $key [dict get $schema arguments kschema] [string cat $path [dict get $schema method] ";" $key "/"] $interpreter {}} tfield]} {
+			## Escalate the error if not null.
+			if {$::errorCode ne {XJSON COMPOSER OBJECT IS_NULL}} {
+				return -code error -errorcode $::errorCode -errorinfo $::errorInfo $field
+			}
+
+			## Ignore null fields.
+			continue
+		}
+
+		## Assign field type and value.
+		lassign $tfield type field
+
+		## Fail if the field isn't a string.
+		if {$type ne "string"} {
+			return -code error -errorcode {XJSON COMPOSER OBJECT TYPE_MISMATCH} \
+				[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+					"Object field type " [_printValue $field] " is not string."]
+		}
+
+		## Fail on fields listed multiple times.
+		if {[dict exists $result $field]} {
+			return -code error -errorcode {XJSON COMPOSER OBJECT AMBIGUOUS_FIELD} \
+				[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+					"Object field " [_printValue $field] " is listed multiple times."]
+		}
+
+		## Collect value from data according to value schema.
+		if {[catch {_compose $value [dict get $schema arguments vschema] [string cat $path [dict get $schema method] ":" $field "/"] $interpreter {}} composed]} {
+			## Check error code.
+			switch -- $::errorCode {
+				{XJSON COMPOSER OBJECT IS_NULL} {
+					## Do nothing. This field is just not set.
+				}
+				{XJSON COMPOSER OBJECT IS_EXPLICIT_NULL} {
+					## Note this field as a literal null.
+					dict set result $field [list literal null]
+				}
+				default {
+					## Escalate the error if not null.
+					return -code error -errorcode $::errorCode -errorinfo $::errorInfo $composed
+				}
+			}
+		} else {
+			## Otherwise remember the collected data.
+			dict set result $field $composed
+			incr resultSize
+		}
+	}
+
+	## Run through all listed options in their order of appearance.
+	foreach {option optionvalue} [dict get $schema options] {
+		switch -- $option {
+			-max - -xmax - -min - -xmin {
+				## Do range checks against the tuple count.
+				set comparison [dict get [dict create {*}{
+					-max  >
+					-xmax >=
+					-min  <
+					-xmin <=
+				}] $option]
+				if [subst {\$resultSize $comparison \$optionvalue}] {
+					return -code error -errorcode {XJSON COMPOSER OBJECT OUT_OF_RANGE} \
+						[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"Resulting map length " [_printValue $resultSize] " is " $comparison [_printValue $optionvalue] "."]
+				}
+			}
+			-multipleof {
+				## Do the divider check against the tuple count.
+				if {$resultSize % $optionvalue != 0} {
+					return -code error -errorcode {XJSON COMPOSER OBJECT NOT_A_MULTIPLE} \
+						[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"Resulting map length " [_printValue $resultSize] " is not a multiple of " [_printValue $optionvalue] "."]
+				}
+			}
+			-test {
+				## Pass expression into sandbox method and fail if the result isn't true.
+				if {![_sandbox $data $schema $path $interpreter [list apply [list x [list expr $optionvalue]] $resultSize] [dict exists $schema options -isolate]]} {
+					return -code error -errorcode {XJSON COMPOSER OBJECT TEST_FAILED} \
+						[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"Resulting map length " [_printValue $resultSize] " does not pass the test " [_printValue $optionvalue] "."]
+				}
+			}
+		}
+	}
+
+	## Return result.
+	list object $result
+}}
+
+
 ## Mark operator composing method.
 dict set ::xjson::builtinComposingMethods mark {{mark schema{}} {
 	## Fail if the mark does not match.

@@ -1,0 +1,237 @@
+overview: |-
+  Compose data with map schema.
+operation: compose
+tests:
+  - name: map empty schema
+    desc: Empty data has to pass "map string {}" schema.
+    schema: 'map string {}'
+    data: ''
+    expected: 'object {}'
+
+  - name: map null schema
+    desc: Empty data has to pass "map string null" schema.
+    schema: 'map string null'
+    data: ''
+    expected: 'object {}'
+
+  - name: map null schema null data
+    desc: Null elements have to be emitted.
+    schema: 'map string {optional -emitnull {null -null {}}}'
+    data: 'foo {}'
+    expected: 'object {foo {literal null}}'
+
+  - name: map boolean value schema
+    desc: Object boolean data has to pass "map string boolean" schema.
+    schema: 'map string boolean'
+    data: 'foo true bar false'
+    expected: 'object {foo {literal true} bar {literal false}}'
+
+  - name: mixed boolean null data
+    desc: Null elements have to be ignored.
+    schema: 'map string {boolean -null {}}'
+    data: 'foo true bar {} quux false'
+    expected: 'object {foo {literal true} quux {literal false}}'
+
+  - name: mixed boolean emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'map string {optional -emitnull {boolean -null {}}}'
+    data: 'foo true bar {} quux false'
+    expected: 'object {foo {literal true} bar {literal null} quux {literal false}}'
+
+  - name: map number schema
+    desc: Object number data has to pass "map string number" schema.
+    schema: 'map string number'
+    data: 'foo 0 bar 123.0'
+    expected: 'object {foo {number 0} bar {number 123.0}}'
+
+  - name: mixed number null data
+    desc: Null elements have to be ignored.
+    schema: 'map string {number -null {}}'
+    data: 'foo 0 bar {} quux 123.0'
+    expected: 'object {foo {number 0} quux {number 123.0}}'
+
+  - name: mixed number emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'map string {optional -emitnull {number -null {}}}'
+    data: 'foo 0 bar {} quux 123.0'
+    expected: 'object {foo {number 0} bar {literal null} quux {number 123.0}}'
+
+  - name: map integer schema
+    desc: Object number data has to pass "map string integer" schema.
+    schema: 'map string integer'
+    data: 'foo 0 bar 123'
+    expected: 'object {foo {number 0} bar {number 123}}'
+
+  - name: mixed integer null data
+    desc: Null elements have to be ignored.
+    schema: 'map string {integer -null {}}'
+    data: 'foo 0 bar {} quux 123'
+    expected: 'object {foo {number 0} quux {number 123}}'
+
+  - name: mixed integer emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'map string {optional -emitnull {integer -null {}}}'
+    data: 'foo 0 bar {} quux 123'
+    expected: 'object {foo {number 0} bar {literal null} quux {number 123}}'
+
+  - name: map string schema
+    desc: Object number data has to pass "map string string" schema.
+    schema: 'map string string'
+    data: 'foo a bar bc'
+    expected: 'object {foo {string a} bar {string bc}}'
+
+  - name: mixed string null data
+    desc: Null elements have to be ignored.
+    schema: 'map string {string -null {}}'
+    data: 'foo a bar {} quux def'
+    expected: 'object {foo {string a} quux {string def}}'
+
+  - name: mixed string emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'map string {optional -emitnull {string -null {}}}'
+    data: 'foo a bar {} quux def'
+    expected: 'object {foo {string a} bar {literal null} quux {string def}}'
+
+  - name: map array string schema
+    desc: Dict list string data has to pass "map string array string" schema.
+    schema: 'map string {array string}'
+    data: 'foo {} bar {ab cde} quux {fg hij} xyzzy {}'
+    expected: 'object {foo {array {}} bar {array {{string ab} {string cde}}} quux {array {{string fg} {string hij}}} xyzzy {array {}}}'
+
+  - name: mixed array null data
+    desc: Null elements have to be ignored.
+    schema: 'map string {array -null {} string}'
+    data: 'foo {} bar {ab cde} quux {fg hij} xyzzy {}'
+    expected: 'object {bar {array {{string ab} {string cde}}} quux {array {{string fg} {string hij}}}}'
+
+  - name: mixed array emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'map string {optional -emitnull {array -null {} string}}'
+    data: 'foo {} bar {ab cde} quux {fg hij} xyzzy {}'
+    expected: 'object {foo {literal null} bar {array {{string ab} {string cde}}} quux {array {{string fg} {string hij}}} xyzzy {literal null}}'
+
+  - name: map object string schema
+    desc: Array object string data has to pass "map string object string" schema.
+    schema: 'map string {object {s string}}'
+    data: 'foo {s ab} bar {s hij}'
+    expected: 'object {foo {object {s {string ab}}} bar {object {s {string hij}}}}'
+
+  - name: mixed object null data
+    desc: Null elements have to be ignored.
+    schema: 'map string {object -null {} {s string}}'
+    data: 'foo {s ab} bar {} quux {s hij}'
+    expected: 'object {foo {object {s {string ab}}} quux {object {s {string hij}}}}'
+
+  - name: mixed object emitted null data
+    desc: Null elements have to be emitted.
+    schema: 'map string {optional -emitnull {object -null {} {s string}}}'
+    data: 'foo {s ab} bar {} quux {s hij}'
+    expected: 'object {foo {object {s {string ab}}} bar {literal null} quux {object {s {string hij}}}}'
+
+  - name: discarded keys
+    desc: Discarded keys have to be ignored.
+    schema: 'map {if {string -multipleof 2} pass discard discard} string'
+    data: 'xy a bar ab quux abc xyzzy abcd'
+    expected: 'object {xy {string a} quux {string abc}}'
+
+  - name: test option
+    desc: Array element count has to pass matching "-test" option.
+    schema: 'map -test {$x == 6} string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'object {a {number 0} b {number 1} c {number 2} d {number 3} e {number 4} f {number 5}}'
+
+  - name: test option empty null data
+    desc: Null elements have to be ignored.
+    schema: 'map -test {$x == 5} string {number -null {}}'
+    data: 'a 0 b 1 c {} d 2 e 3 f 4'
+    expected: 'object {a {number 0} b {number 1} d {number 2} e {number 3} f {number 4}}'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'map -test {[interp issafe]} string number'
+    data: 'foo 123'
+    expected: 'object {foo {number 123}}'
+
+  - name: non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'map -test {[info exists ::schemasandbox]} string number'
+    data: 'foo 123'
+    expected: 'object {foo {number 123}}'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'map -isolate -test {![info exists ::schemasandbox]} string number'
+    data: 'foo 123'
+    expected: 'object {foo {number 123}}'
+
+  - name: max option
+    desc: Array element count has to pass matching "-max" option.
+    schema: 'map -max 6 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'object {a {number 0} b {number 1} c {number 2} d {number 3} e {number 4} f {number 5}}'
+
+  - name: max option null data
+    desc: Null elements have to be ignored.
+    schema: 'map -max 5 string {number -null {}}'
+    data: 'a 0 b 1 c {} d 2 e 3 f 4'
+    expected: 'object {a {number 0} b {number 1} d {number 2} e {number 3} f {number 4}}'
+
+  - name: max option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'map -max 5 string {optional -emitnull {number -null {}}}'
+    data: 'a 0 b 1 c {} d 2 e 3 f 4'
+    expected: 'object {a {number 0} b {number 1} c {literal null} d {number 2} e {number 3} f {number 4}}'
+
+  - name: xmax option
+    desc: Array element count has to pass matching "-max" option.
+    schema: 'map -xmax 7 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'object {a {number 0} b {number 1} c {number 2} d {number 3} e {number 4} f {number 5}}'
+
+  - name: xmax option null data
+    desc: Empty elements and null elements have to be ignored.
+    schema: 'map -xmax 6 string {number -null {}}'
+    data: 'a 0 b 1 c {} d 2 e 3 f 4'
+    expected: 'object {a {number 0} b {number 1} d {number 2} e {number 3} f {number 4}}'
+
+  - name: xmax option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'map -xmax 6 string {optional -emitnull {number -null {}}}'
+    data: 'a 0 b 1 c {} d 2 e 3 f 4'
+    expected: 'object {a {number 0} b {number 1} c {literal null} d {number 2} e {number 3} f {number 4}}'
+
+  - name: min option
+    desc: Array element count has to pass matching "-min" option.
+    schema: 'map -min 6 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'object {a {number 0} b {number 1} c {number 2} d {number 3} e {number 4} f {number 5}}'
+
+  - name: xmin option
+    desc: Array element count has to pass matching "-xmin" option.
+    schema: 'map -xmin 5 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'object {a {number 0} b {number 1} c {number 2} d {number 3} e {number 4} f {number 5}}'
+
+  - name: multipleof option
+    desc: Array element count has to pass matching "-multipleof" option.
+    schema: 'map -multipleof 2 string number'
+    data: 'a 0 b 1 c 2 d 3 e 4 f 5'
+    expected: 'object {a {number 0} b {number 1} c {number 2} d {number 3} e {number 4} f {number 5}}'
+
+  - name: multipleof option null data
+    desc: Null elements have to be ignored.
+    schema: 'map -multipleof 3 string {number -null {}}'
+    data: 'a 0 b 1 c {} d 2 e 3 f 4 g 5'
+    expected: 'object {a {number 0} b {number 1} d {number 2} e {number 3} f {number 4} g {number 5}}'
+
+  - name: multipleof option emitted null data
+    desc: Null elements have to be emitted, yet not counted.
+    schema: 'map -multipleof 3 string {optional -emitnull {number -null {}}}'
+    data: 'a 0 b 1 c {} d 2 e 3 f 4 g 5'
+    expected: 'object {a {number 0} b {number 1} c {literal null} d {number 2} e {number 3} f {number 4} g {number 5}}'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'map -- string {}'
+    data: ''
+    expected: 'object {}'

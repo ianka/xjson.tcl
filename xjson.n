@@ -1369,6 +1369,74 @@ the validation fails\&.
 .RE
 .RE
 .TP
+\fBmap \fI?options?\fR \fIkeySchema\fR \fIvalueSchema\fR\fR
+.RS
+.TP
+for collecting
+Validates an \fBobject {\&.\&.\&.}\fR in the decoded JSON input with
+elements according to the given \fIkeySchema\fR and \fIvalueSchema\fR\&.
+The \fIkeySchema\fR has to validate a \fBstring\fR as JSON object keys are
+always strings\&.
+.sp
+Returns a Tcl dict of key-value pairs in the order of appearance\&.
+.TP
+for composing
+Validates a Tcl dict with elements according to the given \fIkeySchema\fR
+and \fIvalueSchema\fR\&. The \fIkeySchema\fR has to validate a \fBstring\fR
+as JSON object keys are always strings\&.
+.sp
+Returns an \fBobject {\&.\&.\&.}\fR of key-value pairs in the order of appearance\&.
+.RS
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+This isn't about individual elements but about whether the whole object
+should be considered \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
+.RE
+.IP
+\fINote:\fR Object keys or values that evaluate as \fBnull\fR are completely
+ignored -as if they were not posted-\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RS
+.TP
+The following general option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.TP
+The following further constraints on the number of key-value pairs may be specified:
+.RS
+.TP
+\fB-max\fR \fIinteger\fR
+Validates a number of pairs <= \fIinteger\fR elements\&.
+.TP
+\fB-xmax\fR \fIinteger\fR
+Validates a number of pairs < \fIinteger\fR elements\&.
+.TP
+\fB-min\fR \fIinteger\fR
+Validates a number of pairs >= \fIinteger\fR elements\&.
+.TP
+\fB-xmin\fR \fIinteger\fR
+Validates a number of pairs > \fIinteger\fR elements\&.
+.TP
+\fB-multipleof\fR \fIinteger\fR
+Validates a number of pairs that is a multiple of \fIinteger\fR elements\&.
+.TP
+\fB-test\fR \fIexpr\fR
+Validates a number of pairs by passing it to the Tcl \fIexpr\fR as
+the local variable \fIx\fR\&. If the expression results in a boolean false,
+the validation fails\&.
+.RE
+.RE
+.TP
 \fBobject \fI?options?\fR \fIschemaDict\fR\fR
 .RS
 .TP
@@ -2240,7 +2308,7 @@ parameters and options\&. They are sorted out from within their Tcl body by the
 actual method name used in the schema then\&.
 The following \fImethodName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json map mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view\fR
 .sp
 You may of course overwrite those as well but it will break compatibility with
 existing schemas\&. For forward compatibility with new versions of
@@ -2262,7 +2330,7 @@ or (simplified)
 In the simplified variant, the method has only one name and one set of parameters\&.
 The following \fIaliasName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap map mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view\fR
 .RS
 .TP
 The following \fImethodOptions\fR may be specified:

@@ -1242,6 +1242,75 @@ it is used inside the schema, unless otherwise noted\.
                 *expr* as the local variable *x*\. If the expression results
                 in a boolean false, the validation fails\.
 
+      * __map *?options?* *keySchema* *valueSchema*__
+
+          + for collecting
+
+            Validates an __object \{\.\.\.\}__ in the decoded JSON input with
+            elements according to the given *keySchema* and *valueSchema*\.
+            The *keySchema* has to validate a __string__ as JSON object
+            keys are always strings\.
+
+            Returns a Tcl dict of key\-value pairs in the order of appearance\.
+
+          + for composing
+
+            Validates a Tcl dict with elements according to the given
+            *keySchema* and *valueSchema*\. The *keySchema* has to validate
+            a __string__ as JSON object keys are always strings\.
+
+            Returns an __object \{\.\.\.\}__ of key\-value pairs in the order of
+            appearance\.
+
+              - The following options may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. This isn't about individual elements but about
+                    whether the whole object should be considered __null__\.
+                    See the section [NULL HANDLING](#section5) for
+                    additional information\.
+
+        *Note:* Object keys or values that evaluate as __null__ are
+        completely ignored \-as if they were not posted\-\. See the section [NULL
+        HANDLING](#section5) for additional information\.
+
+          + The following general option may be specified:
+
+              - __\-isolate__
+
+                Use a local sandbox\.
+
+          + The following further constraints on the number of key\-value pairs may be specified:
+
+              - __\-max__ *integer*
+
+                Validates a number of pairs <= *integer* elements\.
+
+              - __\-xmax__ *integer*
+
+                Validates a number of pairs < *integer* elements\.
+
+              - __\-min__ *integer*
+
+                Validates a number of pairs >= *integer* elements\.
+
+              - __\-xmin__ *integer*
+
+                Validates a number of pairs > *integer* elements\.
+
+              - __\-multipleof__ *integer*
+
+                Validates a number of pairs that is a multiple of *integer*
+                elements\.
+
+              - __\-test__ *expr*
+
+                Validates a number of pairs by passing it to the Tcl *expr* as
+                the local variable *x*\. If the expression results in a boolean
+                false, the validation fails\.
+
       * __object *?options?* *schemaDict*__
 
           + for collecting
@@ -2125,8 +2194,8 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     *methodName*s are reserved for the builtin methods:
 
     __allof anyof apply array base32 base64 boolean const datetime decoded
-    default expr dictby dictbyindex discard dubious escalate format if json mark
-    nest not null number object oneof optional otherwise pass regsub string
+    default expr dictby dictbyindex discard dubious escalate format if json map
+    mark nest not null number object oneof optional otherwise pass regsub string
     stringop switch uu verbatim view__
 
     You may of course overwrite those as well but it will break compatibility
@@ -2153,8 +2222,8 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
 
     __allof anyof apply array base32 base64 boolean const datetime decoded
     default duple duples encoded expr dictby dictbyindex discard dubious
-    escalate format if integer json lmap mark nest not null number object oneof
-    optional otherwise pass regsub string stringop switch tuple tuples uu
+    escalate format if integer json lmap map mark nest not null number object
+    oneof optional otherwise pass regsub string stringop switch tuple tuples uu
     verbatim view__
 
       * The following *methodOptions* may be specified:

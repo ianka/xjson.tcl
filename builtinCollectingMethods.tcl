@@ -574,6 +574,103 @@ dict set ::xjson::builtinCollectingMethods json {schema{} {
 }}
 
 
+## Map type collecting method.
+dict set ::xjson::builtinCollectingMethods map {{kschema{} vschema{} -isolate -test! -max>=0 -xmax>=0 -min>=0 -xmin>=0 -multipleof>0} {
+	## Save schema for error messages.
+	set sschema $schema
+
+	## Sort out empty data and literal null.
+	if {$data eq {} || $data eq {literal null}} {
+		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
+			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $sschema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
+	## Assign data type and values.
+	lassign $data type values
+
+	## Fail if not an object.
+	if {$type ne "object"} {
+		return -code error -errorcode {XJSON COLLECTOR OBJECT TYPE_MISMATCH} \
+			[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+				"It is not a map."]
+	}
+
+	## Run through the object.
+	set result {}
+	foreach {key value} $values {
+		## Collect field name from data according to key schema.
+		if {[catch {_collect [list "string" $key] [dict get $schema arguments kschema] [string cat $path [dict get $schema method] ";" $key "/"] $interpreter {}} field]} {
+			## Escalate the error if not null.
+			if {$::errorCode ne {XJSON COLLECTOR OBJECT IS_NULL}} {
+				return -code error -errorcode $::errorCode -errorinfo $::errorInfo $field
+			}
+
+			## Ignore null fields.
+			continue
+		}
+
+		## Fail on fields listed multiple times.
+		if {[dict exists $result $field]} {
+			return -code error -errorcode {XJSON COLLECTOR OBJECT AMBIGUOUS_FIELD} \
+				[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+					"Object field " [_printValue $field] " is listed multiple times."]
+		}
+
+		## Collect value from data according to value schema.
+		if {[catch {_collect $value [dict get $schema arguments vschema] [string cat $path [dict get $schema method] ":" $field "/"] $interpreter {}} collected]} {
+			## Ignore null fields. Escalate the error if not null.
+			if {$::errorCode ne {XJSON COLLECTOR OBJECT IS_NULL}} {
+				return -code error -errorcode $::errorCode -errorinfo $::errorInfo $collected
+			}
+		} else {
+			## Otherwise remember the collected data.
+			dict set result $field $collected
+		}
+	}
+	set resultSize [dict size $result]
+
+	## Run through all listed options in their order of appearance.
+	foreach {option optionvalue} [dict get $schema options] {
+		switch -- $option {
+			-max - -xmax - -min - -xmin {
+				## Do range checks against the result size.
+				set comparison [dict get [dict create {*}{
+					-max  >
+					-xmax >=
+					-min  <
+					-xmin <=
+				}] $option]
+				if [subst {\$resultSize $comparison \$optionvalue}] {
+					return -code error -errorcode {XJSON COLLECTOR OBJECT OUT_OF_RANGE} \
+						[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"Resulting map length " [_printValue $resultSize] " is " $comparison [_printValue $optionvalue] "."]
+				}
+			}
+			-multipleof {
+				## Do the divider check against the result size.
+				if {$resultSize % $optionvalue != 0} {
+					return -code error -errorcode {XJSON COLLECTOR OBJECT NOT_A_MULTIPLE} \
+						[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"Resulting map length " [_printValue $resultSize] " is not a multiple of " [_printValue $optionvalue] "."]
+				}
+			}
+			-test {
+				## Pass expression into sandbox method and fail if the result isn't true.
+				if {![_sandbox $data $schema $path $interpreter [list apply [list x [list expr $optionvalue]] $resultSize] [dict exists $schema options -isolate]]} {
+					return -code error -errorcode {XJSON COLLECTOR OBJECT TEST_FAILED} \
+						[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"Resulting map length " [_printValue $resultSize] " does not pass the test " [_printValue $optionvalue] "."]
+				}
+			}
+		}
+	}
+
+	## Return result.
+	return $result
+}}
+
+
 ## Mark operator collecting method.
 dict set ::xjson::builtinCollectingMethods mark {{mark schema{}} {
 	## Return a list of mark and value from data according to schema.

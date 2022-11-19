@@ -62,6 +62,12 @@ tests:
     data: 'object {s {string foo} n {number 123} b {literal true}}'
     expected: '123 foo true'
 
+  - name: discard option
+    desc: Unknown fields are omitted when using the "-discard" option.
+    schema: 'object -discard {n number b boolean}'
+    data: 'object {s {string foo} n {number 123} b {literal true}}'
+    expected: 'n 123 b true'
+
   - name: end of options
     desc: End of options marker at the end must be ignored.
     schema: 'object -- {b boolean}'

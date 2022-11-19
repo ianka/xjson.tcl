@@ -2,7 +2,7 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.7]
+[manpage_begin xjson n 1.8]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
@@ -11,7 +11,7 @@ set data {
 [require itcl 4.0-]
 [require struct::set]
 [require struct::list]
-[require xjson [opt 1.7]]
+[require xjson [opt 1.8]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -1196,8 +1196,12 @@ set data {
 			See the subsection [sectref "Aggregate Field Operators"].
 
 			[list_begin definitions]
-			[def "The following option may be specified:"]
+			[def "The following options may be specified:"]
 				[list_begin options]
+				[opt_def -discard]
+					Instead of failing validation on key-value pairs that aren't mentioned
+					in the schema, simply discard them.
+
 				[opt_def -values]
 					Instead of returning/requiring a Tcl dict of key-value pairs, return/require
 					a Tcl list of the values.
@@ -2123,7 +2127,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.7/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.8/])
 	for examples on how to write your own custom methods.
 
 [subsection "NESTING"]

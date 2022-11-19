@@ -793,7 +793,7 @@ dict set ::xjson::builtinComposingMethods number {
 
 
 ## Object type composing method.
-dict set ::xjson::builtinComposingMethods object {{schemaDict{:} -null= -missing= -values} {
+dict set ::xjson::builtinComposingMethods object {{schemaDict{:} -discard -null= -missing= -values} {
 	## Sort out null.
 	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
 		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
@@ -832,11 +832,18 @@ dict set ::xjson::builtinComposingMethods object {{schemaDict{:} -null= -missing
 			}
 
 			## Fail if the field is unknown in the schema dict.
+			## Check whether the field is unknown in the schema dict.
 			if {![dict exists [dict get $schema arguments schemaDict] $field]} {
+				## It's unknown. Skip if the -discard option is given.
+				if {[dict exists [dict get $schema options] "-discard"]} \
+					continue
+
+				## Otherwise fail.
 				return -code error -errorcode {XJSON COMPOSER OBJECT UNKNOWN_FIELD} \
 					[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
 						"Object field " [_printValue $field] " is unknown."]
 			}
+
 
 			## Remember field and value.
 			dict set fields $field $value

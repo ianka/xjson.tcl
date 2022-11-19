@@ -789,7 +789,7 @@ dict set ::xjson::builtinCollectingMethods number {
 
 
 ## Object type collecting method.
-dict set ::xjson::builtinCollectingMethods object {{schemaDict{:} -values} {
+dict set ::xjson::builtinCollectingMethods object {{schemaDict{:} -discard -values} {
 	## Sort out empty data and literal null.
 	if {$data eq {} || $data eq {literal null}} {
 		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
@@ -817,8 +817,13 @@ dict set ::xjson::builtinCollectingMethods object {{schemaDict{:} -values} {
 					"Object field " [_printValue $field] " is listed multiple times."]
 		}
 
-		## Fail if the field is unknown in the schema dict.
+		## Check whether the field is unknown in the schema dict.
 		if {![dict exists [dict get $schema arguments schemaDict] $field]} {
+			## It's unknown. Skip if the -discard option is given.
+			if {[dict exists [dict get $schema options] "-discard"]} \
+				continue
+
+			## Otherwise fail.
 			return -code error -errorcode {XJSON COLLECTOR OBJECT UNKNOWN_FIELD} \
 				[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
 					"Object field " [_printValue $field] " is unknown."]

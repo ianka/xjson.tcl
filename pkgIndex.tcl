@@ -1,4 +1,4 @@
-package ifneeded xjson 1.7 [subst -nocommands {
+package ifneeded xjson 1.8 [subst -nocommands {
 	source [file join $dir xjson.tcl]
 	source [file join $dir utilities.tcl]
 	source [file join $dir decode.tcl]
@@ -10,5 +10,5 @@ package ifneeded xjson 1.7 [subst -nocommands {
 	source [file join $dir builtinCollectingMethods.tcl]
 	source [file join $dir makeComposerClass.tcl]
 	source [file join $dir builtinComposingMethods.tcl]
-	package provide xjson 1.7
+	package provide xjson 1.8
 }]

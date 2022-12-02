@@ -904,7 +904,21 @@ dict set ::xjson::builtinComposingMethods object {{schemaDict{:} -discard -null=
 
 
 ## Optional operator composing method.
-dict set ::xjson::builtinComposingMethods optional {{schema{} -emitnull} {
+dict set ::xjson::builtinComposingMethods optional {{schema{} -null= -emitnull} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		## Return null as optional.
+		if {[dict exists $schema options -emitnull]} {
+			return -code error -errorcode {XJSON COMPOSER OBJECT IS_EXPLICIT_NULL} \
+				[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+					"But it is declared optional, and should be noted as an explicit null uplevel."]
+		} else {
+			return -code error -errorcode {XJSON COMPOSER OBJECT IS_OPTIONAL} \
+				[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+					"But it is declared optional, so it is allowed to be missing uplevel."]
+		}
+	}
+
 	## Compose value from data according to schema argument.
 	if {[catch {_compose $data [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}} composed]} {
 		## Escalate the error if not null.

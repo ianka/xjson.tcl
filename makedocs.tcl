@@ -2,7 +2,7 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.8]
+[manpage_begin xjson n 1.9]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
@@ -11,7 +11,7 @@ set data {
 [require itcl 4.0-]
 [require struct::set]
 [require struct::list]
-[require xjson [opt 1.8]]
+[require xjson [opt 1.9]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -1339,7 +1339,7 @@ set data {
 			specified at any place where a missing or [const "null"] value in the
 			input data should be replaced by a reasonable default.
 
-		[cmd_def "optional [arg schema]"]
+		[cmd_def "optional [arg [opt options]] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema]. If it succeeds, the
@@ -1361,12 +1361,17 @@ set data {
 				result at all.
 
 				[list_begin definitions]
-				[def "The following option may be specified:"]
+				[def "The following options may be specified:"]
 					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
 					[opt_def -emitnull]
 						Changes the type of validation error reported so the uplevel method will
 						report a [const "literal null"] instead of a missing field.
 						See the section [sectref "NULL HANDLING"] for additional information.
+
 					[list_end]
 				[list_end]
 			[list_end]
@@ -2127,7 +2132,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.8/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.9/])
 	for examples on how to write your own custom methods.
 
 [subsection "NESTING"]

@@ -68,7 +68,7 @@ foreach fname {
 	utilities.tcl
 	xjson.tcl
 } {
-	file copy -force $fname [file join [lindex $argv 0] "xjson1.8"]
+	file copy -force $fname [file join [lindex $argv 0] "xjson1.9"]
 }
 
 ## Copy manpage.

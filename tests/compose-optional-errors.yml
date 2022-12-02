@@ -35,7 +35,19 @@ tests:
     expected: 'XJSON COMPOSER OBJECT IS_OPTIONAL'
 
   - name: emitted null data
-    desc: Null data must be emitted if speficied.
+    desc: Null data must be emitted if specified.
     schema: 'optional -emitnull {number -null foobar}'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT IS_EXPLICIT_NULL'
+
+  - name: null option
+    desc: Null data must be reported as optional.
+    schema: 'optional -null foobar number'
+    data: 'foobar'
+    expected: 'XJSON COMPOSER OBJECT IS_OPTIONAL'
+
+  - name: emitnull null options
+    desc: Null data must be emitted if specified.
+    schema: 'optional -null foobar -emitnull number'
     data: 'foobar'
     expected: 'XJSON COMPOSER OBJECT IS_EXPLICIT_NULL'

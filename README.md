@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.8  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.9  "xjson\.tcl")
 
 # NAME
 
@@ -72,7 +72,7 @@ package require Tcl 8\.6\-
 package require itcl 4\.0\-  
 package require struct::set  
 package require struct::list  
-package require xjson ?1\.8?  
+package require xjson ?1\.9?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
@@ -1503,7 +1503,7 @@ it is used inside the schema, unless otherwise noted\.
         specified at any place where a missing or __null__ value in the
         input data should be replaced by a reasonable default\.
 
-      * __optional *schema*__
+      * __optional *?options?* *schema*__
 
           + for collecting
 
@@ -1526,7 +1526,13 @@ it is used inside the schema, unless otherwise noted\.
             object\. It's not going to be reported as a key\-value pair in the
             object result at all\.
 
-              - The following option may be specified:
+              - The following options may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
                   * __\-emitnull__
 
@@ -2379,7 +2385,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.8/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.9/"\) for
 examples on how to write your own custom methods\.
 
 ## <a name='subsection6'></a>NESTING

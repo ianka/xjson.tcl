@@ -21,3 +21,9 @@ tests:
     schema: 'uu {} {}'
     data: 'quux'
     expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'uu -null {} string'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

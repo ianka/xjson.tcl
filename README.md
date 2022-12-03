@@ -2233,7 +2233,7 @@ it is used inside the schema, unless otherwise noted\.
                     That's a slight difference to Tcl's __string trim__,
                     __string trimleft__, __string trimright__ commands\.
 
-      * __uu *schema*__
+      * __uu *?options?* *schema*__
 
           + for collecting
 
@@ -2251,6 +2251,14 @@ it is used inside the schema, unless otherwise noted\.
 
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
         *Note:* Tcllib's __uuencode__ package must be loaded before
         collecting/composing with any schema using this method\.

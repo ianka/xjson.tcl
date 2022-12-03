@@ -2342,7 +2342,7 @@ That's a slight difference to Tcl's \fBstring trim\fR, \fBstring trimleft\fR,
 .RE
 .RE
 .TP
-\fBuu \fIschema\fR\fR
+\fBuu \fI?options?\fR \fIschema\fR\fR
 .RS
 .TP
 for collecting
@@ -2356,6 +2356,16 @@ Passes the Tcl input data into Tcllib's \fB::uuencode::encode\fR command\&.
 .sp
 The result of that is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
 .RE
 .IP
 \fINote:\fR Tcllib's \fBuuencode\fR package must be loaded before

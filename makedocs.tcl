@@ -2035,7 +2035,7 @@ set data {
 				[list_end]
 			[list_end]
 
-		[cmd_def "uu [arg schema]"]
+		[cmd_def "uu [arg [opt options]] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema]. That result is then
@@ -2048,6 +2048,16 @@ set data {
 				[para]
  				The result of that is then validated with the [arg schema].
 				The operator returns the result of the schema.
+
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+				[list_end]
 			[list_end]
 
 			[emph "Note:"] Tcllib's [const "uuencode"] package must be loaded before

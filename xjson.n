@@ -2428,7 +2428,7 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 .RE
 .RE
 .TP
-\fBdictbyindex \fIby\fR \fIschema\fR\fR
+\fBdictbyindex \fI?options?\fR \fIby\fR \fIschema\fR\fR
 .RS
 .TP
 for collecting
@@ -2477,6 +2477,16 @@ The result is then validated with the \fIschema\fR\&.
 \fINote:\fR The result elements are constructed in an additive
 fashion\&. If several indices are given and they aren't in ascending
 order, the results may be unexpected\&. This is not a bug\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
 .RE
 .TP
 \fBlmap \fI?options?\fR \fIvarList\fR \fIbody\fR \fIschema\fR\fR

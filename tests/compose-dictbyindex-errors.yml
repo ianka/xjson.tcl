@@ -33,3 +33,9 @@ tests:
     schema: 'dictbyindex q {array {object -values {n number s string b boolean}}}'
     data: '1 {abc true} 2 {abc false}'
     expected: 'XJSON SCHEMA ARGUMENT TYPE_MISMATCH'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'dictby -null {} n {array {object -values {n number s string b boolean}}}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

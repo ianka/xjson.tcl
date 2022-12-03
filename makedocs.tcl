@@ -2104,7 +2104,7 @@ set data {
 				[list_end]
 			[list_end]
 
-		[cmd_def "dictbyindex [arg by] [arg schema]"]
+		[cmd_def "dictbyindex [arg [opt options]] [arg by] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema].
@@ -2137,6 +2137,15 @@ set data {
 				fashion. If several indices are given and they aren't in ascending
 				order, the results may be unexpected. This is not a bug.
 
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+				[list_end]
 			[list_end]
 
 		[cmd_def "lmap [arg [opt options]] [arg varList] [arg body] [arg schema]"]

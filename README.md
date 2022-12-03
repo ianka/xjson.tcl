@@ -2308,7 +2308,7 @@ it is used inside the schema, unless otherwise noted\.
                     __null__\. See the section [NULL
                     HANDLING](#section5) for additional information\.
 
-      * __dictbyindex *by* *schema*__
+      * __dictbyindex *?options?* *by* *schema*__
 
           + for collecting
 
@@ -2350,6 +2350,14 @@ it is used inside the schema, unless otherwise noted\.
             *Note:* The result elements are constructed in an additive
             fashion\. If several indices are given and they aren't in ascending
             order, the results may be unexpected\. This is not a bug\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
       * __lmap *?options?* *varList* *body* *schema*__
 

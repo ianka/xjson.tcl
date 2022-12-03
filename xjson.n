@@ -1876,6 +1876,15 @@ remaining input elements if there are more of those than variable names
 specified\&.
 .sp
 The operator returns the result of Tcl's \fBapply\fR command\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.RE
 .TP
 for composing
 Expands the Tcl input data as needed by the amount of variable names in
@@ -1887,14 +1896,20 @@ specified\&.
 .sp
 The result of that is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
-.RE
 .RS
 .TP
 The following options may be specified:
 .RS
 .TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RS
+.TP
 \fB-isolate\fR
 Use a local sandbox\&.
+.RE
 .RE
 .RE
 .TP
@@ -1981,6 +1996,15 @@ remaining input elements if there are more of those than variable names
 specified\&.
 .sp
 The operator returns the result of Tcl's \fBexpr\fR command\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.RE
 .TP
 for composing
 Expands the Tcl input data as needed by the amount of variable names in
@@ -1992,20 +2016,26 @@ specified\&.
 .sp
 The result of that is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
-.RE
-.IP
-\fINote:\fR The \fImethodName\fR for this method as used by the
-\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
-class factory procedure is \fBapply\fR\&.
 .RS
 .TP
 The following options may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
 .RS
 .TP
 \fB-isolate\fR
 Use a local sandbox\&.
 .RE
 .RE
+.RE
+.IP
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedure is \fBapply\fR\&.
 .TP
 \fBformat \fIformat\fR \fIschema\fR\fR
 .RS
@@ -2288,18 +2318,6 @@ passed into Tcl's \fBlmap\fR command as a list along the \fIvarList\fR
 and the supplied \fIbody\fR\&.
 .sp
 The operator returns the result of Tcl's \fBlmap\fR command\&.
-.TP
-for composing
-Passes the Tcl input data as a list into Tcl's \fBlmap\fR command
-along the \fIvarList\fR and the supplied Tcl \fIbody\fR\&.
-.sp
-The result of that is then validated with the \fIschema\fR\&.
-The operator returns the result of the schema\&.
-.RE
-.IP
-\fINote:\fR The \fImethodName\fR for this method as used by the
-\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
-class factory procedures is \fBapply\fR\&.
 .RS
 .TP
 The following option may be specified:
@@ -2309,6 +2327,33 @@ The following option may be specified:
 Use a local sandbox\&.
 .RE
 .RE
+.TP
+for composing
+Passes the Tcl input data as a list into Tcl's \fBlmap\fR command
+along the \fIvarList\fR and the supplied Tcl \fIbody\fR\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RS
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.RE
+.RE
+.IP
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBapply\fR\&.
 .RE
 .PP
 .SS "CUSTOM METHODS"

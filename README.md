@@ -1768,6 +1768,12 @@ it is used inside the schema, unless otherwise noted\.
 
             The operator returns the result of Tcl's __apply__ command\.
 
+              - The following option may be specified:
+
+                  * __\-isolate__
+
+                    Use a local sandbox\.
+
           + for composing
 
             Expands the Tcl input data as needed by the amount of variable names
@@ -1779,11 +1785,17 @@ it is used inside the schema, unless otherwise noted\.
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
 
-          + The following options may be specified:
+              - The following options may be specified:
 
-              - __\-isolate__
+                  * __\-null__ *nullvalue*
 
-                Use a local sandbox\.
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
+
+                  * __\-isolate__
+
+                    Use a local sandbox\.
 
       * __base32 *schema*__
 
@@ -1878,6 +1890,12 @@ it is used inside the schema, unless otherwise noted\.
 
             The operator returns the result of Tcl's __expr__ command\.
 
+              - The following option may be specified:
+
+                  * __\-isolate__
+
+                    Use a local sandbox\.
+
           + for composing
 
             Expands the Tcl input data as needed by the amount of variable names
@@ -1889,16 +1907,22 @@ it is used inside the schema, unless otherwise noted\.
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
 
+              - The following options may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
+
+                  * __\-isolate__
+
+                    Use a local sandbox\.
+
         *Note:* The *methodName* for this method as used by the
         __::xjson::makeCollectorClass__ and
         __::xjson::makeComposerClass__ class factory procedure is
         __apply__\.
-
-          + The following options may be specified:
-
-              - __\-isolate__
-
-                Use a local sandbox\.
 
       * __format *format* *schema*__
 
@@ -2176,6 +2200,12 @@ it is used inside the schema, unless otherwise noted\.
 
             The operator returns the result of Tcl's __lmap__ command\.
 
+              - The following option may be specified:
+
+                  * __\-isolate__
+
+                    Use a local sandbox\.
+
           + for composing
 
             Passes the Tcl input data as a list into Tcl's __lmap__ command
@@ -2184,16 +2214,22 @@ it is used inside the schema, unless otherwise noted\.
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
 
+              - The following options may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
+
+                  * __\-isolate__
+
+                    Use a local sandbox\.
+
         *Note:* The *methodName* for this method as used by the
         __::xjson::makeCollectorClass__ and
         __::xjson::makeComposerClass__ class factory procedures is
         __apply__\.
-
-          + The following option may be specified:
-
-              - __\-isolate__
-
-                Use a local sandbox\.
 
 ## <a name='subsection5'></a>CUSTOM METHODS
 

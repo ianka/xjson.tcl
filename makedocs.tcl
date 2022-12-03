@@ -1585,6 +1585,15 @@ set data {
 				[para]
 				The operator returns the result of Tcl's [cmd "apply"] command.
 
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -isolate]
+						Use a local sandbox.
+
+					[list_end]
+				[list_end]
+
 			[def "for composing"]
 				Expands the Tcl input data as needed by the amount of variable names in
 				[arg varList] and passes it into Tcl's [cmd "apply"] command along the
@@ -1596,14 +1605,20 @@ set data {
  				The result of that is then validated with the [arg schema].
 				The operator returns the result of the schema.
 
-			[list_end]
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
 
-			[list_begin definitions]
-			[def "The following options may be specified:"]
-				[list_begin options]
-				[opt_def -isolate]
-					Use a local sandbox.
+					[list_end]
 
+					[list_begin options]
+					[opt_def -isolate]
+						Use a local sandbox.
+
+					[list_end]
 				[list_end]
 			[list_end]
 
@@ -1687,6 +1702,15 @@ set data {
 				[para]
 				The operator returns the result of Tcl's [cmd "expr"] command.
 
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -isolate]
+						Use a local sandbox.
+
+					[list_end]
+				[list_end]
+
 			[def "for composing"]
 				Expands the Tcl input data as needed by the amount of variable names in
 				[arg varList] and passes it into Tcl's [cmd "expr"] command along the
@@ -1698,20 +1722,26 @@ set data {
  				The result of that is then validated with the [arg schema].
 				The operator returns the result of the schema.
 
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+
+					[list_begin options]
+					[opt_def -isolate]
+						Use a local sandbox.
+
+					[list_end]
+				[list_end]
 			[list_end]
 
 			[emph "Note:"] The [arg methodName] for this method as used by the
 			[cmd ::xjson::makeCollectorClass] and [cmd ::xjson::makeComposerClass]
 			class factory procedure is [cmd apply].
-
-			[list_begin definitions]
-			[def "The following options may be specified:"]
-				[list_begin options]
-				[opt_def -isolate]
-					Use a local sandbox.
-
-				[list_end]
-			[list_end]
 
 		[cmd_def "format [arg format] [arg schema]"]
 			[list_begin definitions]
@@ -1956,6 +1986,15 @@ set data {
 				[para]
 				The operator returns the result of Tcl's [cmd "lmap"] command.
 
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -isolate]
+						Use a local sandbox.
+
+					[list_end]
+				[list_end]
+
 			[def "for composing"]
 				Passes the Tcl input data as a list into Tcl's [cmd "lmap"] command
 				along the [arg varList] and the supplied Tcl [arg body].
@@ -1963,20 +2002,27 @@ set data {
  				The result of that is then validated with the [arg schema].
 				The operator returns the result of the schema.
 
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+
+					[list_begin options]
+					[opt_def -isolate]
+						Use a local sandbox.
+
+					[list_end]
+				[list_end]
 			[list_end]
 
 			[emph "Note:"] The [arg methodName] for this method as used by the
 			[cmd ::xjson::makeCollectorClass] and [cmd ::xjson::makeComposerClass]
 			class factory procedures is [cmd apply].
 
-			[list_begin definitions]
-			[def "The following option may be specified:"]
-				[list_begin options]
-				[opt_def -isolate]
-					Use a local sandbox.
-
-				[list_end]
-			[list_end]
 		[list_end]
 	[list_end]
 

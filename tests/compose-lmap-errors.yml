@@ -45,3 +45,9 @@ tests:
     schema: 'lmap foo {puts bar} boolean'
     data: 'false'
     expected: 'TCL LOOKUP CHANNEL stdout'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'lmap -null {} foo bar boolean'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

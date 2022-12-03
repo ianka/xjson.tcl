@@ -2115,6 +2115,57 @@ it is used inside the schema, unless otherwise noted\.
 
             The operator returns the result of Tcl's __string__ command\.
 
+              - The following general options may be specified:
+
+                  * __\-nocase__
+
+                  * __\-case__
+
+                    Makes the option __\-map__ work
+                    case\-insensitively/case\-sensitively until the other option
+                    is specified\. By default that option works case\-sensitively\.
+
+              - The following string manipulations may be specified:
+
+                  * __\-map__ *mapping*
+
+                    Manipulates the input data by mapping it as by Tcl's
+                    __string map__ command\. The options __\-nocase__ and
+                    __\-case__ are honored\.
+
+                  * __\-range__ *range*
+
+                    Manipulates the input data by removing anything but the
+                    *range* of characters from it, as by Tcl's __string
+                    range__ command\.
+
+                  * __\-tolower__ *range*
+
+                  * __\-toupper__ *range*
+
+                    Manipulates the input data by forcing lowercase/uppercase on
+                    all characters in the *range* as by Tcl's __string
+                    tolower__ resp\. __string toupper__ command\.
+
+                  * __\-totitle__ *range*
+
+                    Manipulates the input data by forcing uppercase on the first
+                    and lowercase on all other characters in the *range* as by
+                    Tcl's __string totitle__ command\.
+
+                  * __\-trim__ *chars*
+
+                  * __\-trimleft__ *chars*
+
+                  * __\-trimright__ *chars*
+
+                    Manipulates the input data by trimming all specified
+                    *chars* from it from left, right, or both\. Specifying
+                    *chars* as an empty list makes it trim all whitespace \(any
+                    character that tests positive for __string is space__\)\.
+                    That's a slight difference to Tcl's __string trim__,
+                    __string trimleft__, __string trimright__ commands\.
+
           + for composing
 
             Passes the Tcl input data into Tcl's __string__ command along
@@ -2125,56 +2176,62 @@ it is used inside the schema, unless otherwise noted\.
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
 
-          + The following general options may be specified:
+              - The following general options may be specified:
 
-              - __\-nocase__
+                  * __\-null__ *nullvalue*
 
-              - __\-case__
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
-                Makes the option __\-map__ work
-                case\-insensitively/case\-sensitively until the other option is
-                specified\. By default that option works case\-sensitively\.
+                  * __\-nocase__
 
-          + The following string manipulations may be specified:
+                  * __\-case__
 
-              - __\-map__ *mapping*
+                    Makes the option __\-map__ work
+                    case\-insensitively/case\-sensitively until the other option
+                    is specified\. By default that option works case\-sensitively\.
 
-                Manipulates the input data by mapping it as by Tcl's __string
-                map__ command\. The options __\-nocase__ and __\-case__
-                are honored\.
+              - The following string manipulations may be specified:
 
-              - __\-range__ *range*
+                  * __\-map__ *mapping*
 
-                Manipulates the input data by removing anything but the
-                *range* of characters from it, as by Tcl's __string
-                range__ command\.
+                    Manipulates the input data by mapping it as by Tcl's
+                    __string map__ command\. The options __\-nocase__ and
+                    __\-case__ are honored\.
 
-              - __\-tolower__ *range*
+                  * __\-range__ *range*
 
-              - __\-toupper__ *range*
+                    Manipulates the input data by removing anything but the
+                    *range* of characters from it, as by Tcl's __string
+                    range__ command\.
 
-                Manipulates the input data by forcing lowercase/uppercase on all
-                characters in the *range* as by Tcl's __string tolower__
-                resp\. __string toupper__ command\.
+                  * __\-tolower__ *range*
 
-              - __\-totitle__ *range*
+                  * __\-toupper__ *range*
 
-                Manipulates the input data by forcing uppercase on the first and
-                lowercase on all other characters in the *range* as by Tcl's
-                __string totitle__ command\.
+                    Manipulates the input data by forcing lowercase/uppercase on
+                    all characters in the *range* as by Tcl's __string
+                    tolower__ resp\. __string toupper__ command\.
 
-              - __\-trim__ *chars*
+                  * __\-totitle__ *range*
 
-              - __\-trimleft__ *chars*
+                    Manipulates the input data by forcing uppercase on the first
+                    and lowercase on all other characters in the *range* as by
+                    Tcl's __string totitle__ command\.
 
-              - __\-trimright__ *chars*
+                  * __\-trim__ *chars*
 
-                Manipulates the input data by trimming all specified *chars*
-                from it from left, right, or both\. Specifying *chars* as an
-                empty list makes it trim all whitespace \(any character that
-                tests positive for __string is space__\)\. That's a slight
-                difference to Tcl's __string trim__, __string
-                trimleft__, __string trimright__ commands\.
+                  * __\-trimleft__ *chars*
+
+                  * __\-trimright__ *chars*
+
+                    Manipulates the input data by trimming all specified
+                    *chars* from it from left, right, or both\. Specifying
+                    *chars* as an empty list makes it trim all whitespace \(any
+                    character that tests positive for __string is space__\)\.
+                    That's a slight difference to Tcl's __string trim__,
+                    __string trimleft__, __string trimright__ commands\.
 
       * __uu *schema*__
 

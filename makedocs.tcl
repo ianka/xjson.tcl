@@ -1933,6 +1933,50 @@ set data {
 				[para]
 				The operator returns the result of Tcl's [cmd "string"] command.
 
+				[list_begin definitions]
+				[def "The following general options may be specified:"]
+					[list_begin options]
+					[opt_def -nocase]
+					[opt_def -case]
+						Makes the option [option -map] work case-insensitively/case-sensitively
+						until the other option is specified. By default that option works
+						case-sensitively.
+
+					[list_end]
+
+				[def "The following string manipulations may be specified:"]
+					[list_begin options]
+					[opt_def -map [arg mapping]]
+						Manipulates the input data by mapping it as by Tcl's [cmd "string map"]
+						command. The options [option -nocase] and [option -case] are honored.
+
+					[opt_def -range [arg range]]
+						Manipulates the input data by removing anything but the [arg range] of
+						characters from it, as by Tcl's [cmd "string range"] command.
+
+					[opt_def -tolower [arg range]]
+					[opt_def -toupper [arg range]]
+						Manipulates the input data by forcing lowercase/uppercase on all characters in
+						the [arg range] as by Tcl's [cmd "string tolower"] resp. [cmd "string toupper"]
+						command.
+
+					[opt_def -totitle [arg range]]
+						Manipulates the input data by forcing uppercase on the first and lowercase on
+						all other characters in the [arg range] as by Tcl's [cmd "string totitle"]
+						command.
+
+					[opt_def -trim [arg chars]]
+					[opt_def -trimleft [arg chars]]
+					[opt_def -trimright [arg chars]]
+						Manipulates the input data by trimming all specified [arg chars] from it from
+						left, right, or both. Specifying [arg chars] as an empty list makes it trim all
+						whitespace (any character that tests positive for [cmd "string is space"]).
+						That's a slight difference to Tcl's	[cmd "string trim"], [cmd "string trimleft"],
+						[cmd "string trimright"] commands.
+
+					[list_end]
+				[list_end]
+
 			[def "for composing"]
 				Passes the Tcl input data into Tcl's [cmd "string"] command
 				along the supplied [arg options] arguments. All options are applied in
@@ -1942,46 +1986,52 @@ set data {
  				The result of that is then validated with the [arg schema].
 				The operator returns the result of the schema.
 
-			[def "The following general options may be specified:"]
-				[list_begin options]
-				[opt_def -nocase]
-				[opt_def -case]
-					Makes the option [option -map] work case-insensitively/case-sensitively
-					until the other option is specified. By default that option works
-					case-sensitively.
+				[list_begin definitions]
+				[def "The following general options may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
 
-				[list_end]
+					[opt_def -nocase]
+					[opt_def -case]
+						Makes the option [option -map] work case-insensitively/case-sensitively
+						until the other option is specified. By default that option works
+						case-sensitively.
 
-			[def "The following string manipulations may be specified:"]
-				[list_begin options]
-				[opt_def -map [arg mapping]]
-					Manipulates the input data by mapping it as by Tcl's [cmd "string map"]
-					command. The options [option -nocase] and [option -case] are honored.
+					[list_end]
 
-				[opt_def -range [arg range]]
-					Manipulates the input data by removing anything but the [arg range] of
-					characters from it, as by Tcl's [cmd "string range"] command.
+				[def "The following string manipulations may be specified:"]
+					[list_begin options]
+					[opt_def -map [arg mapping]]
+						Manipulates the input data by mapping it as by Tcl's [cmd "string map"]
+						command. The options [option -nocase] and [option -case] are honored.
 
-				[opt_def -tolower [arg range]]
-				[opt_def -toupper [arg range]]
-					Manipulates the input data by forcing lowercase/uppercase on all characters in
-					the [arg range] as by Tcl's [cmd "string tolower"] resp. [cmd "string toupper"]
-					command.
+					[opt_def -range [arg range]]
+						Manipulates the input data by removing anything but the [arg range] of
+						characters from it, as by Tcl's [cmd "string range"] command.
 
-				[opt_def -totitle [arg range]]
-					Manipulates the input data by forcing uppercase on the first and lowercase on
-					all other characters in the [arg range] as by Tcl's [cmd "string totitle"]
-					command.
+					[opt_def -tolower [arg range]]
+					[opt_def -toupper [arg range]]
+						Manipulates the input data by forcing lowercase/uppercase on all characters in
+						the [arg range] as by Tcl's [cmd "string tolower"] resp. [cmd "string toupper"]
+						command.
 
-				[opt_def -trim [arg chars]]
-				[opt_def -trimleft [arg chars]]
-				[opt_def -trimright [arg chars]]
-					Manipulates the input data by trimming all specified [arg chars] from it from
-					left, right, or both. Specifying [arg chars] as an empty list makes it trim all
-					whitespace (any character that tests positive for [cmd "string is space"]).
-					That's a slight difference to Tcl's	[cmd "string trim"], [cmd "string trimleft"],
-					[cmd "string trimright"] commands.
+					[opt_def -totitle [arg range]]
+						Manipulates the input data by forcing uppercase on the first and lowercase on
+						all other characters in the [arg range] as by Tcl's [cmd "string totitle"]
+						command.
 
+					[opt_def -trim [arg chars]]
+					[opt_def -trimleft [arg chars]]
+					[opt_def -trimright [arg chars]]
+						Manipulates the input data by trimming all specified [arg chars] from it from
+						left, right, or both. Specifying [arg chars] as an empty list makes it trim all
+						whitespace (any character that tests positive for [cmd "string is space"]).
+						That's a slight difference to Tcl's	[cmd "string trim"], [cmd "string trimleft"],
+						[cmd "string trimright"] commands.
+
+					[list_end]
 				[list_end]
 			[list_end]
 

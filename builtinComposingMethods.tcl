@@ -1261,11 +1261,19 @@ dict set ::xjson::builtinComposingMethods string {-- {
 
 ## Stringop operator composing method.
 dict set ::xjson::builtinComposingMethods stringop {{schema{}
+		-null=
 		-nocase -case
 		-map|
 		-range- -tolower- -totitle- -toupper-
 		-trim= -trimleft= -trimright=
 	} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
 	## Set default values for the nocase option.
 	set nocase {}
 

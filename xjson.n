@@ -2231,15 +2231,7 @@ passed into Tcl's \fBstring\fR command along the supplied
 appearance in the \fIoptions\fR\&. They may appear multiple times\&.
 .sp
 The operator returns the result of Tcl's \fBstring\fR command\&.
-.TP
-for composing
-Passes the Tcl input data into Tcl's \fBstring\fR command
-along the supplied \fIoptions\fR arguments\&. All options are applied in
-their order of appearance in the \fIoptions\fR\&. They may appear
-multiple times\&.
-.sp
-The result of that is then validated with the \fIschema\fR\&.
-The operator returns the result of the schema\&.
+.RS
 .TP
 The following general options may be specified:
 .RS
@@ -2285,6 +2277,68 @@ left, right, or both\&. Specifying \fIchars\fR as an empty list makes it trim al
 whitespace (any character that tests positive for \fBstring is space\fR)\&.
 That's a slight difference to Tcl's \fBstring trim\fR, \fBstring trimleft\fR,
 \fBstring trimright\fR commands\&.
+.RE
+.RE
+.TP
+for composing
+Passes the Tcl input data into Tcl's \fBstring\fR command
+along the supplied \fIoptions\fR arguments\&. All options are applied in
+their order of appearance in the \fIoptions\fR\&. They may appear
+multiple times\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RS
+.TP
+The following general options may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.TP
+\fB-nocase\fR
+.TP
+\fB-case\fR
+Makes the option \fB-map\fR work case-insensitively/case-sensitively
+until the other option is specified\&. By default that option works
+case-sensitively\&.
+.RE
+.TP
+The following string manipulations may be specified:
+.RS
+.TP
+\fB-map\fR \fImapping\fR
+Manipulates the input data by mapping it as by Tcl's \fBstring map\fR
+command\&. The options \fB-nocase\fR and \fB-case\fR are honored\&.
+.TP
+\fB-range\fR \fIrange\fR
+Manipulates the input data by removing anything but the \fIrange\fR of
+characters from it, as by Tcl's \fBstring range\fR command\&.
+.TP
+\fB-tolower\fR \fIrange\fR
+.TP
+\fB-toupper\fR \fIrange\fR
+Manipulates the input data by forcing lowercase/uppercase on all characters in
+the \fIrange\fR as by Tcl's \fBstring tolower\fR resp\&. \fBstring toupper\fR
+command\&.
+.TP
+\fB-totitle\fR \fIrange\fR
+Manipulates the input data by forcing uppercase on the first and lowercase on
+all other characters in the \fIrange\fR as by Tcl's \fBstring totitle\fR
+command\&.
+.TP
+\fB-trim\fR \fIchars\fR
+.TP
+\fB-trimleft\fR \fIchars\fR
+.TP
+\fB-trimright\fR \fIchars\fR
+Manipulates the input data by trimming all specified \fIchars\fR from it from
+left, right, or both\&. Specifying \fIchars\fR as an empty list makes it trim all
+whitespace (any character that tests positive for \fBstring is space\fR)\&.
+That's a slight difference to Tcl's \fBstring trim\fR, \fBstring trimleft\fR,
+\fBstring trimright\fR commands\&.
+.RE
 .RE
 .RE
 .TP

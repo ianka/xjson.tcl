@@ -117,3 +117,9 @@ tests:
     schema: 'stringop'
     data: 'string abcde'
     expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'stringop -null {} string'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

@@ -539,7 +539,14 @@ dict set ::xjson::builtinComposingMethods escalate {{} {
 
 
 ## Format operator composing method.
-dict set ::xjson::builtinComposingMethods format {{format% schema{}} {
+dict set ::xjson::builtinComposingMethods format {{format% schema{} -null=} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
 	## Feed the data into format.
 	if {[catch {format [dict get $schema arguments format] {*}$data} values]} {
 		switch -- $::errorCode {

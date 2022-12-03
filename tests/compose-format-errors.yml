@@ -45,3 +45,9 @@ tests:
     schema: 'format "%d %d %d" {array number}'
     data: '1 2'
     expected: 'XJSON COMPOSER OBJECT FORMAT_FIELDVARMISMATCH'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'format -null {} %d number'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

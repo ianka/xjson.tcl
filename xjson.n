@@ -2078,7 +2078,7 @@ Use a local sandbox\&.
 \fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
 class factory procedure is \fBapply\fR\&.
 .TP
-\fBformat \fIformat\fR \fIschema\fR\fR
+\fBformat \fI?options?\fR \fIformat\fR \fIschema\fR\fR
 .RS
 .TP
 for collecting
@@ -2096,6 +2096,16 @@ along the \fIformat\fR argument as individual list items\&.
 .sp
 The result of that is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
 .RE
 .TP
 \fBjson \fIschema\fR\fR

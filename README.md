@@ -1963,7 +1963,7 @@ it is used inside the schema, unless otherwise noted\.
         __::xjson::makeComposerClass__ class factory procedure is
         __apply__\.
 
-      * __format *format* *schema*__
+      * __format *?options?* *format* *schema*__
 
           + for collecting
 
@@ -1982,6 +1982,14 @@ it is used inside the schema, unless otherwise noted\.
 
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
       * __json *schema*__
 

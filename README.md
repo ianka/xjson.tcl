@@ -1827,7 +1827,7 @@ it is used inside the schema, unless otherwise noted\.
         *Note:* Tcllib's __base32__ package must be loaded before
         collecting/composing with any schema using this method\.
 
-      * __base64 *schema*__
+      * __base64 *?options?* *schema*__
 
           + for collecting
 
@@ -1845,6 +1845,14 @@ it is used inside the schema, unless otherwise noted\.
 
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
         *Note:* Tcllib's __base64__ package must be loaded before
         collecting/composing with any schema using this method\.

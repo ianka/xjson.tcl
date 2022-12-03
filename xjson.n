@@ -1942,7 +1942,7 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 \fINote:\fR Tcllib's \fBbase32\fR package must be loaded before
 collecting/composing with any schema using this method\&.
 .TP
-\fBbase64 \fIschema\fR\fR
+\fBbase64 \fI?options?\fR \fIschema\fR\fR
 .RS
 .TP
 for collecting
@@ -1957,6 +1957,16 @@ The base64 result isn't wrapped\&.
 .sp
 The result of that is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
 .RE
 .IP
 \fINote:\fR Tcllib's \fBbase64\fR package must be loaded before

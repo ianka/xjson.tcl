@@ -591,7 +591,14 @@ dict set ::xjson::builtinComposingMethods if {{test{} then{} else{} null{}} {
 
 
 ## Json operator composing method.
-dict set ::xjson::builtinComposingMethods json {schema{} {
+dict set ::xjson::builtinComposingMethods json {{schema{} -null=} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
 	## Feed the data into json encoder.
 	if {[catch {::xjson::encode $data 0 {}} values]} {
 		return -code error -errorcode {XJSON COMPOSER OBJECT DECODED_JSON_VALUE} \

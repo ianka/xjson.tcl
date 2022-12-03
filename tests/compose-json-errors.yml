@@ -27,3 +27,9 @@ tests:
     schema: 'json string'
     data: ''
     expected: 'XJSON COMPOSER OBJECT DECODED_JSON_VALUE'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'json -null {} string'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

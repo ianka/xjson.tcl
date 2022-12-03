@@ -2108,7 +2108,7 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 .RE
 .RE
 .TP
-\fBjson \fIschema\fR\fR
+\fBjson \fI?options?\fR \fIschema\fR\fR
 .RS
 .TP
 for collecting
@@ -2122,6 +2122,16 @@ Passes the Tcl input data into xjson's \fB::xjson::encode\fR command\&.
 .sp
 The result of that is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
 .RE
 .TP
 \fBmark \fImark\fR \fIschema\fR\fR

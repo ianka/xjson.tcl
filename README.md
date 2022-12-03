@@ -2265,7 +2265,7 @@ it is used inside the schema, unless otherwise noted\.
 
   - Aggregate Result Formatting Operators
 
-      * __dictby *by* *schema*__
+      * __dictby *?options?* *by* *schema*__
 
           + for collecting
 
@@ -2299,6 +2299,14 @@ it is used inside the schema, unless otherwise noted\.
             keys, the resulting inner dicts then have multiple additional keys\.
 
             The result is then validated with the *schema*\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
       * __dictbyindex *by* *schema*__
 

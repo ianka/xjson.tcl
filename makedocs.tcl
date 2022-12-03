@@ -2068,7 +2068,7 @@ set data {
 	[def "Aggregate Result Formatting Operators"]
 		[list_begin commands]
 
-		[cmd_def "dictby [arg by] [arg schema]"]
+		[cmd_def "dictby [arg [opt options]] [arg by] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema].
@@ -2093,6 +2093,15 @@ set data {
 				[para]
 				The result is then validated with the [arg schema].
 
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+				[list_end]
 			[list_end]
 
 		[cmd_def "dictbyindex [arg by] [arg schema]"]

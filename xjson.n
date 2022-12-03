@@ -2375,7 +2375,7 @@ collecting/composing with any schema using this method\&.
 Aggregate Result Formatting Operators
 .RS
 .TP
-\fBdictby \fIby\fR \fIschema\fR\fR
+\fBdictby \fI?options?\fR \fIby\fR \fIschema\fR\fR
 .RS
 .TP
 for collecting
@@ -2416,6 +2416,16 @@ forming the inner dicts\&. The argument \fIby\fR may be a Tcl list of keys,
 the resulting inner dicts then have multiple additional keys\&.
 .sp
 The result is then validated with the \fIschema\fR\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
 .RE
 .TP
 \fBdictbyindex \fIby\fR \fIschema\fR\fR

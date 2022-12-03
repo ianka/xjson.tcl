@@ -27,3 +27,9 @@ tests:
     schema: 'dictby {} {} {} {}'
     data: ''
     expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'dictby -null {} n {array {object {n number s string b boolean}}}'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

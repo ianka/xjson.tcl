@@ -14,6 +14,12 @@ tests:
     data: ''
     expected: 'foo bar'
 
+  - name: null option
+    desc: Null data must be replaced by the default.
+    schema: 'default -null {} foo bar boolean'
+    data: ''
+    expected: 'foo bar'
+
   - name: end of options
     desc: End of options marker at the end must be ignored.
     schema: 'default -- foo bar boolean'

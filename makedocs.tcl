@@ -1309,7 +1309,7 @@ set data {
 	[def "Aggregate Field Operators"]
 		[list_begin commands]
 		[cmd_def "default [arg string] [arg schema] (for collecting)"]
-		[cmd_def "default [arg type] [arg string] [arg schema] (for composing)"]
+		[cmd_def "default [arg [opt options]] [arg type] [arg string] [arg schema] (for composing)"]
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema]. If it succeeds, the
@@ -1333,6 +1333,15 @@ set data {
 				both arbitrary values. It's the reponsibilty of the schema author to choose
 				meaningful values.
 
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+				[list_end]
 			[list_end]
 
 			[emph "Note:"] Though most useful with object fields, this operator may be

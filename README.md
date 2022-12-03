@@ -1473,7 +1473,7 @@ it is used inside the schema, unless otherwise noted\.
 
       * __default *string* *schema* \(for collecting\)__
 
-      * __default *type* *string* *schema* \(for composing\)__
+      * __default *?options?* *type* *string* *schema* \(for composing\)__
 
           + for collecting
 
@@ -1498,6 +1498,14 @@ it is used inside the schema, unless otherwise noted\.
             *Note:* Neither *type* nor *string* have to validate\. They may
             be both arbitrary values\. It's the reponsibilty of the schema author
             to choose meaningful values\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
         *Note:* Though most useful with object fields, this operator may be
         specified at any place where a missing or __null__ value in the

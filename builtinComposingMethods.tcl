@@ -422,7 +422,13 @@ dict set ::xjson::builtinComposingMethods decoded {
 
 
 ## Default operator composing method.
-dict set ::xjson::builtinComposingMethods default {{type value schema{}} {
+dict set ::xjson::builtinComposingMethods default {{type value schema{} -null=} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		## Return the type and value arguments as the composed value if null.
+		return [list [dict get $schema arguments type] [dict get $schema arguments value]]
+	}
+
 	## Compose value from data according to schema.
 	if {[catch {_compose $data [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}} composed]} {
 		## Escalate the error if not null.

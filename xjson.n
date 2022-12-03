@@ -1597,7 +1597,7 @@ Aggregate Field Operators
 .TP
 \fBdefault \fIstring\fR \fIschema\fR (for collecting)\fR
 .TP
-\fBdefault \fItype\fR \fIstring\fR \fIschema\fR (for composing)\fR
+\fBdefault \fI?options?\fR \fItype\fR \fIstring\fR \fIschema\fR (for composing)\fR
 .RS
 .TP
 for collecting
@@ -1621,6 +1621,16 @@ instead and the given \fItype\fR and \fIstring\fR are returned\&.
 \fINote:\fR Neither \fItype\fR nor \fIstring\fR have to validate\&. They may be
 both arbitrary values\&. It's the reponsibilty of the schema author to choose
 meaningful values\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
 .RE
 .IP
 \fINote:\fR Though most useful with object fields, this operator may be

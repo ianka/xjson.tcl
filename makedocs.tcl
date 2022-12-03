@@ -1873,6 +1873,25 @@ set data {
 				[para]
 				The operator returns the result of Tcl's [cmd "regsub"] command.
 
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -all]
+						All ranges in the input value that match exp are found and
+						substitution is	performed for each of these ranges.
+
+					[opt_def -nocase]
+						Upper-case characters in the input value will be converted to
+						lower-case before matching against [arg exp]
+
+					[opt_def -start [arg start]]
+						Start matching at the position inside the input value
+						specified by the [option -start] option instead of its
+						beginning.
+
+					[list_end]
+				[list_end]
+
 			[def "for composing"]
 				Passes the Tcl input data into Tcl's [cmd "regsub"] command
 				along the [arg exp] and [arg replacement] arguments
@@ -1880,21 +1899,27 @@ set data {
  				The result of that is then validated with the [arg schema].
 				The operator returns the result of the schema.
 
-			[def "The following options may be specified:"]
-				[list_begin options]
-				[opt_def -all]
-					All ranges in the input value that match exp are found and
-					substitution is	performed for each of these ranges.
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
 
-				[opt_def -nocase]
-					Upper-case characters in the input value will be converted to
-					lower-case before matching against [arg exp]
+					[opt_def -all]
+						All ranges in the input value that match exp are found and
+						substitution is	performed for each of these ranges.
 
-				[opt_def -start [arg start]]
-					Start matching at the position inside the input value
-					specified by the [option -start] option instead of its
-					beginning.
+					[opt_def -nocase]
+						Upper-case characters in the input value will be converted to
+						lower-case before matching against [arg exp]
 
+					[opt_def -start [arg start]]
+						Start matching at the position inside the input value
+						specified by the [option -start] option instead of its
+						beginning.
+
+					[list_end]
 				[list_end]
 			[list_end]
 

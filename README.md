@@ -2054,6 +2054,24 @@ it is used inside the schema, unless otherwise noted\.
 
             The operator returns the result of Tcl's __regsub__ command\.
 
+              - The following options may be specified:
+
+                  * __\-all__
+
+                    All ranges in the input value that match exp are found and
+                    substitution is performed for each of these ranges\.
+
+                  * __\-nocase__
+
+                    Upper\-case characters in the input value will be converted
+                    to lower\-case before matching against *exp*
+
+                  * __\-start__ *start*
+
+                    Start matching at the position inside the input value
+                    specified by the __\-start__ option instead of its
+                    beginning\.
+
           + for composing
 
             Passes the Tcl input data into Tcl's __regsub__ command along
@@ -2062,22 +2080,29 @@ it is used inside the schema, unless otherwise noted\.
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
 
-          + The following options may be specified:
+              - The following options may be specified:
 
-              - __\-all__
+                  * __\-null__ *nullvalue*
 
-                All ranges in the input value that match exp are found and
-                substitution is performed for each of these ranges\.
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
-              - __\-nocase__
+                  * __\-all__
 
-                Upper\-case characters in the input value will be converted to
-                lower\-case before matching against *exp*
+                    All ranges in the input value that match exp are found and
+                    substitution is performed for each of these ranges\.
 
-              - __\-start__ *start*
+                  * __\-nocase__
 
-                Start matching at the position inside the input value specified
-                by the __\-start__ option instead of its beginning\.
+                    Upper\-case characters in the input value will be converted
+                    to lower\-case before matching against *exp*
+
+                  * __\-start__ *start*
+
+                    Start matching at the position inside the input value
+                    specified by the __\-start__ option instead of its
+                    beginning\.
 
       * __stringop *?options?* *schema*__
 

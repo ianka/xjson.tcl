@@ -57,3 +57,9 @@ tests:
     schema: 'regsub -- -all {[fe]o.} bar string'
     data: 'abcde'
     expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'regsub -null {} foo bar string'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

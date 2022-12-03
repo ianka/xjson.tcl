@@ -2170,13 +2170,7 @@ passed into Tcl's \fBregsub\fR command along the supplied
 \fIexp\fR and \fIreplacement\fR arguments\&.
 .sp
 The operator returns the result of Tcl's \fBregsub\fR command\&.
-.TP
-for composing
-Passes the Tcl input data into Tcl's \fBregsub\fR command
-along the \fIexp\fR and \fIreplacement\fR arguments
-.sp
-The result of that is then validated with the \fIschema\fR\&.
-The operator returns the result of the schema\&.
+.RS
 .TP
 The following options may be specified:
 .RS
@@ -2193,6 +2187,37 @@ lower-case before matching against \fIexp\fR
 Start matching at the position inside the input value
 specified by the \fB-start\fR option instead of its
 beginning\&.
+.RE
+.RE
+.TP
+for composing
+Passes the Tcl input data into Tcl's \fBregsub\fR command
+along the \fIexp\fR and \fIreplacement\fR arguments
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RS
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.TP
+\fB-all\fR
+All ranges in the input value that match exp are found and
+substitution is performed for each of these ranges\&.
+.TP
+\fB-nocase\fR
+Upper-case characters in the input value will be converted to
+lower-case before matching against \fIexp\fR
+.TP
+\fB-start\fR \fIstart\fR
+Start matching at the position inside the input value
+specified by the \fB-start\fR option instead of its
+beginning\&.
+.RE
 .RE
 .RE
 .TP

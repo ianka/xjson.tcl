@@ -1020,7 +1020,14 @@ dict set ::xjson::builtinComposingMethods pass {{} {
 
 
 ## Regsub operator composing method.
-dict set ::xjson::builtinComposingMethods regsub {{regexp~ replacement schema{} -all -nocase -start.} {
+dict set ::xjson::builtinComposingMethods regsub {{regexp~ replacement schema{} -null= -all -nocase -start.} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
 	## Set default values for the start, all, and nocase options.
 	set start 0
 	set all {}

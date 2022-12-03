@@ -2018,7 +2018,7 @@ it is used inside the schema, unless otherwise noted\.
                     __null__\. See the section [NULL
                     HANDLING](#section5) for additional information\.
 
-      * __mark *mark* *schema*__
+      * __mark *?options?* *mark* *schema*__
 
           + for collecting
 
@@ -2035,6 +2035,14 @@ it is used inside the schema, unless otherwise noted\.
 
             If it passes, the second list element is then validated with the
             *schema*\. The operator returns the result of the schema\.
+
+              - The following option may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
       * __regsub *?options?* *exp* *replacement* *schema*__
 

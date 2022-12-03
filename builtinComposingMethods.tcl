@@ -721,7 +721,14 @@ dict set ::xjson::builtinComposingMethods map {{kschema{} vschema{} -null= -isol
 
 
 ## Mark operator composing method.
-dict set ::xjson::builtinComposingMethods mark {{mark schema{}} {
+dict set ::xjson::builtinComposingMethods mark {{mark schema{} -null=} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
 	## Fail if the mark does not match.
 	if {[lindex $data 0] ne [dict get $schema arguments mark]} {
 		return -code error -errorcode {XJSON COMPOSER OBJECT MARK_MISMATCH} \

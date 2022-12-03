@@ -2134,7 +2134,7 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 .RE
 .RE
 .TP
-\fBmark \fImark\fR \fIschema\fR\fR
+\fBmark \fI?options?\fR \fImark\fR \fIschema\fR\fR
 .RS
 .TP
 for collecting
@@ -2149,6 +2149,16 @@ element isn't the same as the \fImark\fR argument\&.
 .sp
 If it passes, the second list element is then validated with the \fIschema\fR\&.
 The operator returns the result of the schema\&.
+.RS
+.TP
+The following option may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.RE
+.RE
 .RE
 .TP
 \fBregsub \fI?options?\fR \fIexp\fR \fIreplacement\fR \fIschema\fR\fR

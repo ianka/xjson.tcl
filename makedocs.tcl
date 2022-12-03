@@ -1838,7 +1838,7 @@ set data {
 				[list_end]
 			[list_end]
 
-		[cmd_def "mark [arg mark] [arg schema]"]
+		[cmd_def "mark [arg [opt options]] [arg mark] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
 				Validates the decoded JSON input with the [arg schema].
@@ -1853,6 +1853,15 @@ set data {
  				If it passes, the second list element is then validated with the [arg schema].
 				The operator returns the result of the schema.
 
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[list_end]
+				[list_end]
 			[list_end]
 
 		[cmd_def "regsub [arg [opt options]] [arg exp] [arg replacement] [arg schema]"]

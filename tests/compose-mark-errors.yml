@@ -39,3 +39,9 @@ tests:
     schema: 'mark quux {number -max 5}'
     data: 'quux 6'
     expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'mark -null {} quux string'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

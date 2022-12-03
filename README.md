@@ -1867,6 +1867,23 @@ it is used inside the schema, unless otherwise noted\.
 
             The operator returns the result of Tcl's __clock scan__ command\.
 
+              - The following options may be specified:
+
+                  * __\-format__ *format*
+
+                    A format string as understood by Tcl's __clock \-format__
+                    option\.
+
+                  * __\-timezone__ *zoneName*
+
+                    A timezone name as understood by Tcl's __clock
+                    \-timezone__ option\.
+
+                  * __\-locale__ *localeName*
+
+                    A locale name as understood by Tcl's __clock \-locale__
+                    option\.
+
           + for composing
 
             Passes the Tcl input data into Tcl's __clock format__ command
@@ -1875,22 +1892,28 @@ it is used inside the schema, unless otherwise noted\.
             The result of that is then validated with the *schema*\. The
             operator returns the result of the schema\.
 
-          + The following options may be specified:
+              - The following options may be specified:
 
-              - __\-format__ *format*
+                  * __\-null__ *nullvalue*
 
-                A format string as understood by Tcl's __clock \-format__
-                option\.
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
 
-              - __\-timezone__ *zoneName*
+                  * __\-format__ *format*
 
-                A timezone name as understood by Tcl's __clock \-timezone__
-                option\.
+                    A format string as understood by Tcl's __clock \-format__
+                    option\.
 
-              - __\-locale__ *localeName*
+                  * __\-timezone__ *zoneName*
 
-                A locale name as understood by Tcl's __clock \-locale__
-                option\.
+                    A timezone name as understood by Tcl's __clock
+                    \-timezone__ option\.
+
+                  * __\-locale__ *localeName*
+
+                    A locale name as understood by Tcl's __clock \-locale__
+                    option\.
 
       * __expr *?options?* *varList* *expr* *schema*__
 

@@ -1981,13 +1981,7 @@ passed into Tcl's \fBclock scan\fR command along the supplied
 \fIoptions\fR arguments\&.
 .sp
 The operator returns the result of Tcl's \fBclock scan\fR command\&.
-.TP
-for composing
-Passes the Tcl input data into Tcl's \fBclock format\fR command
-along the supplied \fIoptions\fR arguments\&.
-.sp
-The result of that is then validated with the \fIschema\fR\&.
-The operator returns the result of the schema\&.
+.RS
 .TP
 The following options may be specified:
 .RS
@@ -2000,6 +1994,33 @@ A timezone name as understood by Tcl's \fBclock -timezone\fR option\&.
 .TP
 \fB-locale\fR \fIlocaleName\fR
 A locale name as understood by Tcl's \fBclock -locale\fR option\&.
+.RE
+.RE
+.TP
+for composing
+Passes the Tcl input data into Tcl's \fBclock format\fR command
+along the supplied \fIoptions\fR arguments\&.
+.sp
+The result of that is then validated with the \fIschema\fR\&.
+The operator returns the result of the schema\&.
+.RS
+.TP
+The following options may be specified:
+.RS
+.TP
+\fB-null\fR \fInullvalue\fR
+Specifies a Tcl input value that should be treated as \fBnull\fR\&.
+See the section \fBNULL HANDLING\fR for additional information\&.
+.TP
+\fB-format\fR \fIformat\fR
+A format string as understood by Tcl's \fBclock -format\fR option\&.
+.TP
+\fB-timezone\fR \fIzoneName\fR
+A timezone name as understood by Tcl's \fBclock -timezone\fR option\&.
+.TP
+\fB-locale\fR \fIlocaleName\fR
+A locale name as understood by Tcl's \fBclock -locale\fR option\&.
+.RE
 .RE
 .RE
 .TP

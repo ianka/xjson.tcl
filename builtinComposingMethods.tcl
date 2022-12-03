@@ -405,7 +405,14 @@ dict set ::xjson::builtinComposingMethods const {{type value} {
 
 
 ## Datetime operator composing method.
-dict set ::xjson::builtinComposingMethods datetime {{schema{} -format= -timezone' -locale=} {
+dict set ::xjson::builtinComposingMethods datetime {{schema{} -null= -format= -timezone' -locale=} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
 	## Feed the data into clock format.
 	if {[catch {clock format $data {*}[dict get $schema options]} value]} {
 		return -code error -errorcode {XJSON COMPOSER OBJECT CLOCK_VALUE} \

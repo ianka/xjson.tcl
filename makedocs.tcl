@@ -1688,6 +1688,21 @@ set data {
 				[para]
 				The operator returns the result of Tcl's [cmd "clock scan"] command.
 
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -format [arg format]]
+						A format string as understood by Tcl's [cmd "clock -format"] option.
+
+					[opt_def -timezone [arg zoneName]]
+						A timezone name as understood by Tcl's [cmd "clock -timezone"] option.
+
+					[opt_def -locale [arg localeName]]
+						A locale name as understood by Tcl's [cmd "clock -locale"] option.
+
+					[list_end]
+				[list_end]
+
 			[def "for composing"]
 				Passes the Tcl input data into Tcl's [cmd "clock format"] command
 				along the supplied [arg options] arguments.
@@ -1695,17 +1710,23 @@ set data {
  				The result of that is then validated with the [arg schema].
 				The operator returns the result of the schema.
 
-			[def "The following options may be specified:"]
-				[list_begin options]
-				[opt_def -format [arg format]]
-					A format string as understood by Tcl's [cmd "clock -format"] option.
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
 
-				[opt_def -timezone [arg zoneName]]
-					A timezone name as understood by Tcl's [cmd "clock -timezone"] option.
+					[opt_def -format [arg format]]
+						A format string as understood by Tcl's [cmd "clock -format"] option.
 
-				[opt_def -locale [arg localeName]]
-					A locale name as understood by Tcl's [cmd "clock -locale"] option.
+					[opt_def -timezone [arg zoneName]]
+						A timezone name as understood by Tcl's [cmd "clock -timezone"] option.
 
+					[opt_def -locale [arg localeName]]
+						A locale name as understood by Tcl's [cmd "clock -locale"] option.
+
+					[list_end]
 				[list_end]
 			[list_end]
 

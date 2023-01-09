@@ -10,4 +10,4 @@ tests:
     cparams: '::testObject'
     mparams: 'a'
     schema: ''
-    expected: 'TCL VALUE NUMBER'
+    expected: 'TCL VALUE INTEGER'

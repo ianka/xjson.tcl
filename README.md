@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.9  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.10  "xjson\.tcl")
 
 # NAME
 
@@ -72,7 +72,7 @@ package require Tcl 8\.6\-
 package require itcl 4\.0\-  
 package require struct::set  
 package require struct::list  
-package require xjson ?1\.9?  
+package require xjson ?1\.10?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
@@ -1915,6 +1915,45 @@ it is used inside the schema, unless otherwise noted\.
                     A locale name as understood by Tcl's __clock \-locale__
                     option\.
 
+      * __encoding *?options?* *schema*__
+
+          + for collecting
+
+            Validates the decoded JSON input with the *schema*\. That result is
+            then expanded and passed into Tcl's __encoding convertfrom__
+            command\.
+
+            The operator returns the result of Tcl's __encoding
+            convertfrom__ command\.
+
+              - The following option may be specified:
+
+                  * __\-charset__ *name*
+
+                    Specifies the character set to convert from\. If left out,
+                    the system encoding is used\.
+
+          + for composing
+
+            Passes the Tcl input data into Tcl's __encoding convertto__
+            command\.
+
+            The result of that is then validated with the *schema*\. The
+            operator returns the result of the schema\.
+
+              - The following options may be specified:
+
+                  * __\-null__ *nullvalue*
+
+                    Specifies a Tcl input value that should be treated as
+                    __null__\. See the section [NULL
+                    HANDLING](#section5) for additional information\.
+
+                  * __\-charset__ *name*
+
+                    Specifies the character set to convert to\. If left out, the
+                    system encoding is used\.
+
       * __expr *?options?* *varList* *expr* *schema*__
 
           + for collecting
@@ -2418,9 +2457,9 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     *methodName*s are reserved for the builtin methods:
 
     __allof anyof apply array base32 base64 boolean const datetime decoded
-    default expr dictby dictbyindex discard dubious escalate format if json map
-    mark nest not null number object oneof optional otherwise pass regsub string
-    stringop switch uu verbatim view__
+    default encoding expr dictby dictbyindex discard dubious escalate format if
+    json map mark nest not null number object oneof optional otherwise pass
+    regsub string stringop switch uu verbatim view__
 
     You may of course overwrite those as well but it will break compatibility
     with existing schemas\. For forward compatibility with new versions of
@@ -2445,10 +2484,10 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     methods:
 
     __allof anyof apply array base32 base64 boolean const datetime decoded
-    default duple duples encoded expr dictby dictbyindex discard dubious
-    escalate format if integer json lmap map mark nest not null number object
-    oneof optional otherwise pass regsub string stringop switch tuple tuples uu
-    verbatim view__
+    default duple duples encoded encoding expr dictby dictbyindex discard
+    dubious escalate format if integer json lmap map mark nest not null number
+    object oneof optional otherwise pass regsub string stringop switch tuple
+    tuples uu verbatim view__
 
       * The following *methodOptions* may be specified:
 
@@ -2598,7 +2637,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.9/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.10/"\) for
 examples on how to write your own custom methods\.
 
 ## <a name='subsection6'></a>NESTING

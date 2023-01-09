@@ -1,0 +1,29 @@
+overview: |-
+  Compose data with "encoding" schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'encoding -foobar {}'
+    data: 'quux'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'encoding'
+    data: 'quux'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'encoding {} {}'
+    data: 'quux'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'encoding -null {} string'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

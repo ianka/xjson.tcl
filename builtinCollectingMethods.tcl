@@ -496,6 +496,23 @@ dict set ::xjson::builtinCollectingMethods dubious {-dubious schema{} {
 }}
 
 
+## Encoding operator collecting method.
+dict set ::xjson::builtinCollectingMethods encoding {{schema{} -charset=} {
+	## Collect value from data according to schema.
+	set collected [_collect $data [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}]
+
+	## Convert the encoding.
+	if {[dict exists $schema options -charset]} {
+		set result [encoding convertfrom [dict get $schema options -charset] $collected]
+	} else {
+		set result [encoding convertfrom $collected]
+	}
+
+	## Return the result.
+	return $result
+}}
+
+
 ## Escalate operator collecting method.
 dict set ::xjson::builtinCollectingMethods escalate {{} {
 	## Fail if there was no previous result or the previous result wasn't an error.

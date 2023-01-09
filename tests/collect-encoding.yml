@@ -1,0 +1,27 @@
+overview: |-
+  Collect data with "encoding" schema.
+operation: collect
+tests:
+  - name: empty value
+    desc: Empty value is decoded as an empty string.
+    schema: 'encoding string'
+    data: 'string {}'
+    expected: ''
+
+  - name: string value
+    desc: A encoded string is decoded into a different encoding.
+    schema: 'encoding string'
+    data: 'string \xc3\xa4'
+    expected: 'ä'
+
+  - name: charset option
+    desc: The charset option sets the input encoding.
+    schema: 'encoding -charset iso8859-1 string'
+    data: 'string \xc3\xa4'
+    expected: 'Ã¤'
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'encoding -- string'
+    data: 'string foobar'
+    expected: 'foobar'

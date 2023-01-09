@@ -539,6 +539,27 @@ dict set ::xjson::builtinComposingMethods dubious {-dubious schema{} {
 }}
 
 
+## Encoding operator composing method.
+dict set ::xjson::builtinComposingMethods encoding {{schema{} -null= -charset=} {
+	## Sort out null.
+	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
+		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+				"But it is null and reported as such."]
+	}
+
+	## Convert the encoding.
+	if {[dict exists $schema options -charset]} {
+		set values [encoding convertto [dict get $schema options -charset] $data]
+	} else {
+		set values [encoding convertto $data]
+	}
+
+	## Compose value from values according to schema.
+	_compose $values [dict get $schema arguments schema] [string cat $path [dict get $schema method] "/"] $interpreter {}
+}}
+
+
 ## Escalate operator composing method.
 dict set ::xjson::builtinComposingMethods escalate {{} {
 	## Fail if there was no previous result or the previous result wasn't an error.

@@ -2,7 +2,7 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.9]
+[manpage_begin xjson n 1.10]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
@@ -11,7 +11,7 @@ set data {
 [require itcl 4.0-]
 [require struct::set]
 [require struct::list]
-[require xjson [opt 1.9]]
+[require xjson [opt 1.10]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -1730,6 +1730,45 @@ set data {
 				[list_end]
 			[list_end]
 
+		[cmd_def "encoding [arg [opt options]] [arg schema]"]
+			[list_begin definitions]
+			[def "for collecting"]
+				Validates the decoded JSON input with the [arg schema]. That result is then
+				expanded and passed into Tcl's [cmd "encoding convertfrom"] command.
+				[para]
+				The operator returns the result of Tcl's [cmd "encoding convertfrom"] command.
+
+				[list_begin definitions]
+				[def "The following option may be specified:"]
+					[list_begin options]
+					[opt_def -charset [arg name]]
+						Specifies the character set to convert from.
+						If left out, the system encoding is used.
+
+					[list_end]
+				[list_end]
+
+			[def "for composing"]
+				Passes the Tcl input data into Tcl's [cmd "encoding convertto"] command.
+				[para]
+ 				The result of that is then validated with the [arg schema].
+				The operator returns the result of the schema.
+
+				[list_begin definitions]
+				[def "The following options may be specified:"]
+					[list_begin options]
+					[opt_def -null [arg nullvalue]]
+						Specifies a Tcl input value that should be treated as [const "null"].
+						See the section [sectref "NULL HANDLING"] for additional information.
+
+					[opt_def -charset [arg name]]
+						Specifies the character set to convert to.
+						If left out, the system encoding is used.
+
+					[list_end]
+				[list_end]
+			[list_end]
+
 		[cmd_def "expr [arg [opt options]] [arg varList] [arg expr] [arg schema]"]
 			[list_begin definitions]
 			[def "for collecting"]
@@ -2213,7 +2252,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default expr dictby dictbyindex discard dubious escalate format if json map mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default encoding expr dictby dictbyindex discard dubious escalate format if json map mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -2236,7 +2275,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded expr dictby dictbyindex discard dubious escalate format if integer json lmap map mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded encoding expr dictby dictbyindex discard dubious escalate format if integer json lmap map mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]
@@ -2358,7 +2397,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.9/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.10/])
 	for examples on how to write your own custom methods.
 
 [subsection "NESTING"]

@@ -1,0 +1,27 @@
+overview: |-
+  Compose data with "encoding" schema.
+operation: compose
+tests:
+  - name: empty value
+    desc: Empty strings are encoded as empty.
+    schema: 'encoding string'
+    data: ''
+    expected: 'string {}'
+
+  - name: string value
+    desc: Any string value is encoded into the system enconding.
+    schema: 'encoding {base64 string}'
+    data: !!binary '5A=='
+    expected: 'string w6Q='
+
+  - name: charset option
+    desc: The charset option sets the output encoding.
+    schema: 'encoding -charset iso8859-1 {base64 string}'
+    data: !!binary '5A=='
+    expected: 'string 5A=='
+
+  - name: end of options
+    desc: End of options marker at the end must be ignored.
+    schema: 'encoding -- string'
+    data: 'foobar'
+    expected: 'string foobar'

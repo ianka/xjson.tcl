@@ -1,0 +1,23 @@
+overview: |-
+  Collect data with "encoding" schema. Error handling.
+operation: collect
+testerror: true
+testcode:  true
+tests:
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'encoding -foobar {}'
+    data: ''
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: no arguments
+    desc: No arguments must throw an error.
+    schema: 'encoding'
+    data: 'string foobar'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: too many arguments
+    desc: Too many arguments must throw an error.
+    schema: 'encoding {} {}'
+    data: 'string foobar'
+    expected: 'XJSON SCHEMA WRONGARGS'

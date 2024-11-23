@@ -338,19 +338,64 @@ dict set ::xjson::builtinCollectingMethods base64 {schema{} {
 
 
 ## Boolean type collecting method.
-dict set ::xjson::builtinCollectingMethods boolean {{} {
+dict set ::xjson::builtinCollectingMethods boolean {
+	boolean {-isolate -test! -false -true}
+	false   {}
+	true    {}
+{
+	## Save schema for error messages.
+	set sschema $schema
+
 	## Sort out empty data and literal null.
 	if {$data eq {} || $data eq {literal null}} {
 		return -code error -errorcode {XJSON COLLECTOR OBJECT IS_NULL} \
-			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+			[string cat "decoded JSON data " [_printData $data] " does match schema " [_printSchema $sschema] " at " $path "\n" \
 				"But it is null and reported as such."]
 	}
 
+	## Get value.
+	set value [lindex $data 1]
+
 	## Fail if not a literal or not a boolean value.
-	if {[lindex $data 0] ne "literal" || ![string is boolean -strict [lindex $data 1]]} {
+	if {[lindex $data 0] ne "literal" || ![string is boolean -strict $value]} {
 		return -code error -errorcode {XJSON COLLECTOR OBJECT TYPE_MISMATCH} \
-			[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+			[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
 				"It is not a " [_printValue [dict get $schema method]] "."]
+	}
+
+	## Setup the options for the shortcut collecting methods.
+	if {[dict get $schema method] in {false true}} {
+		dict set schema options [string cat - [dict get $schema method]]
+	}
+
+	## Run through all listed options in their order of appearance.
+	foreach {option optionvalue} [dict get $schema options] {
+		switch -- $option {
+			-false {
+				## Do a check for the false value.
+				if {$value} {
+					return -code error -errorcode {XJSON COLLECTOR OBJECT OUT_OF_RANGE} \
+						[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"The value is " [_printValue $value] ", which is not false."]
+				}
+			}
+			-true {
+				## Do a check for the true value.
+				if {!$value} {
+					return -code error -errorcode {XJSON COLLECTOR OBJECT OUT_OF_RANGE} \
+						[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"The value is " [_printValue $value] ", which is not true."]
+				}
+			}
+			-test {
+				## Pass expression into sandbox method and fail if the result isn't true.
+				if {![_sandbox $data $schema $path $interpreter [list apply [list x [list expr $optionvalue]] $value] [dict exists $schema options -isolate]]} {
+					return -code error -errorcode {XJSON COLLECTOR OBJECT TEST_FAILED} \
+						[string cat "decoded JSON data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"The value " [_printValue $value] " does not pass the test " [_printValue $optionvalue] "."]
+				}
+			}
+		}
 	}
 
 	## Return value.

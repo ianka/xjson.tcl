@@ -2,7 +2,7 @@
 package require doctools
 
 set data {
-[manpage_begin xjson n 1.10]
+[manpage_begin xjson n 1.11]
 [moddesc   {xjson.tcl}]
 [titledesc {extended JSON functions for Tcl}]
 [copyright "2021 Jan Kandziora <jjj@gmx.de>, BSD-2-Clause license"]
@@ -11,7 +11,7 @@ set data {
 [require itcl 4.0-]
 [require struct::set]
 [require struct::list]
-[require xjson [opt 1.10]]
+[require xjson [opt 1.11]]
 
 [usage [cmd ::xjson::decode] [arg json] [opt [arg indexVar]]]
 [usage [cmd ::xjson::encode] [arg decodedJson] [opt [arg indent]] [opt [arg tabulator]] [opt [arg nest]]]
@@ -537,6 +537,28 @@ set data {
 
 					[list_end]
 				[list_end]
+
+			[def "The following general option may be specified:"]
+				[list_begin options]
+				[opt_def -isolate]
+					Use a local sandbox.
+
+				[list_end]
+
+			[def "The following further constraints may be specified:"]
+				[list_begin options]
+				[opt_def -true]
+					Validates a boolean value that is true.
+
+				[opt_def -false]
+					Validates a boolean value that is false.
+
+				[opt_def -test [arg expr]]
+					Validates a boolean value by passing it to the Tcl [arg expr] as
+					the local variable [emph x]. If the expression results in a boolean false,
+					the	validation fails.
+
+				[list_end]
 			[list_end]
 
 		[cmd_def decoded]
@@ -590,6 +612,14 @@ set data {
 
 			[emph "Note:"] The [arg methodName] for this method as used by the
 			[cmd ::xjson::makeComposerClass] class factory procedures is [cmd decoded].
+
+		[cmd_def "false"]
+			A shortcut for [cmd "boolean -false"].
+			See above.
+			[para]
+			[emph "Note:"] The [arg methodName] for this method as used by the
+			[cmd ::xjson::makeCollectorClass] and [cmd ::xjson::makeComposerClass]
+			class factory procedures is [cmd boolean].
 
 		[cmd_def "integer [arg [opt options]]"]
 			[list_begin definitions]
@@ -921,6 +951,15 @@ set data {
 
 				[list_end]
 			[list_end]
+
+		[cmd_def "true"]
+			A shortcut for [cmd "boolean -true"].
+			See above.
+			[para]
+			[emph "Note:"] The [arg methodName] for this method as used by the
+			[cmd ::xjson::makeCollectorClass] and [cmd ::xjson::makeComposerClass]
+			class factory procedures is [cmd boolean].
+
 		[list_end]
 
 	[def "Aggregate Types"]
@@ -2252,7 +2291,7 @@ set data {
 		actual method name used in the schema then.
 		The following [arg "methodName"]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default encoding expr dictby dictbyindex discard dubious escalate format if json map mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default dictby dictbyindex discard dubious encoded encoding escalate expr format if json map mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view"]
 		[para]
 		You may of course overwrite those as well but it will break compatibility with
 		existing schemas. For forward compatibility with new versions of
@@ -2275,7 +2314,7 @@ set data {
 		In the simplified variant, the method has only one name and one set of parameters.
 		The following [arg aliasName]s are reserved for the builtin methods:
 		[para]
-		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded encoding expr dictby dictbyindex discard dubious escalate format if integer json lmap map mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view"]
+		[cmd "allof anyof apply array base32 base64 boolean const datetime decoded default dictby dictbyindex discard dubious duple duples encoded encoding escalate expr false format if integer json lmap map mark nest not null number object oneof optional otherwise pass regsub string stringop switch true tuple tuples uu verbatim view"]
 
 		[list_begin definitions]
 		[def "The following [arg methodOptions] may be specified:"]
@@ -2397,7 +2436,7 @@ set data {
 	[list_end]
 	See the files
 	[file builtinCollectingMethods.tcl] and [file builtinComposingMethods.tcl]
-	from the library installation directory (often [file /usr/share/tcl/xjson1.10/])
+	from the library installation directory (often [file /usr/share/tcl/xjson1.11/])
 	for examples on how to write your own custom methods.
 
 [subsection "NESTING"]

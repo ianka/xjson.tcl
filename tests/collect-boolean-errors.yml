@@ -10,6 +10,30 @@ tests:
     data: 'literal true'
     expected: 'XJSON SCHEMA UNKNOWN_OPTION'
 
+  - name: missing test option value
+    desc: Missing option value to the "-test" option must throw an error.
+    schema: 'boolean -test'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid test option value
+    desc: Invalid option value to the "-test" option must throw an error.
+    schema: 'boolean -test foobar'
+    data: 'literal true'
+    expected: 'TCL PARSE EXPR BAREWORD'
+
+  - name: sandbox
+    desc: Unsafe Tcl code inside the sandbox must throw an error.
+    schema: 'boolean -test {[puts bar]}'
+    data: 'literal true'
+    expected: 'TCL LOOKUP CHANNEL stdout'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'boolean -- -true'
+    data: 'literal true'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
   - name: invalid arguments
     desc: Invalid arguments must throw an error.
     schema: 'boolean {}'
@@ -39,6 +63,24 @@ tests:
     schema: 'boolean'
     data: 'literal null'
     expected: 'XJSON COLLECTOR OBJECT IS_NULL'
+
+  - name: true option
+    desc: Literal false may not pass "-true" option.
+    schema: 'boolean -true'
+    data: 'literal false'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: false option
+    desc: Literal true my not pass "-false" option.
+    schema: 'boolean -false'
+    data: 'literal true'
+    expected: 'XJSON COLLECTOR OBJECT OUT_OF_RANGE'
+
+  - name: test option
+    desc: Value that fails "-test" option must throw an error.
+    schema: 'boolean -test {!$x}'
+    data: 'literal true'
+    expected: 'XJSON COLLECTOR OBJECT TEST_FAILED'
 
   - name: number data
     desc: Number data must throw an error.

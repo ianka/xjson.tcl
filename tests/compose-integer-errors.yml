@@ -186,7 +186,7 @@ tests:
 
   - name: object data
     desc: Object data must throw an error.
-    schema: 'boolean'
+    schema: 'integer'
     data: '{n 123}'
     expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
 

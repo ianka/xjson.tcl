@@ -377,19 +377,61 @@ dict set ::xjson::builtinComposingMethods base64 {{schema{} -null=} {
 
 
 ## Boolean type composing method.
-dict set ::xjson::builtinComposingMethods boolean {-- -null= {
+dict set ::xjson::builtinComposingMethods boolean {
+	boolean {-null= -isolate -test! -false -true}
+	false   {-null=}
+	true    {-null=}
+{
+	## Save schema for error messages.
+	set sschema $schema
+
 	## Sort out null.
 	if {[dict exists $schema options -null] && $data eq [dict get $schema options -null]} {
 		return -code error -errorcode {XJSON COMPOSER OBJECT IS_NULL} \
-			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $schema] " at " $path "\n" \
+			[string cat "Tcl data " [_printData $data] " does match schema " [_printSchema $sschema] " at " $path "\n" \
 				"But it is null and reported as such."]
 	}
 
 	## Fail if not a boolean value.
 	if {![string is boolean -strict $data]} {
 		return -code error -errorcode {XJSON COMPOSER OBJECT TYPE_MISMATCH} \
-			[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $schema] " at " $path "\n" \
+			[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
 				"It is not a " [_printValue [dict get $schema method]] "."]
+	}
+
+	## Setup the options for the shortcut collecting methods.
+	if {[dict get $schema method] in {false true}} {
+		dict set schema options [string cat - [dict get $schema method]]
+	}
+
+	## Run through all listed options in their order of appearance.
+	foreach {option optionvalue} [dict get $schema options] {
+		switch -- $option {
+			-false {
+				## Do a check for the false value.
+				if {$data} {
+					return -code error -errorcode {XJSON COMPOSER OBJECT OUT_OF_RANGE} \
+						[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"The value is " [_printValue $data] ", which is not false."]
+				}
+			}
+			-true {
+				## Do a check for the true value.
+				if {!$data} {
+					return -code error -errorcode {XJSON COMPOSER OBJECT OUT_OF_RANGE} \
+						[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"The value is " [_printValue $data] ", which is not true."]
+				}
+			}
+			-test {
+				## Pass expression into sandbox method and fail if the result isn't true.
+				if {![_sandbox $data $schema $path $interpreter [list apply [list x [list expr $optionvalue]] $data] [dict exists $schema options -isolate]]} {
+					return -code error -errorcode {XJSON COMPOSER OBJECT TEST_FAILED} \
+						[string cat "Tcl data " [_printData $data] " does not match schema " [_printSchema $sschema] " at " $path "\n" \
+							"The value " [_printValue $data] " does not pass the test " [_printValue $optionvalue] "."]
+				}
+			}
+		}
 	}
 
 	## Return value.

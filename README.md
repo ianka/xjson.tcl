@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.10  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.11  "xjson\.tcl")
 
 # NAME
 
@@ -72,7 +72,7 @@ package require Tcl 8\.6\-
 package require itcl 4\.0\-  
 package require struct::set  
 package require struct::list  
-package require xjson ?1\.10?  
+package require xjson ?1\.11?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
@@ -654,6 +654,28 @@ it is used inside the schema, unless otherwise noted\.
                     __null__\. See the section [NULL
                     HANDLING](#section5) for additional information\.
 
+          + The following general option may be specified:
+
+              - __\-isolate__
+
+                Use a local sandbox\.
+
+          + The following further constraints may be specified:
+
+              - __\-true__
+
+                Validates a boolean value that is true\.
+
+              - __\-false__
+
+                Validates a boolean value that is false\.
+
+              - __\-test__ *expr*
+
+                Validates a boolean value by passing it to the Tcl *expr* as
+                the local variable *x*\. If the expression results in a boolean
+                false, the validation fails\.
+
       * __decoded__
 
           + for collecting
@@ -707,6 +729,15 @@ it is used inside the schema, unless otherwise noted\.
         *Note:* The *methodName* for this method as used by the
         __::xjson::makeComposerClass__ class factory procedures is
         __decoded__\.
+
+      * __false__
+
+        A shortcut for __boolean \-false__\. See above\.
+
+        *Note:* The *methodName* for this method as used by the
+        __::xjson::makeCollectorClass__ and
+        __::xjson::makeComposerClass__ class factory procedures is
+        __boolean__\.
 
       * __integer *?options?*__
 
@@ -1076,6 +1107,15 @@ it is used inside the schema, unless otherwise noted\.
                 Validates a test string by passing it to the Tcl *expr* as the
                 local variable *x*\. If the expression results in a boolean
                 false, the validation fails\.
+
+      * __true__
+
+        A shortcut for __boolean \-true__\. See above\.
+
+        *Note:* The *methodName* for this method as used by the
+        __::xjson::makeCollectorClass__ and
+        __::xjson::makeComposerClass__ class factory procedures is
+        __boolean__\.
 
   - Aggregate Types
 
@@ -2457,9 +2497,9 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     *methodName*s are reserved for the builtin methods:
 
     __allof anyof apply array base32 base64 boolean const datetime decoded
-    default encoding expr dictby dictbyindex discard dubious escalate format if
-    json map mark nest not null number object oneof optional otherwise pass
-    regsub string stringop switch uu verbatim view__
+    default dictby dictbyindex discard dubious encoded encoding escalate expr
+    format if json map mark nest not null number object oneof optional otherwise
+    pass regsub string stringop switch uu verbatim view__
 
     You may of course overwrite those as well but it will break compatibility
     with existing schemas\. For forward compatibility with new versions of
@@ -2484,10 +2524,10 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
     methods:
 
     __allof anyof apply array base32 base64 boolean const datetime decoded
-    default duple duples encoded encoding expr dictby dictbyindex discard
-    dubious escalate format if integer json lmap map mark nest not null number
-    object oneof optional otherwise pass regsub string stringop switch tuple
-    tuples uu verbatim view__
+    default dictby dictbyindex discard dubious duple duples encoded encoding
+    escalate expr false format if integer json lmap map mark nest not null
+    number object oneof optional otherwise pass regsub string stringop switch
+    true tuple tuples uu verbatim view__
 
       * The following *methodOptions* may be specified:
 
@@ -2637,7 +2677,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.10/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.11/"\) for
 examples on how to write your own custom methods\.
 
 ## <a name='subsection6'></a>NESTING

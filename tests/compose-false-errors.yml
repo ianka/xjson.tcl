@@ -1,0 +1,47 @@
+overview: |-
+  Compose data with false schema. Error handling.
+operation: compose
+testerror: true
+testcode:  true
+tests:
+  - name: tcl boolean true data
+    desc: Tcl boolean true value may not pass "false" schema.
+    schema: 'false'
+    data: 'true'
+    expected: 'XJSON COMPOSER OBJECT OUT_OF_RANGE'
+
+  - name: invalid data
+    desc: Invalid data must throw an error.
+    schema: 'false'
+    data: ''
+    expected: 'XJSON COMPOSER OBJECT TYPE_MISMATCH'
+
+  - name: unknown option
+    desc: Unknown options must throw an error.
+    schema: 'false -foobar'
+    data: 'false'
+    expected: 'XJSON SCHEMA UNKNOWN_OPTION'
+
+  - name: missing option value
+    desc: Missing option value to the "-null" option must throw an error.
+    schema: 'false -null'
+    data: 'false'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: end of options
+    desc: Known options after end of options marker must throw an error.
+    schema: 'false -- -null {}'
+    data: 'false'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: invalid arguments
+    desc: Invalid arguments must throw an error.
+    schema: 'false {}'
+    data: 'false'
+    expected: 'XJSON SCHEMA WRONGARGS'
+
+  - name: null precedence
+    desc: Null handling must take precedence over value handling.
+    schema: 'false -null false'
+    data: 'false'
+    expected: 'XJSON COMPOSER OBJECT IS_NULL'

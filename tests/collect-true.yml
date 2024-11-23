@@ -1,0 +1,21 @@
+overview: |-
+  Collect data with true schema.
+operation: collect
+tests:
+  - name: true data
+    desc: Literal true has to pass "true" schema.
+    schema: 'true'
+    data: 'literal true'
+    expected: 'true'
+
+  - name: tcl true data
+    desc: Tcl true value has to pass "true" schema.
+    schema: 'true'
+    data: 'literal yes'
+    expected: 'yes'
+
+  - name: end of options
+    desc: End of options marker must be ignored.
+    schema: 'true --'
+    data: 'literal true'
+    expected: 'true'

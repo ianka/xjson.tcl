@@ -2,7 +2,7 @@
 '\" Generated from file '' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2021 Jan Kandziora <jjj@gmx\&.de>, BSD-2-Clause license
 '\"
-.TH "xjson" n 1\&.10  "xjson\&.tcl"
+.TH "xjson" n 1\&.11  "xjson\&.tcl"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -282,7 +282,7 @@ package require \fBstruct::set \fR
 .sp
 package require \fBstruct::list \fR
 .sp
-package require \fBxjson  ?1\&.10?\fR
+package require \fBxjson  ?1\&.11?\fR
 .sp
 \fB::xjson::decode\fR \fIjson\fR ?\fIindexVar\fR?
 .sp
@@ -808,6 +808,28 @@ Specifies a Tcl input value that should be treated as \fBnull\fR\&.
 See the section \fBNULL HANDLING\fR for additional information\&.
 .RE
 .RE
+.TP
+The following general option may be specified:
+.RS
+.TP
+\fB-isolate\fR
+Use a local sandbox\&.
+.RE
+.TP
+The following further constraints may be specified:
+.RS
+.TP
+\fB-true\fR
+Validates a boolean value that is true\&.
+.TP
+\fB-false\fR
+Validates a boolean value that is false\&.
+.TP
+\fB-test\fR \fIexpr\fR
+Validates a boolean value by passing it to the Tcl \fIexpr\fR as
+the local variable \fIx\fR\&. If the expression results in a boolean false,
+the validation fails\&.
+.RE
 .RE
 .TP
 \fBdecoded\fR
@@ -863,6 +885,14 @@ See the section \fBNULL HANDLING\fR for additional information\&.
 .IP
 \fINote:\fR The \fImethodName\fR for this method as used by the
 \fB::xjson::makeComposerClass\fR class factory procedures is \fBdecoded\fR\&.
+.TP
+\fBfalse\fR
+A shortcut for \fBboolean -false\fR\&.
+See above\&.
+.sp
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBboolean\fR\&.
 .TP
 \fBinteger \fI?options?\fR\fR
 .RS
@@ -1203,6 +1233,14 @@ variable \fIx\fR\&. If the expression results in a boolean false, the
 validation fails\&.
 .RE
 .RE
+.TP
+\fBtrue\fR
+A shortcut for \fBboolean -true\fR\&.
+See above\&.
+.sp
+\fINote:\fR The \fImethodName\fR for this method as used by the
+\fB::xjson::makeCollectorClass\fR and \fB::xjson::makeComposerClass\fR
+class factory procedures is \fBboolean\fR\&.
 .RE
 .TP
 Aggregate Types
@@ -2591,7 +2629,7 @@ parameters and options\&. They are sorted out from within their Tcl body by the
 actual method name used in the schema then\&.
 The following \fImethodName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default encoding expr dictby dictbyindex discard dubious escalate format if json map mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default dictby dictbyindex discard dubious encoded encoding escalate expr format if json map mark nest not null number object oneof optional otherwise pass regsub string stringop switch uu verbatim view\fR
 .sp
 You may of course overwrite those as well but it will break compatibility with
 existing schemas\&. For forward compatibility with new versions of
@@ -2613,7 +2651,7 @@ or (simplified)
 In the simplified variant, the method has only one name and one set of parameters\&.
 The following \fIaliasName\fRs are reserved for the builtin methods:
 .sp
-\fBallof anyof apply array base32 base64 boolean const datetime decoded default duple duples encoded encoding expr dictby dictbyindex discard dubious escalate format if integer json lmap map mark nest not null number object oneof optional otherwise pass regsub string stringop switch tuple tuples uu verbatim view\fR
+\fBallof anyof apply array base32 base64 boolean const datetime decoded default dictby dictbyindex discard dubious duple duples encoded encoding escalate expr false format if integer json lmap map mark nest not null number object oneof optional otherwise pass regsub string stringop switch true tuple tuples uu verbatim view\fR
 .RS
 .TP
 The following \fImethodOptions\fR may be specified:
@@ -2732,7 +2770,7 @@ The \fIbody\fR is the Tcl body of the method\&.
 .PP
 See the files
 "\fIbuiltinCollectingMethods\&.tcl\fR" and "\fIbuiltinComposingMethods\&.tcl\fR"
-from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.10/\fR")
+from the library installation directory (often "\fI/usr/share/tcl/xjson1\&.11/\fR")
 for examples on how to write your own custom methods\&.
 .SS NESTING
 With each collector/composer object you construct from the classes produced by

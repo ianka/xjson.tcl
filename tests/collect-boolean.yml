@@ -20,6 +20,42 @@ tests:
     data: 'literal yes'
     expected: 'yes'
 
+  - name: true option
+    desc: Literal true has to pass "-true" option.
+    schema: 'boolean -true'
+    data: 'literal true'
+    expected: 'true'
+
+  - name: false option
+    desc: Literal false has to pass "-false" option.
+    schema: 'boolean -false'
+    data: 'literal false'
+    expected: 'false'
+
+  - name: test option
+    desc: Value has to pass matching "-test" option.
+    schema: 'boolean -test {!$x}'
+    data: 'literal false'
+    expected: 'false'
+
+  - name: sandbox
+    desc: Tcl code must be processed inside a sandbox.
+    schema: 'boolean -test {[interp issafe]}'
+    data: 'literal false'
+    expected: 'false'
+
+  - name: non isolated default
+    desc: Sandboxes are non-isolated by default.
+    schema: 'boolean -test {[info exists ::schemasandbox]}'
+    data: 'literal false'
+    expected: 'false'
+
+  - name: isolate option
+    desc: The -isolate option must isolate the sandbox.
+    schema: 'boolean -isolate -test {![info exists ::schemasandbox]}'
+    data: 'literal false'
+    expected: 'false'
+
   - name: end of options
     desc: End of options marker must be ignored.
     schema: 'boolean --'

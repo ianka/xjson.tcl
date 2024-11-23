@@ -1,0 +1,21 @@
+overview: |-
+  Collect data with false schema.
+operation: collect
+tests:
+  - name: false data
+    desc: Literal false has to pass "false" schema.
+    schema: 'false'
+    data: 'literal false'
+    expected: 'false'
+
+  - name: tcl false data
+    desc: Tcl false value has to pass "false" schema.
+    schema: 'false'
+    data: 'literal no'
+    expected: 'no'
+
+  - name: end of options
+    desc: End of options marker must be ignored.
+    schema: 'false --'
+    data: 'literal false'
+    expected: 'false'

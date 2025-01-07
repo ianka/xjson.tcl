@@ -1,14 +1,18 @@
-package ifneeded xjson 1.11 [subst -nocommands {
-	source [file join $dir xjson.tcl]
-	source [file join $dir utilities.tcl]
-	source [file join $dir decode.tcl]
-	source [file join $dir encode.tcl]
-	source [file join $dir recode.tcl]
-	source [file join $dir diff.tcl]
-	source [file join $dir patch.tcl]
-	source [file join $dir makeCollectorClass.tcl]
-	source [file join $dir builtinCollectingMethods.tcl]
-	source [file join $dir makeComposerClass.tcl]
-	source [file join $dir builtinComposingMethods.tcl]
-	package provide xjson 1.11
-}]
+package ifneeded xjson 1.12 [list apply {dir {
+	foreach file {
+		xjson.tcl
+		utilities.tcl
+		decode.tcl
+		encode.tcl
+		recode.tcl
+		diff.tcl
+		patch.tcl
+		makeCollectorClass.tcl
+		builtinCollectingMethods.tcl
+		makeComposerClass.tcl
+		builtinComposingMethods.tcl
+	} {
+		uplevel #0 [list source [file join $dir $file]]
+	}
+	package provide xjson 1.12
+}} $dir]

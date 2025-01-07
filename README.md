@@ -2,7 +2,7 @@
 [//000000001]: # (xjson \- xjson\.tcl)
 [//000000002]: # (Generated from file '' by tcllib/doctools with format 'markdown')
 [//000000003]: # (Copyright &copy; 2021 Jan Kandziora <jjj@gmx\.de>, BSD\-2\-Clause license)
-[//000000004]: # (xjson\(n\) 1\.11  "xjson\.tcl")
+[//000000004]: # (xjson\(n\) 1\.12  "xjson\.tcl")
 
 # NAME
 
@@ -72,7 +72,7 @@ package require Tcl 8\.6\-
 package require itcl 4\.0\-  
 package require struct::set  
 package require struct::list  
-package require xjson ?1\.11?  
+package require xjson ?1\.12?  
 
 __::xjson::decode__ *json* ?*indexVar*?  
 __::xjson::encode__ *decodedJson* ?*indent*? ?*tabulator*? ?*nest*?  
@@ -2677,7 +2677,7 @@ class factory procedure with a unique *methodName* and a *methodDefinition*\.
       * The *body* is the Tcl body of the method\.
 
 See the files "builtinCollectingMethods\.tcl" and "builtinComposingMethods\.tcl"
-from the library installation directory \(often "/usr/share/tcl/xjson1\.11/"\) for
+from the library installation directory \(often "/usr/share/tcl/xjson1\.12/"\) for
 examples on how to write your own custom methods\.
 
 ## <a name='subsection6'></a>NESTING
